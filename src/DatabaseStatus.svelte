@@ -11,5 +11,7 @@ $: isInitializing = downloadState === DownloadState.Initializing;
 </script>
 
 <section class="database-status">
-{ isInitializing ? 'Initializing...' : '' }
+{#if isInitializing}
+Initializing...
+{/if}
 </section>
