@@ -1,11 +1,13 @@
 import { assert } from 'chai';
-import * as fetchMock from 'fetch-mock';
+import fetchMock from 'fetch-mock';
 
 import { download, DownloadEvent } from './download';
 
 mocha.setup('bdd');
 
 describe('download', () => {
+  afterEach(fetchMock.restore);
+
   it('should download the initial version information', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
       major: 1,

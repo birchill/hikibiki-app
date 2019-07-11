@@ -17,13 +17,15 @@ module.exports = config => {
         name: 'kanjichamp',
       },
       plugins: [
+        typescript(),
         // This is because fetch-mock depends on querystring somehow
         builtins(),
         resolve({ browser: true, preferBuiltins: true }),
         commonjs({
-          namedExports: { chai: ['assert'] },
+          namedExports: {
+            chai: ['assert'],
+          },
         }),
-        typescript(),
       ],
     },
     frameworks: ['mocha', 'chai'],
