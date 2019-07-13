@@ -1,7 +1,7 @@
 // import { KanjiEntry } from './common';
 
 /*
-interface EntryEvent = KanjiEntry & { type: 'entry' };
+type EntryEvent = KanjiEntry & { type: 'entry' };
 
 interface DeletionEvent {
   type: 'deletion';
@@ -11,13 +11,13 @@ interface DeletionEvent {
 type Event = VersionEvent | EntryEvent | DeletionEvent;
 */
 
-interface VersionEvent {
+type VersionEvent = {
   type: 'version';
   major: number;
   minor: number;
   patch: number;
   partial: boolean;
-}
+};
 
 export type DownloadEvent = VersionEvent;
 
@@ -49,7 +49,11 @@ function isVersionInfo(a: any): a is VersionInfo {
 
 type DownloadOptions = {
   baseUrl?: string;
-  // XXX Take a base version here
+  currentVersion?: {
+    major: number;
+    minor: number;
+    patch: number;
+  };
 };
 
 export function download(options?: DownloadOptions): ReadableStream {
@@ -70,20 +74,32 @@ export function download(options?: DownloadOptions): ReadableStream {
         );
       }
 
-      // Push the first version
-      // XXX Actually add the logic here for deciding which event to dispatch
-      const versionEvent: VersionEvent = {
-        type: 'version',
-        major: versionInfo.major,
-        minor: versionInfo.minor,
-        patch: versionInfo.patch,
-        partial: false,
-      };
-      controller.enqueue(versionEvent);
+      // TODO: This will also be set when the major version changes etc.
+      const doFullFetch = !options || !options.currentVersion;
+      if (doFullFetch) {
+        /*const baseline =*/ await fetch(
+          `${baseUrl}kanji-rc-en-${versionInfo.major}.${versionInfo.minor}.${versionInfo.snapshot}-full.ljson`
+        );
+        // XXX Parse the baseline
+
+        // Push the first version
+        // (XXX This is just here for now to keep the tests passing. We really
+        // should read the first line of the baseline first, check the version
+        // there matches, then dispatch this.)
+        const versionEvent: VersionEvent = {
+          type: 'version',
+          major: versionInfo.major,
+          minor: versionInfo.minor,
+          patch: versionInfo.snapshot,
+          partial: false,
+        };
+        controller.enqueue(versionEvent);
+      }
+
       controller.close();
     },
     cancel() {
-      // XXX Catch any fetch request here
+      // XXX Cancel any fetch request here
     },
   });
 }
