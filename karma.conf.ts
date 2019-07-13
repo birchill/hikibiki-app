@@ -1,39 +1,30 @@
-const builtins = require('rollup-plugin-node-builtins');
-const commonjs = require('rollup-plugin-commonjs');
-const resolve = require('rollup-plugin-node-resolve');
-const typescript = require('rollup-plugin-typescript2');
+const path = require('path');
 
 module.exports = config => {
   config.set({
     basePath: 'src',
     files: [{ pattern: '**/*.test.ts', watched: false }],
     preprocessors: {
-      '**/*.ts': ['rollup'],
+      '*.test.ts': ['webpack'],
     },
-    rollupPreprocessor: {
-      output: {
-        sourcemap: 'inline',
-        format: 'iife',
-        name: 'kanjichamp',
+    webpack: {
+      mode: 'development',
+      resolve: {
+        extensions: ['.ts', '.js'],
       },
-      plugins: [
-        typescript(),
-        // This is because fetch-mock depends on querystring somehow
-        builtins(),
-        resolve({ browser: true, preferBuiltins: true }),
-        commonjs({
-          namedExports: {
-            chai: ['assert'],
-          },
-        }),
-      ],
+      resolveLoader: {
+        modules: [path.join(__dirname, 'node_modules')],
+      },
+      module: {
+        rules: [{ test: /\.ts$/, use: 'ts-loader' }],
+      },
     },
     frameworks: ['mocha', 'chai'],
     browsers: ['FirefoxNightly'],
     plugins: [
       require('karma-mocha'),
       require('karma-chai'),
-      require('karma-rollup-preprocessor'),
+      require('karma-webpack'),
       require('karma-firefox-launcher'),
     ],
   });
