@@ -6,10 +6,10 @@ const prod = mode === 'production';
 
 module.exports = {
   entry: {
-    bundle: ['./src/main.ts'],
+    kanjichamp: ['./src/main.ts'],
   },
   resolve: {
-    extensions: ['.ts', '.js', '.mjs', '.svelte'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -19,19 +19,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.svelte$/,
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-          {
-            loader: 'svelte-loader',
-            options: {
-              emitCss: true,
-              hotReload: true,
-            },
-          },
-        ],
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
