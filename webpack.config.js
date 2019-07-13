@@ -6,7 +6,7 @@ const prod = mode === 'production';
 
 module.exports = {
   entry: {
-    kanjichamp: ['./src/main.ts'],
+    kanjichamp: ['./src/main.tsx'],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
