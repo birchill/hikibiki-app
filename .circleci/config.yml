@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts-browsers
+
+    working_directory: ~/repo
+
+    steps:
+      - run:
+          name: Check versions
+          command: |
+            node --version
+            npm --version
+
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - run:
+          name: Build
+          command: npm run build
+
+      - run:
+          name: Browser-based tests
+          # Limit the number of workers to avoid out of memory issues
+          # See: https://discuss.circleci.com/t/memory-problems-with-jest-and-workers/10297/3
+          command: npm test
