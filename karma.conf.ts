@@ -20,12 +20,13 @@ module.exports = config => {
       },
     },
     frameworks: ['mocha', 'chai'],
-    browsers: ['FirefoxNightly'],
+    browsers: ['Firefox', 'Chrome'],
     plugins: [
       require('karma-mocha'),
       require('karma-chai'),
       require('karma-webpack'),
       require('karma-firefox-launcher'),
+      require('karma-chrome-launcher'),
     ],
   });
 };

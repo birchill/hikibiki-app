@@ -18,6 +18,8 @@ describe('download', () => {
       dateOfCreation: '2019-07-09',
     });
     const stream = download();
+
+    // const stream = download({ baseUrl: 'http://localhost:3474/v1.0.0/' });
     const reader = stream.getReader();
     const events = await drainEvents(reader);
 
@@ -46,6 +48,7 @@ function drainEvents(
       }
       if (done) {
         resolve(events);
+        return;
       }
       return readEvent();
     }

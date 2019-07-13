@@ -23,7 +23,7 @@ export type DownloadEvent = VersionEvent;
 
 // Produces a ReadableStream of Events
 
-const BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
+const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 
 interface VersionInfo {
   major: number;
@@ -47,15 +47,22 @@ function isVersionInfo(a: any): a is VersionInfo {
   );
 }
 
-export function download(/* XXX Take a base version here */): ReadableStream {
+type DownloadOptions = {
+  baseUrl?: string;
+  // XXX Take a base version here
+};
+
+export function download(options?: DownloadOptions): ReadableStream {
   let controller: ReadableStreamDefaultController | undefined;
+  const baseUrl =
+    options && options.baseUrl ? options.baseUrl : DEFAULT_BASE_URL;
 
   return new ReadableStream({
     async start(defaultController) {
       controller = defaultController;
 
       // Fetch the initial version information
-      const response = await fetch(BASE_URL + 'kanji-rc-en-version.json');
+      const response = await fetch(baseUrl + 'kanji-rc-en-version.json');
       const versionInfo = await response.json();
       if (!isVersionInfo(versionInfo)) {
         controller.error(
@@ -70,7 +77,7 @@ export function download(/* XXX Take a base version here */): ReadableStream {
         major: versionInfo.major,
         minor: versionInfo.minor,
         patch: versionInfo.patch,
-        partial: false
+        partial: false,
       };
       controller.enqueue(versionEvent);
       controller.close();
