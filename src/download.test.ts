@@ -42,6 +42,8 @@ describe('download', () => {
     ]);
   });
 
+  // XXX: Should return the database version
+
   function parseDrainError(err: Error): [DownloadError, Array<DownloadEvent>] {
     assert.instanceOf(err, DrainError, 'Should be a DrainError');
     assert.instanceOf(
@@ -196,7 +198,6 @@ describe('download', () => {
     }
   });
 
-  /*
   it('should download the base snapshot', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
       major: 1,
@@ -206,8 +207,9 @@ describe('download', () => {
       databaseVersion: '175',
       dateOfCreation: '2019-07-09',
     });
-    fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson',
-`
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `
 {"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
@@ -221,7 +223,9 @@ describe('download', () => {
     assert.strictEqual(events.length, 3);
     // XXX Test the contents of the last two events
   });
-  */
+
+  // XXX: Should fail if the version record appears mid-stream
+  // XXX: Should fail if multiple version records appear
 
   // XXX Test that if the LJSON file is mal-formed midway we still get the valid
   //     records prior to the error
@@ -235,8 +239,10 @@ describe('download', () => {
   //     -- No current version: Test we fetch from the latest snapshot
   //     -- Fetch next patch
   //     -- Fetch from latest snapshot
+  //     -- Setting the partial field correctly
   // XXX Test we fail if the current version passed in is greater than the one
   //     we get back from the server
+  // XXX Test deletion events
   //
   // XXX Test canceling
 });

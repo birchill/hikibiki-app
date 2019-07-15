@@ -297,6 +297,12 @@ async function* getEvents(
           `Expected database version but got ${line}`
         );
       }
+
+      const entryEvent: EntryEvent = {
+        type: 'entry',
+        ...line,
+      };
+      yield entryEvent;
     } else if (isDeletionLine(line)) {
       // TODO
       if (!versionRead) {
