@@ -294,7 +294,7 @@ async function* getEvents(
       };
       yield versionEvent;
       versionRead = true;
-    } else if (isEntryLine(line)) {
+    } else {
       if (!versionRead) {
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileVersionMissing,
@@ -302,24 +302,20 @@ async function* getEvents(
         );
       }
 
-      const entryEvent: EntryEvent = {
-        type: 'entry',
-        ...line,
-      };
-      yield entryEvent;
-    } else if (isDeletionLine(line)) {
-      // TODO
-      if (!versionRead) {
+      if (isEntryLine(line)) {
+        const entryEvent: EntryEvent = {
+          type: 'entry',
+          ...line,
+        };
+        yield entryEvent;
+      } else if (isDeletionLine(line)) {
+        // TODO
+      } else {
         throw new DownloadError(
-          DownloadErrorCode.DatabaseFileVersionMissing,
-          `Expected database version but got ${line}`
+          DownloadErrorCode.DatabaseFileInvalidRecord,
+          `Got unexpected record: ${JSON.stringify(line)}`
         );
       }
-    } else {
-      throw new DownloadError(
-        DownloadErrorCode.DatabaseFileInvalidRecord,
-        `Got unexpected record: ${JSON.stringify(line)}`
-      );
     }
   }
 }
