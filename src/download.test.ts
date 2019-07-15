@@ -565,35 +565,156 @@ ${entry}
     }
   });
 
-  // XXX Test we fail if one of the patches has a failure
-  // XXX Test we fail if one of the patches has a mismatched version
+  it('should fail if one of the patch is missing', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
+    );
+    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 404);
 
-  it('should download from the closest snapshot when no current version is supplied', async () => {});
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileNotFound
+      );
+      assert.strictEqual(events.length, 2);
+    }
+  });
 
-  it('should download from the closest snapshot when it is greater than the current version is supplied', async () => {});
+  it('should fail if one of the patches is corrupt', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
+    );
+    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 'yer');
 
-  it('should fail when the latest version is less than the current version', async () => {});
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileInvalidJSON
+      );
+      assert.strictEqual(events.length, 2);
+    }
+  });
 
-  it('should do nothing when the latest version equals the current version', async () => {});
+  it('should fail if one of the patches has a mismatched header', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.1-patch.ljson',
+      `{"type":"version","major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":2},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
+    );
 
-  it('should re-download from the start when there is a new minor version', async () => {});
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileVersionMismatch
+      );
+      assert.strictEqual(events.length, 2);
+    }
+  });
 
-  it('should re-download from the start when there is a new major version we support', async () => {});
+  it('should download from the closest snapshot when no current version is supplied', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 7,
+        snapshot: 5,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.5-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":5,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.6-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":6,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.7-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":7,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+`
+    );
 
-  it("should fail when there is a new major version we don't support", async () => {});
+    await drainEvents(download().getReader());
 
-  // XXX Test version handling
-  //     -- No current version: Test we fetch from the latest snapshot
-  //     -- Fetch next patch
-  //     -- Fetch from latest snapshot
-  //     -- Setting the partial field correctly
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      'Should NOT get baseline'
+    );
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.5-patch.ljson'),
+      'Should NOT get patch corresponding to snapshot'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.5-full.ljson'),
+      'Should get snapshot'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.6-patch.ljson'),
+      'Should get first patch'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.7-patch.ljson'),
+      'Should get second patch'
+    );
+  });
 
-  // XXX Test we fail if one of the patch LJSON files is missing
-  // XXX Test we fail if one of the patch LJSON files has an mismatched header
+  it('should download from the closest snapshot when it is some tolerance greater than the current version is supplied', async () => {
+    // XXX
+  });
 
-  // XXX Test we fail if the current version passed in is greater than the one
-  //     we get back from the server
-  // XXX Test deletion events
+  it('should fail when the latest version is less than the current version', async () => {
+    // XXX
+  });
+
+  it('should do nothing when the latest version equals the current version', async () => {
+    // XXX
+  });
+
+  it('should re-download from the latest snapshot when there is a new minor version', async () => {
+    // XXX
+  });
+
+  it('should re-download from the latest snapshot when there is a new major version we support', async () => {
+    // XXX
+  });
+
+  it("should fail when there is a new major version we don't support", async () => {
+    // XXX
+  });
 
   // XXX Test canceling
   // XXX Test progress events
