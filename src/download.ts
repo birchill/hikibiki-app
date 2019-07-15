@@ -80,6 +80,7 @@ export const enum DownloadErrorCode {
   DatabaseFileVersionDuplicate,
   DatabaseFileInvalidJSON,
   DatabaseFileInvalidRecord,
+  DatabaseFileDeletionInSnapshot,
 }
 
 export class DownloadError extends Error {
@@ -385,6 +386,13 @@ async function* getEvents(
         };
         yield entryEvent;
       } else if (isDeletionLine(line)) {
+        // We shouldn't have deletion records when doing a full snapshot
+        if (fileType === 'full') {
+          throw new DownloadError(
+            DownloadErrorCode.DatabaseFileDeletionInSnapshot
+          );
+        }
+
         const deletionEvent: DeletionEvent = {
           type: 'deletion',
           c: line.c,

@@ -542,6 +542,29 @@ ${entry}
     });
   });
 
+  it('should fail if there are deletion records in a full file', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"c":"㐆","deleted":true}`
+    );
+
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileDeletionInSnapshot
+      );
+      assert.strictEqual(events.length, 2);
+    }
+  });
+
   // XXX Test we fail if one of the patches has a failure
   // XXX Test we fail if one of the patches has a mismatched version
 
