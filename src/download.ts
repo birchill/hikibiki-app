@@ -81,6 +81,7 @@ export const enum DownloadErrorCode {
   DatabaseFileInvalidJSON,
   DatabaseFileInvalidRecord,
   DatabaseFileDeletionInSnapshot,
+  DatabaseTooOld,
 }
 
 export class DownloadError extends Error {
@@ -114,6 +115,36 @@ export function download(options?: DownloadOptions): ReadableStream {
         controller.close();
         return;
       }
+
+      // Check the local database is not ahead of what we're about to download
+      if (
+        options &&
+        options.currentVersion &&
+        compareVersions(options.currentVersion, versionInfo.latest) > 0
+      ) {
+        const versionToString = ({ major, minor, patch }: Version) =>
+          `${major}.${minor}.${patch}`;
+        controller.error(
+          new DownloadError(
+            DownloadErrorCode.DatabaseTooOld,
+            `Database version (${versionToString(
+              versionInfo.latest
+            )}) older than current version (${versionToString(
+              options.currentVersion
+            )})`
+          )
+        );
+        controller.close();
+        return;
+      }
+
+      // When we come to apply this approach to other databases it might make
+      // sense to have a tolerance here where we skip loading all the
+      // intermediate patches and jump to the nearest snapshot and start from
+      // there instead.
+      //
+      // I suspect that tolerance would be pretty high, however, e.g. 100 or
+      // more before it actually makes any sense.
 
       // TODO: This will also be set when the major version changes etc.
       let currentPatch: number;
@@ -169,6 +200,34 @@ export function download(options?: DownloadOptions): ReadableStream {
       // XXX Cancel any fetch request here
     },
   });
+}
+
+type Version = {
+  major: number;
+  minor: number;
+  patch: number;
+};
+
+function compareVersions(a: Version, b: Version): number {
+  if (a.major < b.major) {
+    return -1;
+  }
+  if (a.major > b.major) {
+    return 1;
+  }
+  if (a.minor < b.minor) {
+    return -1;
+  }
+  if (a.minor > b.minor) {
+    return 1;
+  }
+  if (a.patch < b.patch) {
+    return -1;
+  }
+  if (a.patch > b.patch) {
+    return 1;
+  }
+  return 0;
 }
 
 async function getVersionInfo(baseUrl: string): Promise<VersionInfo> {
@@ -307,15 +366,9 @@ function isDeletionLine(a: any): a is DeletionLine {
   );
 }
 
-type FileVersion = {
-  major: number;
-  minor: number;
-  patch: number;
-};
-
 async function* getEvents(
   baseUrl: string,
-  version: FileVersion,
+  version: Version,
   fileType: 'full' | 'patch'
 ): AsyncIterableIterator<DownloadEvent> {
   const url = `${baseUrl}kanji-rc-en-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
@@ -349,11 +402,7 @@ async function* getEvents(
         );
       }
 
-      if (
-        line.major !== version.major ||
-        line.minor !== version.minor ||
-        line.patch !== version.patch
-      ) {
+      if (compareVersions(line, version) !== 0) {
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileVersionMismatch,
           `Expected database version but got ${JSON.stringify(line)}`

@@ -692,16 +692,34 @@ ${entry}
     );
   });
 
-  it('should download from the closest snapshot when it is some tolerance greater than the current version is supplied', async () => {
-    // XXX
-  });
-
   it('should fail when the latest version is less than the current version', async () => {
-    // XXX
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    });
+
+    const reader = download({
+      currentVersion: { major: 1, minor: 0, patch: 2 },
+    }).getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError] = parseDrainError(e);
+      assert.strictEqual(downloadError.code, DownloadErrorCode.DatabaseTooOld);
+    }
   });
 
   it('should do nothing when the latest version equals the current version', async () => {
-    // XXX
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    });
+
+    const reader = download({
+      currentVersion: { major: 1, minor: 0, patch: 1 },
+    }).getReader();
+
+    const events = await drainEvents(reader);
+    assert.strictEqual(events.length, 0);
   });
 
   it('should re-download from the latest snapshot when there is a new minor version', async () => {
