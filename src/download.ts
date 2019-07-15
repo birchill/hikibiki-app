@@ -146,9 +146,16 @@ export function download(options?: DownloadOptions): ReadableStream {
       // I suspect that tolerance would be pretty high, however, e.g. 100 or
       // more before it actually makes any sense.
 
-      // TODO: This will also be set when the major version changes etc.
       let currentPatch: number;
-      if (!options || !options.currentVersion) {
+      if (
+        !options ||
+        !options.currentVersion ||
+        // Check for a change in minor version
+        compareVersions(options.currentVersion, {
+          ...versionInfo.latest,
+          patch: 0,
+        }) < 0
+      ) {
         currentPatch = versionInfo.latest.snapshot;
         try {
           for await (const event of getEvents(

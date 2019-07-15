@@ -416,21 +416,7 @@ ${entry}
         patch: 2,
       },
     });
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.1-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":1,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.2-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
-`
-    );
+    mockAllDataFilesWithEmpty();
 
     await drainEvents(download().getReader());
 
@@ -455,21 +441,7 @@ ${entry}
         patch: 2,
       },
     });
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.1-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":1,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.2-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
-`
-    );
+    mockAllDataFilesWithEmpty();
 
     await drainEvents(
       download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
@@ -652,21 +624,7 @@ ${entry}
         snapshot: 5,
       },
     });
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.5-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":5,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.6-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":6,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
-`
-    );
-    fetchMock.mock(
-      'end:kanji-rc-en-1.0.7-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":7,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
-`
-    );
+    mockAllDataFilesWithEmpty();
 
     await drainEvents(download().getReader());
 
@@ -723,7 +681,24 @@ ${entry}
   });
 
   it('should re-download from the latest snapshot when there is a new minor version', async () => {
-    // XXX
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: { ...VERSION_1_0_0.latest, minor: 2, patch: 11, snapshot: 10 },
+    });
+    mockAllDataFilesWithEmpty();
+
+    const reader = download({
+      currentVersion: { major: 1, minor: 0, patch: 2 },
+    }).getReader();
+    await drainEvents(reader);
+
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.2.10-full.ljson'),
+      'Should get snapshot'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.2.11-patch.ljson'),
+      'Should get first patch'
+    );
   });
 
   it('should re-download from the latest snapshot when there is a new major version we support', async () => {
@@ -737,6 +712,17 @@ ${entry}
   // XXX Test canceling
   // XXX Test progress events
 });
+
+function mockAllDataFilesWithEmpty() {
+  const patchFileRegexp = /kanji-rc-en-(\d+).(\d+).(\d+)-(patch|full).ljson/;
+  fetchMock.mock(patchFileRegexp, url => {
+    const matches = url.match(patchFileRegexp);
+    assert.isNotNull(matches);
+    assert.strictEqual(matches!.length, 5);
+    const [, major, minor, patch] = matches!;
+    return `{"type":"version","major":${major},"minor":${minor},"patch":${patch},"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}`;
+  });
+}
 
 // If we get an error while draining, we should return the error along with all
 // the events read up until that point.
