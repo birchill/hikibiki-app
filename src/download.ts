@@ -1,13 +1,13 @@
 import { KanjiEntry } from './common';
 
-type EntryEvent = KanjiEntry & { type: 'entry' };
+export type EntryEvent = KanjiEntry & { type: 'entry' };
 
-type DeletionEvent = {
+export type DeletionEvent = {
   type: 'deletion';
   c: string;
 };
 
-type VersionEvent = {
+export type VersionEvent = {
   type: 'version';
   major: number;
   minor: number;
@@ -197,24 +197,64 @@ function isVersionLine(a: any): a is VersionLine {
 
 type EntryLine = KanjiEntry;
 
+// We're pretty strict about checking this. Since it's coming over the network
+// it's basically untrusted data. Arguably nothing we're doing is privacy
+// sensitive and adding all these checks just makes maintenance more difficult
+// (since if we change the type of one of these fields we need to remember to
+// update it here) but for now being conservative seems like the best default
+// option.
+
 function isEntryLine(a: any): a is EntryLine {
   return (
     typeof a === 'object' &&
     a !== null &&
+    // c
+    typeof a.c === 'string' &&
+    !!(a.c as string).length &&
+    // r
     typeof a.r === 'object' &&
-    // XXX Check these arrays only contain string values
-    (typeof a.r.on === 'undefined' || Array.isArray(a.r.on)) &&
-    (typeof a.r.kun === 'undefined' || Array.isArray(a.r.kun)) &&
-    (typeof a.r.na === 'undefined' || Array.isArray(a.r.na)) &&
-    // XXX Check this array is a string array
-    Array.isArray(a.m) &&
+    a.r !== null &&
+    (typeof a.r.on === 'undefined' || isArrayOfStrings(a.r.on)) &&
+    (typeof a.r.kun === 'undefined' || isArrayOfStrings(a.r.kun)) &&
+    (typeof a.r.na === 'undefined' || isArrayOfStrings(a.r.na)) &&
+    // m
+    isArrayOfStrings(a.m) &&
+    // rad
     typeof a.rad === 'object' &&
+    a.rad !== null &&
     typeof a.rad.x === 'number' &&
     (typeof a.rad.nelson === 'undefined' || a.rad.nelson === 'number') &&
-    // XXX Check this array is a string array
-    (typeof a.rad.name === 'undefined' || Array.isArray(a.rad.name)) &&
-    // XXX Validate references and misc fields too
+    (typeof a.rad.name === 'undefined' || isArrayOfStrings(a.rad.name)) &&
+    // refs
+    typeof a.refs === 'object' &&
+    a.refs !== null &&
+    isArrayOfStringsOrNumbers(Object.values(a.refs)) &&
+    // misc
+    typeof a.misc !== 'undefined' &&
+    a.misc !== null &&
+    (typeof a.misc.gh === 'undefined' || typeof a.misc.gh === 'number') &&
+    typeof a.misc.sc === 'number' &&
+    (typeof a.misc.freq === 'undefined' || typeof a.misc.freq === 'number') &&
+    (typeof a.misc.jlpt === 'undefined' || typeof a.misc.jlpt === 'number') &&
+    (typeof a.misc.kk === 'undefined' || typeof a.misc.kk === 'number') &&
+    // deleted (should NOT be present)
     typeof a.deleted === 'undefined'
+  );
+}
+
+function isArrayOfStrings(a: any) {
+  return (
+    Array.isArray(a) &&
+    (a as Array<any>).every(elem => typeof elem === 'string')
+  );
+}
+
+function isArrayOfStringsOrNumbers(a: any) {
+  return (
+    Array.isArray(a) &&
+    (a as Array<any>).every(
+      elem => typeof elem === 'string' || typeof elem === 'number'
+    )
   );
 }
 
@@ -228,6 +268,7 @@ function isDeletionLine(a: any): a is DeletionLine {
     typeof a === 'object' &&
     a !== null &&
     typeof a.c === 'string' &&
+    !!(a.c as string).length &&
     typeof a.deleted === 'boolean' &&
     a.deleted
   );
@@ -298,7 +339,7 @@ async function* getEvents(
       if (!versionRead) {
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileVersionMissing,
-          `Expected database version but got ${line}`
+          `Expected database version but got ${JSON.stringify(line)}`
         );
       }
 
@@ -311,6 +352,15 @@ async function* getEvents(
       } else if (isDeletionLine(line)) {
         // TODO
       } else {
+        // If we encounter anything unexpected we should fail.
+        //
+        // It might be tempting to make this "robust" by ignoring unrecognized
+        // inputs but that could effectively leave us in an invalid state where
+        // we claim to be update-to-date with database version X but are
+        // actually missing some of the records.
+        //
+        // If anything unexpected shows up we should fail so we can debug
+        // exactly what happenned.
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileInvalidRecord,
           `Got unexpected record: ${JSON.stringify(line)}`
