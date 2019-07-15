@@ -1,15 +1,13 @@
 import { KanjiEntry } from './common';
 
-/*
 type EntryEvent = KanjiEntry & { type: 'entry' };
 
 type DeletionEvent = {
   type: 'deletion';
   c: string;
-}
+};
 
 type Event = VersionEvent | EntryEvent | DeletionEvent;
-*/
 
 type VersionEvent = {
   type: 'version';
@@ -113,126 +111,20 @@ export function download(options?: DownloadOptions): ReadableStream {
       // TODO: This will also be set when the major version changes etc.
       const doFullFetch = !options || !options.currentVersion;
       if (doFullFetch) {
-        const databaseFile = `kanji-rc-en-${latestVersion.major}.${latestVersion.minor}.${latestVersion.snapshot}-full.ljson`;
-        const baseline = await fetch(`${baseUrl}${databaseFile}`);
-        if (!baseline.ok) {
-          const code =
-            baseline.status === 404
-              ? DownloadErrorCode.DatabaseFileNotFound
-              : DownloadErrorCode.DatabaseFileNotAccessible;
-          controller.error(
-            new DownloadError(
-              code,
-              `Database file ${databaseFile} not accessible (status: ${baseline.status})`
-            )
-          );
-          return;
+        const url = `${baseUrl}kanji-rc-en-${latestVersion.major}.${latestVersion.minor}.${latestVersion.snapshot}-full.ljson`;
+        try {
+          for await (const event of getEvents(url, {
+            major: latestVersion.major,
+            minor: latestVersion.minor,
+            patch: latestVersion.snapshot,
+          })) {
+            controller.enqueue(event);
+          }
+        } catch (e) {
+          controller.error(e);
+        } finally {
+          controller.close();
         }
-
-        if (baseline.body === null) {
-          controller.error(
-            new DownloadError(
-              DownloadErrorCode.DatabaseFileNotAccessible,
-              'Body is null'
-            )
-          );
-          return;
-        }
-
-        const reader = baseline.body.getReader();
-        const lineEnd = /\n|\r|\r\n/m;
-        const decoder = new TextDecoder('utf-8');
-        let buffer = '';
-        let versionRead = false;
-
-        const read = async () => {
-          let readResult: ReadableStreamReadResult<Uint8Array>;
-          try {
-            readResult = await reader.read();
-          } catch (e) {
-            controller.error(
-              new DownloadError(
-                DownloadErrorCode.DatabaseFileNotAccessible,
-                e.message
-              )
-            );
-            return;
-          }
-
-          const { done, value } = readResult;
-
-          if (done) {
-            if (buffer) {
-              // XXX Process last line
-            }
-
-            controller.close();
-            return;
-          }
-
-          buffer += decoder.decode(value);
-          const lines = buffer.split(lineEnd);
-
-          // We don't know if the last line is actually the last line of the
-          // input or not until we get done: true so we just assume it is
-          // a partial line for now.
-          buffer = lines.length ? lines.splice(lines.length - 1, 1)[0] : '';
-
-          for (const line of lines) {
-            if (!line) {
-              continue;
-            }
-
-            let jsonLine: Line;
-            try {
-              jsonLine = parseLine(line);
-            } catch (e) {
-              controller.error(e);
-              return;
-            }
-
-            // XXX Do proper parsing of record type here
-            if (!versionRead) {
-              if (!isVersionLine(jsonLine)) {
-                controller.error(
-                  new DownloadError(
-                    DownloadErrorCode.DatabaseFileVersionMissing,
-                    `Expected database version but got ${line}`
-                  )
-                );
-                return;
-              }
-              // XXX Once we fix the typings above we can drop the any casts
-              // below
-              if (
-                jsonLine.major !== latestVersion.major ||
-                jsonLine.minor !== latestVersion.minor ||
-                jsonLine.patch !== latestVersion.snapshot
-              ) {
-                controller.error(
-                  new DownloadError(
-                    DownloadErrorCode.DatabaseFileVersionMismatch,
-                    `Expected database version but got ${line}`
-                  )
-                );
-                return;
-              }
-              // XXX Return the database version and creation date from the file
-              const versionEvent: VersionEvent = {
-                type: 'version',
-                major: jsonLine.major,
-                minor: jsonLine.minor,
-                patch: jsonLine.patch,
-                partial: false,
-              };
-              controller.enqueue(versionEvent);
-              versionRead = true;
-            }
-          }
-
-          read();
-        };
-        read();
       } else {
         controller.error(new Error('Incremental updates not supported yet'));
         controller.close();
@@ -340,25 +232,149 @@ function isDeletionLine(a: any): a is DeletionLine {
   );
 }
 
-type Line = VersionLine | EntryLine | DeletionLine;
+type FileVersion = {
+  major: number;
+  minor: number;
+  patch: number;
+};
 
-function parseLine(line: string): Line {
-  let json;
-  try {
-    json = JSON.parse(line);
-  } catch (e) {
+async function* getEvents(
+  url: string,
+  version: FileVersion
+): AsyncIterableIterator<Event> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const code =
+      response.status === 404
+        ? DownloadErrorCode.DatabaseFileNotFound
+        : DownloadErrorCode.DatabaseFileNotAccessible;
     throw new DownloadError(
-      DownloadErrorCode.DatabaseFileInvalidJSON,
-      `Could not parse JSON in database file: ${line}`
+      code,
+      `Database file ${url} not accessible (status: ${response.status})`
     );
   }
 
-  if (!isVersionLine(json) && !isEntryLine(json) && !isDeletionLine(json)) {
+  if (response.body === null) {
     throw new DownloadError(
-      DownloadErrorCode.DatabaseFileInvalidRecord,
-      `Could not recognize record: ${line}`
+      DownloadErrorCode.DatabaseFileNotAccessible,
+      'Body is null'
     );
   }
 
-  return json;
+  let versionRead = false;
+  for await (const line of ljsonStreamIterator(response.body)) {
+    if (isVersionLine(line)) {
+      if (versionRead) {
+        // TODO: Error
+      }
+
+      if (
+        line.major !== version.major ||
+        line.minor !== version.minor ||
+        line.patch !== version.patch
+      ) {
+        throw new DownloadError(
+          DownloadErrorCode.DatabaseFileVersionMismatch,
+          `Expected database version but got ${JSON.stringify(line)}`
+        );
+      }
+
+      // XXX Return the database version and creation date from the file
+      const versionEvent: VersionEvent = {
+        type: 'version',
+        major: line.major,
+        minor: line.minor,
+        patch: line.patch,
+        partial: false,
+      };
+      yield versionEvent;
+      versionRead = true;
+    } else if (isEntryLine(line)) {
+      // TODO
+      if (!versionRead) {
+        throw new DownloadError(
+          DownloadErrorCode.DatabaseFileVersionMissing,
+          `Expected database version but got ${line}`
+        );
+      }
+    } else if (isDeletionLine(line)) {
+      // TODO
+      if (!versionRead) {
+        throw new DownloadError(
+          DownloadErrorCode.DatabaseFileVersionMissing,
+          `Expected database version but got ${line}`
+        );
+      }
+    } else {
+      throw new DownloadError(
+        DownloadErrorCode.DatabaseFileInvalidRecord,
+        `Got unexpected record: ${JSON.stringify(line)}`
+      );
+    }
+  }
+}
+
+async function* ljsonStreamIterator(
+  stream: ReadableStream<Uint8Array>
+): AsyncIterableIterator<object> {
+  const reader = stream.getReader();
+  const lineEnd = /\n|\r|\r\n/m;
+  const decoder = new TextDecoder('utf-8');
+  let buffer = '';
+
+  const parseLine = (line: string): any => {
+    let json;
+    try {
+      json = JSON.parse(line);
+    } catch (e) {
+      reader.releaseLock();
+      throw new DownloadError(
+        DownloadErrorCode.DatabaseFileInvalidJSON,
+        `Could not parse JSON in database file: ${line}`
+      );
+    }
+
+    return json;
+  };
+
+  while (true) {
+    let readResult: ReadableStreamReadResult<Uint8Array>;
+    try {
+      readResult = await reader.read();
+    } catch (e) {
+      reader.releaseLock();
+      throw new DownloadError(
+        DownloadErrorCode.DatabaseFileNotAccessible,
+        e.message
+      );
+    }
+
+    const { done, value } = readResult;
+
+    if (done) {
+      if (buffer) {
+        yield parseLine(buffer);
+        buffer = '';
+      }
+
+      reader.releaseLock();
+      return;
+    }
+
+    buffer += decoder.decode(value);
+    const lines = buffer.split(lineEnd);
+
+    // We don't know if the last line is actually the last line of the
+    // input or not until we get done: true so we just assume it is
+    // a partial line for now.
+    buffer = lines.length ? lines.splice(lines.length - 1, 1)[0] : '';
+
+    for (const line of lines) {
+      if (!line) {
+        continue;
+      }
+
+      yield parseLine(line);
+    }
+  }
 }
