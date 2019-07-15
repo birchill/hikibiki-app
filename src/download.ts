@@ -358,6 +358,7 @@ async function* ljsonStreamIterator(
     const { done, value } = readResult;
 
     if (done) {
+      buffer += decoder.decode();
       if (buffer) {
         yield parseLine(buffer);
         buffer = '';
@@ -367,7 +368,7 @@ async function* ljsonStreamIterator(
       return;
     }
 
-    buffer += decoder.decode(value);
+    buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split(lineEnd);
 
     // We don't know if the last line is actually the last line of the
