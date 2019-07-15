@@ -7,8 +7,6 @@ type DeletionEvent = {
   c: string;
 };
 
-type Event = VersionEvent | EntryEvent | DeletionEvent;
-
 type VersionEvent = {
   type: 'version';
   major: number;
@@ -19,7 +17,7 @@ type VersionEvent = {
   partial: boolean;
 };
 
-export type DownloadEvent = VersionEvent;
+export type DownloadEvent = VersionEvent | EntryEvent | DeletionEvent;
 
 // Produces a ReadableStream of Events
 
@@ -243,7 +241,7 @@ type FileVersion = {
 async function* getEvents(
   url: string,
   version: FileVersion
-): AsyncIterableIterator<Event> {
+): AsyncIterableIterator<DownloadEvent> {
   const response = await fetch(url);
   if (!response.ok) {
     const code =

@@ -221,7 +221,31 @@ describe('download', () => {
     const events = await drainEvents(reader);
 
     assert.strictEqual(events.length, 3);
-    // XXX Test the contents of the last two events
+    assert.deepEqual(events[1], {
+      type: 'entry',
+      c: '㐂',
+      r: {},
+      m: [],
+      rad: { x: 1 },
+      refs: { nelson_c: 265, halpern_njecd: 2028 },
+      misc: { sc: 6 },
+    });
+    assert.deepEqual(events[2], {
+      type: 'entry',
+      c: '㐆',
+      r: {},
+      m: [
+        'to follow',
+        'to trust to',
+        'to put confidence in',
+        'to depend on',
+        'to turn around',
+        'to turn the body',
+      ],
+      rad: { x: 4 },
+      refs: {},
+      misc: { sc: 6 },
+    });
   });
 
   // XXX: Should fail if the version record appears mid-stream
