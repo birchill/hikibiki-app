@@ -14,6 +14,8 @@ type VersionEvent = {
   major: number;
   minor: number;
   patch: number;
+  databaseVersion: string;
+  dateOfCreation: string;
   partial: boolean;
 };
 
@@ -285,6 +287,8 @@ async function* getEvents(
         major: line.major,
         minor: line.minor,
         patch: line.patch,
+        databaseVersion: line.databaseVersion,
+        dateOfCreation: line.dateOfCreation,
         partial: false,
       };
       yield versionEvent;

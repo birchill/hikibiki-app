@@ -37,12 +37,12 @@ describe('download', () => {
         major: 1,
         minor: 0,
         patch: 0,
+        databaseVersion: '2019-173',
+        dateOfCreation: '2019-06-22',
         partial: false,
       },
     ]);
   });
-
-  // XXX: Should return the database version
 
   function parseDrainError(err: Error): [DownloadError, Array<DownloadEvent>] {
     assert.instanceOf(err, DrainError, 'Should be a DrainError');
