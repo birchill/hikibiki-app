@@ -20,10 +20,8 @@ The version of `karma-firefox-launcher` used here should work under WSL but for
 Chrome you'll want to use something like:
 
 ```
-CHROME_BIN=/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe npx karma start --browsers Chrome
+CHROME_BIN=/mnt/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe npx karma start --browsers Chrome
 ```
-
-(For most people it should be `/mnt/c/Program...`)
 
 That will complain about not being able to write to the temp directory but
 otherwise should be fine.

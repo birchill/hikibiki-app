@@ -47,6 +47,17 @@ function isVersionInfo(a: any): a is VersionInfo {
   );
 }
 
+function validateVersionInfo(versionInfo: VersionInfo): boolean {
+  return (
+    versionInfo.major >= 1 &&
+    versionInfo.minor >= 0 &&
+    versionInfo.patch >= 0 &&
+    versionInfo.snapshot >= 0 &&
+    !!versionInfo.databaseVersion.length &&
+    !!versionInfo.dateOfCreation.length
+  );
+}
+
 type DownloadOptions = {
   baseUrl?: string;
   currentVersion?: {
@@ -55,6 +66,28 @@ type DownloadOptions = {
     patch: number;
   };
 };
+
+export const enum DownloadErrorCode {
+  VersionFileNotFound,
+  VersionFileNotAccessible,
+  VersionFileInvalid,
+}
+
+export class DownloadError extends Error {
+  code: DownloadErrorCode;
+
+  constructor(code: DownloadErrorCode, ...params: any[]) {
+    super(...params);
+    Object.setPrototypeOf(this, DownloadError.prototype);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, DownloadError);
+    }
+
+    this.name = 'DownloadError';
+    this.code = code;
+  }
+}
 
 export function download(options?: DownloadOptions): ReadableStream {
   let controller: ReadableStreamDefaultController | undefined;
@@ -67,11 +100,38 @@ export function download(options?: DownloadOptions): ReadableStream {
 
       // Fetch the initial version information
       const response = await fetch(baseUrl + 'kanji-rc-en-version.json');
-      const versionInfo = await response.json();
-      if (!isVersionInfo(versionInfo)) {
+      if (!response.ok) {
+        const code =
+          response.status === 404
+            ? DownloadErrorCode.VersionFileNotFound
+            : DownloadErrorCode.VersionFileNotAccessible;
         controller.error(
-          new Error(`Invalid version object: ${JSON.stringify(versionInfo)}`)
+          new DownloadError(code, 'Version file not accessible')
         );
+        return;
+      }
+
+      // Try to parse it
+      let versionInfo;
+      try {
+        versionInfo = await response.json();
+      } catch (e) {
+        controller.error(
+          new DownloadError(
+            DownloadErrorCode.VersionFileInvalid,
+            `Invalid version object: ${e.message}`
+          )
+        );
+        return;
+      }
+      if (!isVersionInfo(versionInfo) || !validateVersionInfo(versionInfo)) {
+        controller.error(
+          new DownloadError(
+            DownloadErrorCode.VersionFileInvalid,
+            `Invalid version object: ${JSON.stringify(versionInfo)}`
+          )
+        );
+        return;
       }
 
       // TODO: This will also be set when the major version changes etc.
