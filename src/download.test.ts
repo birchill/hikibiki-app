@@ -16,12 +16,14 @@ describe('download', () => {
 
   it('should download the initial version information', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -99,11 +101,13 @@ describe('download', () => {
 
   it('should fail if the version file is missing required fields', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
 
     const stream = download();
@@ -123,12 +127,14 @@ describe('download', () => {
 
   it('should fail if the version file has invalid fields', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 0,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 0,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
 
     const stream = download();
@@ -148,12 +154,14 @@ describe('download', () => {
 
   it('should fail if the base snapshot is not available', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', 404);
 
@@ -174,12 +182,14 @@ describe('download', () => {
 
   it('should fail if the version of the base snapshot does not match', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -204,12 +214,14 @@ describe('download', () => {
 
   it('should download the base snapshot', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -254,12 +266,14 @@ describe('download', () => {
 
   it('should fail if no version record appears', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -285,12 +299,14 @@ describe('download', () => {
 
   it('should fail if the version appears mid-stream', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -317,12 +333,14 @@ describe('download', () => {
 
   it('should fail if multiple version records appear', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -399,12 +417,14 @@ describe('download', () => {
     for (const entry of invalidEntries) {
       fetchMock.restore();
       fetchMock.mock('end:kanji-rc-en-version.json', {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
+        latest: {
+          major: 1,
+          minor: 0,
+          patch: 0,
+          snapshot: 0,
+          databaseVersion: '175',
+          dateOfCreation: '2019-07-09',
+        },
       });
       fetchMock.mock(
         'end:kanji-rc-en-1.0.0-full.ljson',
@@ -431,12 +451,14 @@ ${entry}
 
   it('should still return entries prior to invalid ones', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      major: 1,
-      minor: 0,
-      patch: 0,
-      snapshot: 0,
-      databaseVersion: '175',
-      dateOfCreation: '2019-07-09',
+      latest: {
+        major: 1,
+        minor: 0,
+        patch: 0,
+        snapshot: 0,
+        databaseVersion: '175',
+        dateOfCreation: '2019-07-09',
+      },
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -462,9 +484,6 @@ ${entry}
       assert.strictEqual((events[1] as EntryEvent).c, '㐂');
     }
   });
-
-  // XXX Test that if the LJSON file is mal-formed midway we still get the valid
-  //     records prior to the error
 
   // XXX Test version handling
   //     -- No current version: Test we fetch from the latest snapshot

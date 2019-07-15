@@ -19,40 +19,44 @@ export type VersionEvent = {
 
 export type DownloadEvent = VersionEvent | EntryEvent | DeletionEvent;
 
-// Produces a ReadableStream of Events
+// Produces a ReadableStream of DownloadEvents
 
 const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 
 type VersionInfo = {
-  major: number;
-  minor: number;
-  patch: number;
-  snapshot: number;
-  databaseVersion: string;
-  dateOfCreation: string;
+  latest: {
+    major: number;
+    minor: number;
+    patch: number;
+    snapshot: number;
+    databaseVersion: string;
+    dateOfCreation: string;
+  };
 };
 
 function isVersionInfo(a: any): a is VersionInfo {
   return (
     typeof a === 'object' &&
     a !== null &&
-    typeof a.major === 'number' &&
-    typeof a.minor === 'number' &&
-    typeof a.patch === 'number' &&
-    typeof a.snapshot === 'number' &&
-    typeof a.databaseVersion === 'string' &&
-    typeof a.dateOfCreation === 'string'
+    typeof a.latest === 'object' &&
+    a.latest !== null &&
+    typeof a.latest.major === 'number' &&
+    typeof a.latest.minor === 'number' &&
+    typeof a.latest.patch === 'number' &&
+    typeof a.latest.snapshot === 'number' &&
+    typeof a.latest.databaseVersion === 'string' &&
+    typeof a.latest.dateOfCreation === 'string'
   );
 }
 
 function validateVersionInfo(versionInfo: VersionInfo): boolean {
   return (
-    versionInfo.major >= 1 &&
-    versionInfo.minor >= 0 &&
-    versionInfo.patch >= 0 &&
-    versionInfo.snapshot >= 0 &&
-    !!versionInfo.databaseVersion.length &&
-    !!versionInfo.dateOfCreation.length
+    versionInfo.latest.major >= 1 &&
+    versionInfo.latest.minor >= 0 &&
+    versionInfo.latest.patch >= 0 &&
+    versionInfo.latest.snapshot >= 0 &&
+    !!versionInfo.latest.databaseVersion.length &&
+    !!versionInfo.latest.dateOfCreation.length
   );
 }
 
@@ -101,9 +105,9 @@ export function download(options?: DownloadOptions): ReadableStream {
   return new ReadableStream({
     async start(controller) {
       // Get the latest version info
-      let latestVersion: VersionInfo;
+      let versionInfo: VersionInfo;
       try {
-        latestVersion = await getLatestVersion(baseUrl);
+        versionInfo = await getVersionInfo(baseUrl);
       } catch (e) {
         controller.error(e);
         return;
@@ -112,12 +116,12 @@ export function download(options?: DownloadOptions): ReadableStream {
       // TODO: This will also be set when the major version changes etc.
       const doFullFetch = !options || !options.currentVersion;
       if (doFullFetch) {
-        const url = `${baseUrl}kanji-rc-en-${latestVersion.major}.${latestVersion.minor}.${latestVersion.snapshot}-full.ljson`;
+        const url = `${baseUrl}kanji-rc-en-${versionInfo.latest.major}.${versionInfo.latest.minor}.${versionInfo.latest.snapshot}-full.ljson`;
         try {
           for await (const event of getEvents(url, {
-            major: latestVersion.major,
-            minor: latestVersion.minor,
-            patch: latestVersion.snapshot,
+            major: versionInfo.latest.major,
+            minor: versionInfo.latest.minor,
+            patch: versionInfo.latest.snapshot,
           })) {
             controller.enqueue(event);
           }
@@ -138,7 +142,7 @@ export function download(options?: DownloadOptions): ReadableStream {
   });
 }
 
-async function getLatestVersion(baseUrl: string): Promise<VersionInfo> {
+async function getVersionInfo(baseUrl: string): Promise<VersionInfo> {
   // Get the file
   const response = await fetch(baseUrl + 'kanji-rc-en-version.json');
   if (!response.ok) {
