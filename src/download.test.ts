@@ -45,6 +45,9 @@ describe('download', () => {
   });
 
   function parseDrainError(err: Error): [DownloadError, Array<DownloadEvent>] {
+    if (err.name === 'AssertionError') {
+      throw err;
+    }
     assert.instanceOf(err, DrainError, 'Should be a DrainError');
     assert.instanceOf(
       (err as DrainError).error,
@@ -248,8 +251,101 @@ describe('download', () => {
     });
   });
 
-  // XXX: Should fail if the version record appears mid-stream
-  // XXX: Should fail if multiple version records appear
+  it('should fail if no version record appears', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
+`
+    );
+
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileVersionMissing
+      );
+      assert.strictEqual(events.length, 0);
+    }
+  });
+
+  it('should fail if the version appears mid-stream', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
+`
+    );
+
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileVersionMissing
+      );
+      assert.strictEqual(events.length, 0);
+    }
+  });
+
+  it('should fail if multiple version records appear', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `
+{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
+`
+    );
+
+    const reader = download().getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileVersionMissing
+      );
+      assert.strictEqual(events.length, 0);
+    }
+  });
 
   // XXX Test that if the LJSON file is mal-formed midway we still get the valid
   //     records prior to the error

@@ -73,6 +73,7 @@ export const enum DownloadErrorCode {
   DatabaseFileNotAccessible,
   DatabaseFileVersionMissing,
   DatabaseFileVersionMismatch,
+  DatabaseFileVersionDuplicate,
   DatabaseFileInvalidJSON,
   DatabaseFileInvalidRecord,
 }
@@ -265,7 +266,10 @@ async function* getEvents(
   for await (const line of ljsonStreamIterator(response.body)) {
     if (isVersionLine(line)) {
       if (versionRead) {
-        // TODO: Error
+        throw new DownloadError(
+          DownloadErrorCode.DatabaseFileVersionDuplicate,
+          `Expected database version but got ${JSON.stringify(line)}`
+        );
       }
 
       if (
@@ -279,7 +283,6 @@ async function* getEvents(
         );
       }
 
-      // XXX Return the database version and creation date from the file
       const versionEvent: VersionEvent = {
         type: 'version',
         major: line.major,
@@ -292,7 +295,6 @@ async function* getEvents(
       yield versionEvent;
       versionRead = true;
     } else if (isEntryLine(line)) {
-      // TODO
       if (!versionRead) {
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileVersionMissing,
