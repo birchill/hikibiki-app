@@ -24,8 +24,7 @@ describe('download', () => {
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
 `
     );
     const stream = download();
@@ -141,8 +140,61 @@ describe('download', () => {
     }
   });
 
-  // XXX Test we fail if any of the LJSON files is missing
-  // XXX Test we fail if any of the LJSON files has an mismatched header
+  it('should fail if the base snapshot is not available', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    });
+    fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', 404);
+
+    const stream = download();
+    const reader = stream.getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileNotFound
+      );
+      assert.strictEqual(events.length, 0);
+    }
+  });
+
+  it('should fail if the version of the base snapshot does not match', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+`
+    );
+
+    const stream = download();
+    const reader = stream.getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError, events] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.DatabaseFileVersionMismatch
+      );
+      assert.strictEqual(events.length, 0);
+    }
+  });
 
   /*
   it('should download the base snapshot', async () => {
@@ -171,14 +223,27 @@ describe('download', () => {
   });
   */
 
-  // XXX No current version: Test we fetch from the latest snapshot
+  // XXX Test that if the LJSON file is mal-formed midway we still get the valid
+  //     records prior to the error
+
+  // XXX Test fetching patches
+
+  // XXX Test we fail if one of the patch LJSON files is missing
+  // XXX Test we fail if one of the patch LJSON files has an mismatched header
+
+  // XXX Test version handling
+  //     -- No current version: Test we fetch from the latest snapshot
+  //     -- Fetch next patch
+  //     -- Fetch from latest snapshot
   // XXX Test we fail if the current version passed in is greater than the one
   //     we get back from the server
+  //
+  // XXX Test canceling
 });
 
 // If we get an error while draining, we should return the error along with all
 // the events read up until that point.
-export class DrainError extends Error {
+class DrainError extends Error {
   error: Error;
   events: Array<DownloadEvent>;
 
