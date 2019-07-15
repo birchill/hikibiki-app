@@ -448,10 +448,100 @@ ${entry}
     );
   });
 
-  it('should fetch appropriate patches when a current version is supplied', async () => {});
+  it('should fetch appropriate patches when a current version is supplied', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 2,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.1-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":1,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.2-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+`
+    );
 
-  // XXX Test the partial field here
-  // XXX Test deletion events here
+    await drainEvents(
+      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+    );
+
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      'Should NOT get baseline'
+    );
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      'Should NOT get first patch'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.2-patch.ljson'),
+      'Should get second patch'
+    );
+  });
+
+  it('sets the partial field appropriately for patches', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 2,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.2-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+`
+    );
+
+    const events = await drainEvents(
+      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+    );
+
+    assert.deepEqual(events, [
+      {
+        type: 'version',
+        major: 1,
+        minor: 0,
+        patch: 2,
+        databaseVersion: '2019-175',
+        dateOfCreation: '2019-06-24',
+        partial: true,
+      },
+    ]);
+  });
+
+  it('reports deletion events', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 2,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.2-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+{"c":"鍋","deleted":true}`
+    );
+
+    const events = await drainEvents(
+      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+    );
+
+    assert.deepEqual(events[1], {
+      type: 'deletion',
+      c: '鍋',
+    });
+  });
+
   // XXX Test we fail if one of the patches has a failure
   // XXX Test we fail if one of the patches has a mismatched version
 

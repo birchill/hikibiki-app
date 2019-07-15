@@ -115,9 +115,8 @@ export function download(options?: DownloadOptions): ReadableStream {
       }
 
       // TODO: This will also be set when the major version changes etc.
-      const doFullFetch = !options || !options.currentVersion;
       let currentPatch: number;
-      if (doFullFetch) {
+      if (!options || !options.currentVersion) {
         currentPatch = versionInfo.latest.snapshot;
         try {
           for await (const event of getEvents(
@@ -137,7 +136,7 @@ export function download(options?: DownloadOptions): ReadableStream {
           return;
         }
       } else {
-        currentPatch = options!.currentVersion!.patch;
+        currentPatch = options.currentVersion.patch;
       }
 
       // Do incremental updates
@@ -386,7 +385,11 @@ async function* getEvents(
         };
         yield entryEvent;
       } else if (isDeletionLine(line)) {
-        // TODO
+        const deletionEvent: DeletionEvent = {
+          type: 'deletion',
+          c: line.c,
+        };
+        yield deletionEvent;
       } else {
         // If we encounter anything unexpected we should fail.
         //
