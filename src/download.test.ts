@@ -341,9 +341,9 @@ describe('download', () => {
       const [downloadError, events] = parseDrainError(e);
       assert.strictEqual(
         downloadError.code,
-        DownloadErrorCode.DatabaseFileVersionMissing
+        DownloadErrorCode.DatabaseFileVersionDuplicate
       );
-      assert.strictEqual(events.length, 0);
+      assert.strictEqual(events.length, 1);
     }
   });
 
