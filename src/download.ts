@@ -110,30 +110,59 @@ export function download(options?: DownloadOptions): ReadableStream {
         versionInfo = await getVersionInfo(baseUrl);
       } catch (e) {
         controller.error(e);
+        controller.close();
         return;
       }
 
       // TODO: This will also be set when the major version changes etc.
       const doFullFetch = !options || !options.currentVersion;
+      let currentPatch: number;
       if (doFullFetch) {
-        const url = `${baseUrl}kanji-rc-en-${versionInfo.latest.major}.${versionInfo.latest.minor}.${versionInfo.latest.snapshot}-full.ljson`;
+        currentPatch = versionInfo.latest.snapshot;
         try {
-          for await (const event of getEvents(url, {
-            major: versionInfo.latest.major,
-            minor: versionInfo.latest.minor,
-            patch: versionInfo.latest.snapshot,
-          })) {
+          for await (const event of getEvents(
+            baseUrl,
+            {
+              major: versionInfo.latest.major,
+              minor: versionInfo.latest.minor,
+              patch: versionInfo.latest.snapshot,
+            },
+            'full'
+          )) {
             controller.enqueue(event);
           }
         } catch (e) {
           controller.error(e);
-        } finally {
           controller.close();
+          return;
         }
       } else {
-        controller.error(new Error('Incremental updates not supported yet'));
-        controller.close();
+        currentPatch = options!.currentVersion!.patch;
       }
+
+      // Do incremental updates
+      while (currentPatch < versionInfo.latest.patch) {
+        currentPatch++;
+        try {
+          for await (const event of getEvents(
+            baseUrl,
+            {
+              major: versionInfo.latest.major,
+              minor: versionInfo.latest.minor,
+              patch: currentPatch,
+            },
+            'patch'
+          )) {
+            controller.enqueue(event);
+          }
+        } catch (e) {
+          controller.error(e);
+          controller.close();
+          return;
+        }
+      }
+
+      controller.close();
     },
 
     cancel() {
@@ -285,10 +314,13 @@ type FileVersion = {
 };
 
 async function* getEvents(
-  url: string,
-  version: FileVersion
+  baseUrl: string,
+  version: FileVersion,
+  fileType: 'full' | 'patch'
 ): AsyncIterableIterator<DownloadEvent> {
+  const url = `${baseUrl}kanji-rc-en-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
   const response = await fetch(url);
+
   if (!response.ok) {
     const code =
       response.status === 404
@@ -335,7 +367,7 @@ async function* getEvents(
         patch: line.patch,
         databaseVersion: line.databaseVersion,
         dateOfCreation: line.dateOfCreation,
-        partial: false,
+        partial: fileType === 'patch',
       };
       yield versionEvent;
       versionRead = true;

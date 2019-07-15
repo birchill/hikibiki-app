@@ -11,27 +11,28 @@ import {
 
 mocha.setup('bdd');
 
+const VERSION_1_0_0 = {
+  latest: {
+    major: 1,
+    minor: 0,
+    patch: 0,
+    snapshot: 0,
+    databaseVersion: '175',
+    dateOfCreation: '2019-07-09',
+  },
+};
+
 describe('download', () => {
   afterEach(fetchMock.restore);
 
   it('should download the initial version information', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
 `
     );
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     const events = await drainEvents(reader);
 
     assert.deepEqual(events, [
@@ -66,8 +67,7 @@ describe('download', () => {
   it('should fail if there is no version file available', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', 404);
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -84,8 +84,7 @@ describe('download', () => {
   it('should fail if the version file is corrupt', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', 'yer');
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -110,8 +109,7 @@ describe('download', () => {
       },
     });
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -127,18 +125,10 @@ describe('download', () => {
 
   it('should fail if the version file has invalid fields', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 0,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
+      latest: { ...VERSION_1_0_0, major: 0 },
     });
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -153,20 +143,10 @@ describe('download', () => {
   });
 
   it('should fail if the base snapshot is not available', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', 404);
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -181,24 +161,14 @@ describe('download', () => {
   });
 
   it('should fail if the version of the base snapshot does not match', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `{"type":"version","major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
 `
     );
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -213,16 +183,7 @@ describe('download', () => {
   });
 
   it('should download the base snapshot', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
@@ -232,8 +193,7 @@ describe('download', () => {
 `
     );
 
-    const stream = download();
-    const reader = stream.getReader();
+    const reader = download().getReader();
     const events = await drainEvents(reader);
 
     assert.strictEqual(events.length, 3);
@@ -265,16 +225,7 @@ describe('download', () => {
   });
 
   it('should fail if no version record appears', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
@@ -298,16 +249,7 @@ describe('download', () => {
   });
 
   it('should fail if the version appears mid-stream', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
@@ -332,16 +274,7 @@ describe('download', () => {
   });
 
   it('should fail if multiple version records appear', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
-      },
-    });
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
@@ -416,16 +349,7 @@ describe('download', () => {
 
     for (const entry of invalidEntries) {
       fetchMock.restore();
-      fetchMock.mock('end:kanji-rc-en-version.json', {
-        latest: {
-          major: 1,
-          minor: 0,
-          patch: 0,
-          snapshot: 0,
-          databaseVersion: '175',
-          dateOfCreation: '2019-07-09',
-        },
-      });
+      fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
       fetchMock.mock(
         'end:kanji-rc-en-1.0.0-full.ljson',
         `
@@ -484,6 +408,66 @@ ${entry}
       assert.strictEqual((events[1] as EntryEvent).c, '㐂');
     }
   });
+
+  it('should fetch subsequent patches', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 2,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.1-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":1,"databaseVersion":"2019-174","dateOfCreation":"2019-06-23"}
+`
+    );
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.2-patch.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+`
+    );
+
+    await drainEvents(download().getReader());
+
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      'Should get baseline'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      'Should get first patch'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-1.0.2-patch.ljson'),
+      'Should get second patch'
+    );
+  });
+
+  it('should fetch appropriate patches when a current version is supplied', async () => {});
+
+  // XXX Test the partial field here
+  // XXX Test deletion events here
+  // XXX Test we fail if one of the patches has a failure
+  // XXX Test we fail if one of the patches has a mismatched version
+
+  it('should download from the closest snapshot when no current version is supplied', async () => {});
+
+  it('should download from the closest snapshot when it is greater than the current version is supplied', async () => {});
+
+  it('should fail when the latest version is less than the current version', async () => {});
+
+  it('should do nothing when the latest version equals the current version', async () => {});
+
+  it('should re-download from the start when there is a new minor version', async () => {});
+
+  it('should re-download from the start when there is a new major version we support', async () => {});
+
+  it("should fail when there is a new major version we don't support", async () => {});
 
   // XXX Test version handling
   //     -- No current version: Test we fetch from the latest snapshot
