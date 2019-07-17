@@ -68,6 +68,7 @@ type DownloadOptions = {
     minor: number;
     patch: number;
   };
+  lang?: string;
 };
 
 export const enum DownloadErrorCode {
@@ -105,13 +106,14 @@ export class DownloadError extends Error {
 export function download(options?: DownloadOptions): ReadableStream {
   const baseUrl =
     options && options.baseUrl ? options.baseUrl : DEFAULT_BASE_URL;
+  const lang = options && options.lang ? options.lang : 'en';
 
   return new ReadableStream({
     async start(controller) {
       // Get the latest version info
       let versionInfo: VersionInfo;
       try {
-        versionInfo = await getVersionInfo(baseUrl);
+        versionInfo = await getVersionInfo(baseUrl, lang);
       } catch (e) {
         controller.error(e);
         controller.close();
@@ -184,6 +186,7 @@ export function download(options?: DownloadOptions): ReadableStream {
         try {
           for await (const event of getEvents(
             baseUrl,
+            lang,
             {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
@@ -208,6 +211,7 @@ export function download(options?: DownloadOptions): ReadableStream {
         try {
           for await (const event of getEvents(
             baseUrl,
+            lang,
             {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
@@ -261,9 +265,12 @@ function compareVersions(a: Version, b: Version): number {
   return 0;
 }
 
-async function getVersionInfo(baseUrl: string): Promise<VersionInfo> {
+async function getVersionInfo(
+  baseUrl: string,
+  lang: string
+): Promise<VersionInfo> {
   // Get the file
-  const response = await fetch(baseUrl + 'kanji-rc-en-version.json');
+  const response = await fetch(`${baseUrl}kanji-rc-${lang}-version.json`);
   if (!response.ok) {
     const code =
       response.status === 404
@@ -399,10 +406,11 @@ function isDeletionLine(a: any): a is DeletionLine {
 
 async function* getEvents(
   baseUrl: string,
+  lang: string,
   version: Version,
   fileType: 'full' | 'patch'
 ): AsyncIterableIterator<DownloadEvent> {
-  const url = `${baseUrl}kanji-rc-en-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
+  const url = `${baseUrl}kanji-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
   const response = await fetch(url);
 
   if (!response.ok) {

@@ -757,6 +757,34 @@ ${entry}
     }
   });
 
+  it('should request the appropriate language', async () => {
+    fetchMock.mock('end:kanji-rc-fr-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-fr-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+`
+    );
+
+    await drainEvents(download({ lang: 'fr' }).getReader());
+
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-version.json'),
+      'Should NOT get en version'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-fr-version.json'),
+      'Should get fr version'
+    );
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      'Should NOT get en database file'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-fr-1.0.0-full.ljson'),
+      'Should get fr database file'
+    );
+  });
+
   // XXX Test canceling
   // XXX Test progress events
 });
