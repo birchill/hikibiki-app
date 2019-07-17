@@ -702,11 +702,59 @@ ${entry}
   });
 
   it('should re-download from the latest snapshot when there is a new major version we support', async () => {
-    // XXX
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        major: 3,
+        minor: 0,
+        patch: 11,
+        snapshot: 10,
+      },
+    });
+    mockAllDataFilesWithEmpty();
+
+    const reader = download({
+      maxSupportedMajorVersion: 3,
+      currentVersion: { major: 1, minor: 0, patch: 2 },
+    }).getReader();
+    await drainEvents(reader);
+
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-3.0.10-full.ljson'),
+      'Should get snapshot'
+    );
+    assert.isTrue(
+      fetchMock.called('end:kanji-rc-en-3.0.11-patch.ljson'),
+      'Should get first patch'
+    );
   });
 
   it("should fail when there is a new major version we don't support", async () => {
-    // XXX
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        major: 3,
+        minor: 0,
+        patch: 11,
+        snapshot: 10,
+      },
+    });
+    mockAllDataFilesWithEmpty();
+
+    const reader = download({
+      maxSupportedMajorVersion: 2,
+      currentVersion: { major: 1, minor: 0, patch: 2 },
+    }).getReader();
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.UnsupportedDatabaseVersion
+      );
+    }
   });
 
   // XXX Test canceling

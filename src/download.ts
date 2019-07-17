@@ -62,6 +62,7 @@ function validateVersionInfo(versionInfo: VersionInfo): boolean {
 
 type DownloadOptions = {
   baseUrl?: string;
+  maxSupportedMajorVersion?: number;
   currentVersion?: {
     major: number;
     minor: number;
@@ -82,6 +83,7 @@ export const enum DownloadErrorCode {
   DatabaseFileInvalidRecord,
   DatabaseFileDeletionInSnapshot,
   DatabaseTooOld,
+  UnsupportedDatabaseVersion,
 }
 
 export class DownloadError extends Error {
@@ -132,6 +134,28 @@ export function download(options?: DownloadOptions): ReadableStream {
             )}) older than current version (${versionToString(
               options.currentVersion
             )})`
+          )
+        );
+        controller.close();
+        return;
+      }
+
+      // Check the version we're about to download is supported
+      if (
+        options &&
+        typeof options.maxSupportedMajorVersion === 'number' &&
+        options.maxSupportedMajorVersion < versionInfo.latest.major
+      ) {
+        const versionToString = ({ major, minor, patch }: Version) =>
+          `${major}.${minor}.${patch}`;
+        controller.error(
+          new DownloadError(
+            DownloadErrorCode.UnsupportedDatabaseVersion,
+            `Database version (${versionToString(
+              versionInfo.latest
+            )}) is not supported (supported version: ${
+              options.maxSupportedMajorVersion
+            })`
           )
         );
         controller.close();
