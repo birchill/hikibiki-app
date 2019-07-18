@@ -1,5 +1,10 @@
 import { KanjiEntry } from './common';
 
+// Produces a ReadableStream of DownloadEvents
+//
+// This really should have been an async generator instead of a stream but
+// I didn't realize that until later. Oh well.
+
 export type EntryEvent = KanjiEntry & { type: 'entry' };
 
 export type DeletionEvent = {
@@ -18,8 +23,6 @@ export type VersionEvent = {
 };
 
 export type DownloadEvent = VersionEvent | EntryEvent | DeletionEvent;
-
-// Produces a ReadableStream of DownloadEvents
 
 const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 
@@ -108,12 +111,18 @@ export function download(options?: DownloadOptions): ReadableStream {
     options && options.baseUrl ? options.baseUrl : DEFAULT_BASE_URL;
   const lang = options && options.lang ? options.lang : 'en';
 
+  const abortController = new AbortController();
+
   return new ReadableStream({
     async start(controller) {
       // Get the latest version info
       let versionInfo: VersionInfo;
       try {
-        versionInfo = await getVersionInfo(baseUrl, lang);
+        versionInfo = await getVersionInfo({
+          baseUrl,
+          lang,
+          signal: abortController.signal,
+        });
       } catch (e) {
         controller.error(e);
         controller.close();
@@ -184,16 +193,22 @@ export function download(options?: DownloadOptions): ReadableStream {
       ) {
         currentPatch = versionInfo.latest.snapshot;
         try {
-          for await (const event of getEvents(
+          for await (const event of getEvents({
             baseUrl,
             lang,
-            {
+            version: {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
               patch: versionInfo.latest.snapshot,
             },
-            'full'
-          )) {
+            fileType: 'full',
+            signal: abortController.signal,
+          })) {
+            if (abortController.signal.aborted) {
+              const abortError = new Error();
+              abortError.name = 'AbortError';
+              throw abortError;
+            }
             controller.enqueue(event);
           }
         } catch (e) {
@@ -209,16 +224,22 @@ export function download(options?: DownloadOptions): ReadableStream {
       while (currentPatch < versionInfo.latest.patch) {
         currentPatch++;
         try {
-          for await (const event of getEvents(
+          for await (const event of getEvents({
             baseUrl,
             lang,
-            {
+            version: {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
               patch: currentPatch,
             },
-            'patch'
-          )) {
+            fileType: 'patch',
+            signal: abortController.signal,
+          })) {
+            if (abortController.signal.aborted) {
+              const abortError = new Error();
+              abortError.name = 'AbortError';
+              throw abortError;
+            }
             controller.enqueue(event);
           }
         } catch (e) {
@@ -232,7 +253,7 @@ export function download(options?: DownloadOptions): ReadableStream {
     },
 
     cancel() {
-      // XXX Cancel any fetch request here
+      abortController.abort();
     },
   });
 }
@@ -265,12 +286,19 @@ function compareVersions(a: Version, b: Version): number {
   return 0;
 }
 
-async function getVersionInfo(
-  baseUrl: string,
-  lang: string
-): Promise<VersionInfo> {
+async function getVersionInfo({
+  baseUrl,
+  lang,
+  signal,
+}: {
+  baseUrl: string;
+  lang: string;
+  signal: AbortSignal;
+}): Promise<VersionInfo> {
   // Get the file
-  const response = await fetch(`${baseUrl}kanji-rc-${lang}-version.json`);
+  const response = await fetch(`${baseUrl}kanji-rc-${lang}-version.json`, {
+    signal,
+  });
   if (!response.ok) {
     const code =
       response.status === 404
@@ -404,14 +432,21 @@ function isDeletionLine(a: any): a is DeletionLine {
   );
 }
 
-async function* getEvents(
-  baseUrl: string,
-  lang: string,
-  version: Version,
-  fileType: 'full' | 'patch'
-): AsyncIterableIterator<DownloadEvent> {
+async function* getEvents({
+  baseUrl,
+  lang,
+  version,
+  fileType,
+  signal,
+}: {
+  baseUrl: string;
+  lang: string;
+  version: Version;
+  fileType: 'full' | 'patch';
+  signal: AbortSignal;
+}): AsyncIterableIterator<DownloadEvent> {
   const url = `${baseUrl}kanji-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
 
   if (!response.ok) {
     const code =

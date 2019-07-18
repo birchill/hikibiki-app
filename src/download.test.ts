@@ -785,11 +785,35 @@ ${entry}
     );
   });
 
-  // XXX Test canceling
+  it('should cancel any fetches if the download is canceled', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}`
+    );
+
+    const stream = download();
+    const reader = stream.getReader();
+
+    // Read version event
+    let readResult = await reader.read();
+    assert.isFalse(readResult.done, 'Stream should not have finished yet');
+
+    // At least in Chrome and Firefox, calling cancel on the stream doesn't work
+    // but calling it on the reader does.
+    reader.cancel();
+
+    readResult = await reader.read();
+    assert.isTrue(readResult.done, 'Stream should be done');
+  });
+
   // XXX Test progress events
 });
 
 function mockAllDataFilesWithEmpty() {
+  // (This needs to be updated to ignore the language)
   const patchFileRegexp = /kanji-rc-en-(\d+).(\d+).(\d+)-(patch|full).ljson/;
   fetchMock.mock(patchFileRegexp, url => {
     const matches = url.match(patchFileRegexp);
