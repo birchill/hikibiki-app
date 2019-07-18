@@ -7,6 +7,7 @@ import {
   DownloadError,
   DownloadErrorCode,
   EntryEvent,
+  ProgressEvent,
 } from './download';
 
 mocha.setup('bdd');
@@ -48,22 +49,6 @@ describe('download', () => {
     ]);
   });
 
-  function parseDrainError(err: Error): [DownloadError, Array<DownloadEvent>] {
-    if (err.name === 'AssertionError') {
-      throw err;
-    }
-    assert.instanceOf(err, DrainError, 'Should be a DrainError');
-    assert.instanceOf(
-      (err as DrainError).error,
-      DownloadError,
-      'Should be a DownloadError'
-    );
-    return [
-      (err as DrainError).error as DownloadError,
-      (err as DrainError).events,
-    ];
-  }
-
   it('should fail if there is no version file available', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', 404);
 
@@ -80,6 +65,22 @@ describe('download', () => {
       assert.strictEqual(events.length, 0);
     }
   });
+
+  function parseDrainError(err: Error): [DownloadError, Array<DownloadEvent>] {
+    if (err.name === 'AssertionError') {
+      throw err;
+    }
+    assert.instanceOf(err, DrainError, 'Should be a DrainError');
+    assert.instanceOf(
+      (err as DrainError).error,
+      DownloadError,
+      'Should be a DownloadError'
+    );
+    return [
+      (err as DrainError).error as DownloadError,
+      (err as DrainError).events,
+    ];
+  }
 
   it('should fail if the version file is corrupt', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', 'yer');
@@ -809,7 +810,72 @@ ${entry}
     assert.isTrue(readResult.done, 'Stream should be done');
   });
 
-  // XXX Test progress events
+  it('should produce progress events', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+{"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
+{"c":"㐬","r":{},"m":["a cup with pendants","a pennant","wild","barren","uncultivated"],"rad":{"x":8},"refs":{},"misc":{"sc":7}}
+{"c":"㐮","r":{},"m":["to help","to assist","to achieve","to rise","to raise"],"rad":{"x":8},"refs":{},"misc":{"sc":13}}
+{"c":"㑨","r":{},"m":["great","big","tall","vast","noble","high in rank","very","much"],"rad":{"x":9},"refs":{},"misc":{"sc":10}}
+{"c":"㑪","r":{},"m":["a generation","a class","a series","a kind"],"rad":{"x":9},"refs":{},"misc":{"sc":10}}
+{"c":"㒒","r":{},"m":["a slave","a servant","used conventionally for oneself","a charioteer"],"rad":{"x":9},"refs":{},"misc":{"sc":15}}
+{"c":"㒵","r":{"kun":["かお"]},"m":["manner","appearance","form","face","bearing"],"rad":{"x":12},"refs":{},"misc":{"sc":7}}
+{"c":"㒼","r":{},"m":["average","equivalent","corresponding","to cover something carefully and tightly without a break"],"rad":{"x":13},"refs":{},"misc":{"sc":11}}
+{"c":"㓁","r":{},"m":["a net","net-like","radical 122"],"rad":{"x":14},"refs":{"halpern_njecd":1977},"misc":{"sc":4}}
+{"c":"㓇","r":{},"m":[],"rad":{"x":15},"refs":{},"misc":{"sc":6}}
+{"c":"㓛","r":{},"m":["merit","achievement","meritorious","efficacy","good results"],"rad":{"x":18},"refs":{},"misc":{"sc":5}}
+{"c":"㔟","r":{},"m":[],"rad":{"x":19},"refs":{},"misc":{"sc":10}}
+{"c":"㕝","r":{},"m":[],"rad":{"x":29},"refs":{},"misc":{"sc":7}}
+{"c":"㕞","r":{},"m":["a brush","to brush","to clean","to scrub","to print","expecially from blocks"],"rad":{"x":29},"refs":{},"misc":{"sc":8}}
+{"c":"㕣","r":{},"m":["a marsh at the foot of the hills","name of a river"],"rad":{"x":30},"refs":{},"misc":{"sc":5}}
+{"c":"㕮","r":{},"m":["to chew","to masticate","to dwell on","Chinese medicine term"],"rad":{"x":30},"refs":{},"misc":{"sc":7}}
+{"c":"㖦","r":{},"m":["loquacity"],"rad":{"x":30},"refs":{},"misc":{"sc":11}}
+{"c":"㖨","r":{},"m":["Indistinct nasal utterance","laugh","sound of birds"],"rad":{"x":30},"refs":{},"misc":{"sc":11}}
+{"c":"㗅","r":{},"m":["angry","the throat","what? how? why? which?"],"rad":{"x":30},"refs":{},"misc":{"sc":12}}
+{"c":"㗚","r":{},"m":["vexingly verbose or wordy","prosy","complicated","annoying"],"rad":{"x":30},"refs":{},"misc":{"sc":13}}
+{"c":"㗴","r":{},"m":["dogs fighting","to go to law","an indictment"],"rad":{"x":30},"refs":{},"misc":{"sc":15}}
+{"c":"㘅","r":{},"m":["to hold in the mouth"],"rad":{"x":30},"refs":{},"misc":{"sc":17}}
+{"c":"㙊","r":{},"m":["an area of level ground","an open space","a threshing floor","arena for drill_ etc.","a place to pile a sand-hill"],"rad":{"x":32},"refs":{},"misc":{"sc":11}}
+{"c":"㚑","r":{},"m":[],"rad":{"x":37},"refs":{},"misc":{"sc":6}}
+{"c":"㚖","r":{},"m":["to come out to the open","to be known by all","glossy","shining"],"rad":{"x":37},"refs":{},"misc":{"sc":8}}
+`
+    );
+
+    const events = await drainEvents(download().getReader(), {
+      includeProgressEvents: true,
+    });
+    const progressEvents = events.filter(
+      event => event.type === 'progress'
+    ) as Array<ProgressEvent>;
+    let previousPercent = null;
+    let previousLoaded = null;
+    let previousTotal = null;
+    for (const event of progressEvents) {
+      assert.isNumber(event.total);
+      if (previousTotal) {
+        assert.strictEqual(event.total as number, previousTotal);
+      } else {
+        previousTotal = event.total;
+      }
+
+      if (previousLoaded) {
+        assert.isAbove(event.loaded, previousLoaded);
+      }
+      previousLoaded = event.loaded;
+
+      const percent = event.loaded / (event.total as number);
+      assert.isAtLeast(percent, 0);
+      assert.isAtMost(percent, 1);
+      // Check we maintain a maximum resolution
+      if (previousPercent) {
+        assert.isAtLeast(percent - previousPercent, 0.05);
+      }
+      previousPercent = percent;
+    }
+  });
 });
 
 function mockAllDataFilesWithEmpty() {
@@ -845,7 +911,8 @@ class DrainError extends Error {
 }
 
 function drainEvents(
-  reader: ReadableStreamDefaultReader
+  reader: ReadableStreamDefaultReader,
+  { includeProgressEvents = false }: { includeProgressEvents?: boolean } = {}
 ): Promise<Array<DownloadEvent>> {
   return new Promise((resolve, reject) => {
     const events: Array<DownloadEvent> = [];
@@ -860,7 +927,7 @@ function drainEvents(
       }
 
       const { done, value } = readResult;
-      if (value) {
+      if (value && (includeProgressEvents || value.type !== 'progress')) {
         events.push(value);
       }
       if (done) {

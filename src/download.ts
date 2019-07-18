@@ -22,7 +22,17 @@ export type VersionEvent = {
   partial: boolean;
 };
 
-export type DownloadEvent = VersionEvent | EntryEvent | DeletionEvent;
+export type ProgressEvent = {
+  type: 'progress';
+  loaded: number;
+  total: number | null;
+};
+
+export type DownloadEvent =
+  | VersionEvent
+  | EntryEvent
+  | DeletionEvent
+  | ProgressEvent;
 
 const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 
@@ -466,8 +476,24 @@ async function* getEvents({
     );
   }
 
+  // The server needs to send CORS header "Access-Control-Expose-Headers:
+  // content-length" in order for us to be able to get this.
+  const contentLengthStr = response.headers.get('content-length');
+  const contentLength =
+    contentLengthStr === null ? null : parseInt(contentLengthStr, 10);
+
+  // Dispatch the first ProgressEvent. The caller can check if 'total' is null
+  // or not to determine if they should initialize any progress as an
+  // indeterminate state or a zero state.
+  yield { type: 'progress', loaded: 0, total: contentLength };
+
   let versionRead = false;
-  for await (const line of ljsonStreamIterator(response.body)) {
+  let lastProgressPercent = 0;
+
+  // How many percentage should change before we dispatch a new progress event.
+  const PROGRESS_RESOLUTION = 0.05;
+
+  for await (const [line, bytesRead] of ljsonStreamIterator(response.body)) {
     if (isVersionLine(line)) {
       if (versionRead) {
         throw new DownloadError(
@@ -537,16 +563,26 @@ async function* getEvents({
         );
       }
     }
+
+    // Dispatch a new ProgressEvent if we have passed the appropriate threshold
+    if (
+      contentLength &&
+      bytesRead / contentLength - lastProgressPercent > PROGRESS_RESOLUTION
+    ) {
+      lastProgressPercent = bytesRead / contentLength;
+      yield { type: 'progress', loaded: bytesRead, total: contentLength };
+    }
   }
 }
 
 async function* ljsonStreamIterator(
   stream: ReadableStream<Uint8Array>
-): AsyncIterableIterator<object> {
+): AsyncIterableIterator<[object, number]> {
   const reader = stream.getReader();
   const lineEnd = /\n|\r|\r\n/m;
   const decoder = new TextDecoder('utf-8');
   let buffer = '';
+  let bytesRead = 0;
 
   const parseLine = (line: string): any => {
     let json;
@@ -580,7 +616,7 @@ async function* ljsonStreamIterator(
     if (done) {
       buffer += decoder.decode();
       if (buffer) {
-        yield parseLine(buffer);
+        yield [parseLine(buffer), bytesRead];
         buffer = '';
       }
 
@@ -591,17 +627,26 @@ async function* ljsonStreamIterator(
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split(lineEnd);
 
+    // This is pretty rough. The actual result could be different due to how
+    // much was in the buffer already and how much we leave in the buffer at the
+    // end.
+    const bytesPerLine = value.byteLength / lines.length;
+
     // We don't know if the last line is actually the last line of the
     // input or not until we get done: true so we just assume it is
     // a partial line for now.
     buffer = lines.length ? lines.splice(lines.length - 1, 1)[0] : '';
 
-    for (const line of lines) {
+    for (const [i, line] of lines.entries()) {
       if (!line) {
         continue;
       }
 
-      yield parseLine(line);
+      yield [parseLine(line), bytesRead + (i + 1) * bytesPerLine];
     }
+
+    // We add the actual number of bytes read here so we don't accumulate
+    // error from our rough estimate above.
+    bytesRead += value.byteLength;
   }
 }
