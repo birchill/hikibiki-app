@@ -44,6 +44,9 @@ export class KanjiDatabase {
     };
 
     try {
+      const checkDate = new Date();
+      reducer({ type: 'startupdate' });
+
       const downloadStream = await download({
         maxSupportedMajorVersion: 1,
         currentVersion: dbVersion,
@@ -53,6 +56,8 @@ export class KanjiDatabase {
         store: this.store,
         callback: reducer,
       });
+
+      reducer({ type: 'finish', checkDate });
     } catch (e) {
       reducer({ type: 'error', error: e });
     }
