@@ -844,9 +844,12 @@ ${entry}
 `
     );
 
-    const events = await drainEvents(download().getReader(), {
-      includeProgressEvents: true,
-    });
+    const events = await drainEvents(
+      download({ maxProgressResolution: 0.05 }).getReader(),
+      {
+        includeProgressEvents: true,
+      }
+    );
     const progressEvents = events.filter(
       event => event.type === 'progress'
     ) as Array<ProgressEvent>;

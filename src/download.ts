@@ -36,6 +36,9 @@ export type DownloadEvent =
 
 const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 
+// How many percentage should change before we dispatch a new progress event.
+const DEFAULT_MAX_PROGRESS_RESOLUTION = 0.05;
+
 type VersionInfo = {
   latest: {
     major: number;
@@ -82,6 +85,7 @@ type DownloadOptions = {
     patch: number;
   };
   lang?: string;
+  maxProgressResolution?: number;
 };
 
 export const enum DownloadErrorCode {
@@ -116,11 +120,13 @@ export class DownloadError extends Error {
   }
 }
 
-export function download(options?: DownloadOptions): ReadableStream {
-  const baseUrl =
-    options && options.baseUrl ? options.baseUrl : DEFAULT_BASE_URL;
-  const lang = options && options.lang ? options.lang : 'en';
-
+export function download({
+  baseUrl = DEFAULT_BASE_URL,
+  maxSupportedMajorVersion,
+  currentVersion,
+  lang = 'en',
+  maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
+}: DownloadOptions = {}): ReadableStream {
   const abortController = new AbortController();
 
   return new ReadableStream({
@@ -141,9 +147,8 @@ export function download(options?: DownloadOptions): ReadableStream {
 
       // Check the local database is not ahead of what we're about to download
       if (
-        options &&
-        options.currentVersion &&
-        compareVersions(options.currentVersion, versionInfo.latest) > 0
+        currentVersion &&
+        compareVersions(currentVersion, versionInfo.latest) > 0
       ) {
         const versionToString = ({ major, minor, patch }: Version) =>
           `${major}.${minor}.${patch}`;
@@ -152,9 +157,7 @@ export function download(options?: DownloadOptions): ReadableStream {
             DownloadErrorCode.DatabaseTooOld,
             `Database version (${versionToString(
               versionInfo.latest
-            )}) older than current version (${versionToString(
-              options.currentVersion
-            )})`
+            )}) older than current version (${versionToString(currentVersion)})`
           )
         );
         controller.close();
@@ -163,9 +166,8 @@ export function download(options?: DownloadOptions): ReadableStream {
 
       // Check the version we're about to download is supported
       if (
-        options &&
-        typeof options.maxSupportedMajorVersion === 'number' &&
-        options.maxSupportedMajorVersion < versionInfo.latest.major
+        typeof maxSupportedMajorVersion === 'number' &&
+        maxSupportedMajorVersion < versionInfo.latest.major
       ) {
         const versionToString = ({ major, minor, patch }: Version) =>
           `${major}.${minor}.${patch}`;
@@ -174,9 +176,7 @@ export function download(options?: DownloadOptions): ReadableStream {
             DownloadErrorCode.UnsupportedDatabaseVersion,
             `Database version (${versionToString(
               versionInfo.latest
-            )}) is not supported (supported version: ${
-              options.maxSupportedMajorVersion
-            })`
+            )}) is not supported (supported version: ${maxSupportedMajorVersion})`
           )
         );
         controller.close();
@@ -193,10 +193,9 @@ export function download(options?: DownloadOptions): ReadableStream {
 
       let currentPatch: number;
       if (
-        !options ||
-        !options.currentVersion ||
+        !currentVersion ||
         // Check for a change in minor version
-        compareVersions(options.currentVersion, {
+        compareVersions(currentVersion, {
           ...versionInfo.latest,
           patch: 0,
         }) < 0
@@ -206,6 +205,7 @@ export function download(options?: DownloadOptions): ReadableStream {
           for await (const event of getEvents({
             baseUrl,
             lang,
+            maxProgressResolution,
             version: {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
@@ -227,7 +227,7 @@ export function download(options?: DownloadOptions): ReadableStream {
           return;
         }
       } else {
-        currentPatch = options.currentVersion.patch;
+        currentPatch = currentVersion.patch;
       }
 
       // Do incremental updates
@@ -237,6 +237,7 @@ export function download(options?: DownloadOptions): ReadableStream {
           for await (const event of getEvents({
             baseUrl,
             lang,
+            maxProgressResolution,
             version: {
               major: versionInfo.latest.major,
               minor: versionInfo.latest.minor,
@@ -445,12 +446,14 @@ function isDeletionLine(a: any): a is DeletionLine {
 async function* getEvents({
   baseUrl,
   lang,
+  maxProgressResolution,
   version,
   fileType,
   signal,
 }: {
   baseUrl: string;
   lang: string;
+  maxProgressResolution: number;
   version: Version;
   fileType: 'full' | 'patch';
   signal: AbortSignal;
@@ -489,9 +492,6 @@ async function* getEvents({
 
   let versionRead = false;
   let lastProgressPercent = 0;
-
-  // How many percentage should change before we dispatch a new progress event.
-  const PROGRESS_RESOLUTION = 0.05;
 
   for await (const [line, bytesRead] of ljsonStreamIterator(response.body)) {
     if (isVersionLine(line)) {
@@ -567,7 +567,7 @@ async function* getEvents({
     // Dispatch a new ProgressEvent if we have passed the appropriate threshold
     if (
       contentLength &&
-      bytesRead / contentLength - lastProgressPercent > PROGRESS_RESOLUTION
+      bytesRead / contentLength - lastProgressPercent > maxProgressResolution
     ) {
       lastProgressPercent = bytesRead / contentLength;
       yield { type: 'progress', loaded: bytesRead, total: contentLength };
