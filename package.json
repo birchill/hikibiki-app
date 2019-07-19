@@ -48,6 +48,7 @@
   },
   "homepage": "https://github.com/birtles/kanjichamp#readme",
   "dependencies": {
+    "dexie": "^2.0.4",
     "preact": "^8.4.2"
   },
   "husky": {

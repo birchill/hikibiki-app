@@ -36,3 +36,11 @@ interface Misc {
   jlpt?: number;
   kk?: number;
 }
+
+interface DatabaseVersion {
+  major: number;
+  minor: number;
+  patch: number;
+  databaseVersion: string;
+  dateOfCreation: string;
+}
