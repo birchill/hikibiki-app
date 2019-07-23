@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
 import { DatabaseVersion } from './common';
-import { VersionEvent } from './download';
+import { DownloadEvent, VersionEvent } from './download';
 import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
 import { update } from './update';
@@ -38,12 +38,7 @@ describe('update', () => {
       type: 'version',
       partial: false,
     };
-    const downloadStream = new ReadableStream({
-      start(controller) {
-        controller.enqueue(versionEvent);
-        controller.close();
-      },
-    });
+    const downloadStream = simpleStream(versionEvent);
 
     await update({ downloadStream, store, callback });
 
@@ -52,3 +47,16 @@ describe('update', () => {
     ]);
   });
 });
+
+function simpleStream(
+  ...events: Array<DownloadEvent>
+): ReadableStream<DownloadEvent> {
+  return new ReadableStream({
+    start(controller) {
+      for (const event of events) {
+        controller.enqueue(event);
+      }
+      controller.close();
+    },
+  });
+}
