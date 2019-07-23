@@ -1,19 +1,18 @@
 import { KanjiStore } from './store';
 import { DownloadEvent } from './download';
 import { UpdateAction } from './update-actions';
+import { stripFields } from './utils';
 
-export type SyncCallback = (action: UpdateAction) => void;
+export type UpdateCallback = (action: UpdateAction) => void;
 
-// Takes a ReadableStream<DownloadEvent> and a database and applies the
-// events to the database
-export async function sync({
+export async function update({
   downloadStream,
   store,
   callback,
 }: {
   downloadStream: ReadableStream<DownloadEvent>;
   store: KanjiStore;
-  callback: SyncCallback;
+  callback: UpdateCallback;
 }) {
   const reader = downloadStream.getReader();
 
@@ -39,7 +38,10 @@ export async function sync({
         //
         // If it's a partial version, then clear out the whole kanji object
         // store.
-        callback({ type: 'startdownload', version: { ...value } });
+        callback({
+          type: 'startdownload',
+          version: stripFields(value, ['type', 'partial']),
+        });
         break;
 
       case 'entry':

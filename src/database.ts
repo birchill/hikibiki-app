@@ -1,10 +1,11 @@
 import { DatabaseVersion } from './common';
 import { download } from './download';
 import { KanjiStore } from './store';
-import { UpdateState, UpdatingUpdateState } from './update-state';
 import { UpdateAction } from './update-actions';
+import { UpdateState } from './update-state';
+import { reducer as updateReducer } from './update-reducer';
+import { update } from './update';
 import { stripFields } from './utils';
-import { sync } from './sync';
 
 export const enum DatabaseState {
   // We don't know yet it we have a database or not
@@ -36,6 +37,8 @@ export class KanjiDatabase {
   }
 
   async update() {
+    // XXX Check for an in-progress update and either cancel it or simply return
+
     const dbVersion = await this.getDbVersion();
     const reducer = (action: UpdateAction) => {
       this.updateState = updateReducer(this.updateState, action);
@@ -51,7 +54,7 @@ export class KanjiDatabase {
         maxSupportedMajorVersion: 1,
         currentVersion: dbVersion,
       });
-      await sync({
+      await update({
         downloadStream,
         store: this.store,
         callback: reducer,
@@ -64,47 +67,4 @@ export class KanjiDatabase {
   }
 
   // XXX Check for offline events?
-}
-
-function updateReducer(state: UpdateState, action: UpdateAction): UpdateState {
-  switch (action.type) {
-    case 'offline':
-      return { state: 'offline', lastCheck: state.lastCheck };
-
-    case 'online':
-      return { state: 'initializing', lastCheck: state.lastCheck };
-
-    case 'startupdate':
-      return { state: 'checking', lastCheck: state.lastCheck };
-
-    case 'startdownload':
-      return {
-        state: 'updating',
-        downloadVersion: action.version,
-        progress: 0,
-        lastCheck: state.lastCheck,
-      };
-
-    case 'progress':
-      console.assert(
-        state.state === 'updating',
-        'Should only get a progress action when we are updating'
-      );
-      return {
-        state: 'updating',
-        downloadVersion: (state as UpdatingUpdateState).downloadVersion,
-        progress: action.total ? action.loaded / action.total : undefined,
-        lastCheck: state.lastCheck,
-      };
-
-    case 'finish':
-      return { state: 'uptodate', lastCheck: action.checkDate };
-
-    case 'error':
-      return {
-        state: 'error',
-        error: action.error,
-        lastCheck: state.lastCheck,
-      };
-  }
 }

@@ -22,4 +22,8 @@ export class KanjiStore extends Dexie {
       dbVersion: 'id',
     });
   }
+
+  async destroy() {
+    return this.delete();
+  }
 }
