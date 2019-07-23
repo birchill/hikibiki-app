@@ -38,7 +38,7 @@ describe('update', () => {
       type: 'version',
       partial: false,
     };
-    const downloadStream = simpleStream(versionEvent);
+    const downloadStream = mockStream(versionEvent);
 
     await update({ downloadStream, store, callback });
 
@@ -46,9 +46,15 @@ describe('update', () => {
       { type: 'startdownload', version: VERSION_1_0_0 },
     ]);
   });
+
+  // XXX should update the dbversion table
+  // XXX should update the dbversion table for patches
+  // XXX should add entries to the db
+  // XXX should delete entries from the db
+  // XXX should echo progress events
 });
 
-function simpleStream(
+function mockStream(
   ...events: Array<DownloadEvent>
 ): ReadableStream<DownloadEvent> {
   return new ReadableStream({
