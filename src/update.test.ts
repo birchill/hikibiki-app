@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
 import { DatabaseVersion } from './common';
-import { DownloadEvent, VersionEvent } from './download';
+import { DownloadEvent, EntryEvent, VersionEvent } from './download';
 import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
 import { update } from './update';
@@ -47,11 +47,103 @@ describe('update', () => {
     ]);
   });
 
-  // XXX should update the dbversion table
+  it('should update the dbversion table', async () => {
+    const actions: Array<UpdateAction> = [];
+    const callback = (action: UpdateAction) => {
+      actions.push(action);
+    };
+
+    const versionEvent: VersionEvent = {
+      ...VERSION_1_0_0,
+      type: 'version',
+      partial: false,
+    };
+    const downloadStream = mockStream(versionEvent);
+
+    await update({ downloadStream, store, callback });
+
+    const dbVersion = await store.dbVersion.get(1);
+    assert.deepEqual(dbVersion, {
+      id: 1,
+      ...VERSION_1_0_0,
+    });
+  });
+
+  it('should add entries to the kanji table', async () => {
+    const actions: Array<UpdateAction> = [];
+    const callback = (action: UpdateAction) => {
+      actions.push(action);
+    };
+
+    const versionEvent: VersionEvent = {
+      ...VERSION_1_0_0,
+      type: 'version',
+      partial: false,
+    };
+    const entryEvents: Array<EntryEvent> = [
+      {
+        type: 'entry',
+        c: '㐂',
+        r: {},
+        m: [],
+        rad: { x: 1 },
+        refs: { nelson_c: 265, halpern_njecd: 2028 },
+        misc: { sc: 6 },
+      },
+      {
+        type: 'entry',
+        c: '㐆',
+        r: {},
+        m: [
+          'to follow',
+          'to trust to',
+          'to put confidence in',
+          'to depend on',
+          'to turn around',
+          'to turn the body',
+        ],
+        rad: { x: 4 },
+        refs: {},
+        misc: { sc: 6 },
+      },
+    ];
+    const downloadStream = mockStream(versionEvent, ...entryEvents);
+
+    await update({ downloadStream, store, callback });
+
+    const firstChar = await store.kanji.get(13314);
+    assert.deepEqual(firstChar, {
+      c: 13314,
+      r: {},
+      m: [],
+      rad: { x: 1 },
+      refs: { nelson_c: 265, halpern_njecd: 2028 },
+      misc: { sc: 6 },
+    });
+
+    const secondChar = await store.kanji.get(13318);
+    assert.deepEqual(secondChar, {
+      c: 13318,
+      r: {},
+      m: [
+        'to follow',
+        'to trust to',
+        'to put confidence in',
+        'to depend on',
+        'to turn around',
+        'to turn the body',
+      ],
+      rad: { x: 4 },
+      refs: {},
+      misc: { sc: 6 },
+    });
+  });
+
   // XXX should update the dbversion table for patches
-  // XXX should add entries to the db
   // XXX should delete entries from the db
   // XXX should echo progress events
+  // XXX should apply a series of version in succession
+  // XXX should delete everything when doing a full update
 });
 
 function mockStream(

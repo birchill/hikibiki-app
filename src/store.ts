@@ -3,11 +3,11 @@ import Dexie from 'dexie';
 import { KanjiEntry, DatabaseVersion } from './common';
 
 // Define a variant on KanjiEntry that turns 'c' into a number
-interface KanjiRecord extends Omit<KanjiEntry, 'c'> {
+export interface KanjiRecord extends Omit<KanjiEntry, 'c'> {
   c: number;
 }
 
-interface DatabaseVersionRecord extends DatabaseVersion {
+export interface DatabaseVersionRecord extends DatabaseVersion {
   id: 1;
 }
 
