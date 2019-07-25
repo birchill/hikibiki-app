@@ -1,7 +1,12 @@
 import { assert } from 'chai';
 
 import { DatabaseVersion } from './common';
-import { DownloadEvent, EntryEvent, VersionEvent } from './download';
+import {
+  DeletionEvent,
+  DownloadEvent,
+  EntryEvent,
+  VersionEvent,
+} from './download';
 import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
 import { update } from './update';
@@ -139,8 +144,51 @@ describe('update', () => {
     });
   });
 
-  // XXX should update the dbversion table for patches
-  // XXX should delete entries from the db
+  it('should delete entries from the kanji table', async () => {
+    const actions: Array<UpdateAction> = [];
+    const callback = (action: UpdateAction) => {
+      actions.push(action);
+    };
+
+    await store.kanji.put({
+      c: 13314,
+      r: {},
+      m: [],
+      rad: { x: 1 },
+      refs: { nelson_c: 265, halpern_njecd: 2028 },
+      misc: { sc: 6 },
+    });
+    // Put an extra record just to ensure we don't delete EVERYTHING
+    await store.kanji.put({
+      c: 13318,
+      r: {},
+      m: ['to follow'],
+      rad: { x: 4 },
+      refs: {},
+      misc: { sc: 6 },
+    });
+
+    const versionEvent: VersionEvent = {
+      ...VERSION_1_0_0,
+      patch: 1,
+      type: 'version',
+      partial: true,
+    };
+    const deletionEvent: DeletionEvent = {
+      type: 'deletion',
+      c: '㐂',
+    };
+    const downloadStream = mockStream(versionEvent, deletionEvent);
+
+    await update({ downloadStream, store, callback });
+
+    const deletedChar = await store.kanji.get(13314);
+    assert.isUndefined(deletedChar);
+
+    const remainingChar = await store.kanji.get(13318);
+    assert.isDefined(remainingChar);
+  });
+
   // XXX should echo progress events
   // XXX should apply a series of version in succession
   // XXX should delete everything when doing a full update

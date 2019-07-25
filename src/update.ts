@@ -73,7 +73,7 @@ export async function update({
     };
 
     await store.transaction('rw', store.kanji, store.dbVersion, async () => {
-      if (partialVersion) {
+      if (!partialVersion) {
         await store.kanji.clear();
       } else {
         await store.kanji.bulkDelete(recordsToDelete);
