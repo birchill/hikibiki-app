@@ -5,6 +5,7 @@ import {
   DeletionEvent,
   DownloadEvent,
   EntryEvent,
+  ProgressEvent,
   VersionEvent,
 } from './download';
 import { KanjiStore } from './store';
@@ -23,8 +24,13 @@ const VERSION_1_0_0: DatabaseVersion = {
 
 describe('update', () => {
   let store: KanjiStore;
+  let actions: Array<UpdateAction> = [];
+  const callback = (action: UpdateAction) => {
+    actions.push(action);
+  };
 
   beforeEach(() => {
+    actions = [];
     store = new KanjiStore();
   });
 
@@ -33,11 +39,6 @@ describe('update', () => {
   });
 
   it('should produce a startdownload action after reading the version', async () => {
-    const actions: Array<UpdateAction> = [];
-    const callback = (action: UpdateAction) => {
-      actions.push(action);
-    };
-
     const versionEvent: VersionEvent = {
       ...VERSION_1_0_0,
       type: 'version',
@@ -53,11 +54,6 @@ describe('update', () => {
   });
 
   it('should update the dbversion table', async () => {
-    const actions: Array<UpdateAction> = [];
-    const callback = (action: UpdateAction) => {
-      actions.push(action);
-    };
-
     const versionEvent: VersionEvent = {
       ...VERSION_1_0_0,
       type: 'version',
@@ -75,11 +71,6 @@ describe('update', () => {
   });
 
   it('should add entries to the kanji table', async () => {
-    const actions: Array<UpdateAction> = [];
-    const callback = (action: UpdateAction) => {
-      actions.push(action);
-    };
-
     const versionEvent: VersionEvent = {
       ...VERSION_1_0_0,
       type: 'version',
@@ -145,11 +136,6 @@ describe('update', () => {
   });
 
   it('should delete entries from the kanji table', async () => {
-    const actions: Array<UpdateAction> = [];
-    const callback = (action: UpdateAction) => {
-      actions.push(action);
-    };
-
     await store.kanji.put({
       c: 13314,
       r: {},
@@ -189,7 +175,48 @@ describe('update', () => {
     assert.isDefined(remainingChar);
   });
 
-  // XXX should echo progress events
+  it('should echo progress events', async () => {
+    const versionEvent: VersionEvent = {
+      ...VERSION_1_0_0,
+      type: 'version',
+      partial: false,
+    };
+    const progressEventA: ProgressEvent = {
+      type: 'progress',
+      loaded: 0,
+      total: 1,
+    };
+    const entryEvent: EntryEvent = {
+      type: 'entry',
+      c: '㐂',
+      r: {},
+      m: [],
+      rad: { x: 1 },
+      refs: { nelson_c: 265, halpern_njecd: 2028 },
+      misc: { sc: 6 },
+    };
+    const progressEventB: ProgressEvent = {
+      type: 'progress',
+      loaded: 1,
+      total: 1,
+    };
+
+    const downloadStream = mockStream(
+      versionEvent,
+      progressEventA,
+      entryEvent,
+      progressEventB
+    );
+
+    await update({ downloadStream, store, callback });
+
+    assert.deepEqual(actions, [
+      { type: 'startdownload', version: VERSION_1_0_0 },
+      { type: 'progress', loaded: 0, total: 1 },
+      { type: 'progress', loaded: 1, total: 1 },
+    ]);
+  });
+
   // XXX should apply a series of version in succession
   // XXX should delete everything when doing a full update
 });
