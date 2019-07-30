@@ -327,7 +327,66 @@ describe('update', () => {
     ]);
   });
 
-  // XXX should delete everything when doing a full update
+  it('should delete everything when doing a full update', async () => {
+    const events: Array<DownloadEvent> = [
+      // Base version has two records
+      {
+        ...VERSION_1_0_0,
+        type: 'version',
+        partial: false,
+      },
+      {
+        type: 'entry',
+        c: '㐂',
+        r: {},
+        m: [],
+        rad: { x: 1 },
+        refs: { nelson_c: 265, halpern_njecd: 2028 },
+        misc: { sc: 6 },
+      },
+      {
+        type: 'entry',
+        c: '㐆',
+        r: {},
+        m: ['to follow'],
+        rad: { x: 4 },
+        refs: {},
+        misc: { sc: 6 },
+      },
+
+      // Next minor version simply re-adds one
+      {
+        ...VERSION_1_0_0,
+        minor: 1,
+        type: 'version',
+        partial: false,
+      },
+      {
+        type: 'entry',
+        c: '㐆',
+        r: {},
+        m: ['to follow'],
+        rad: { x: 4 },
+        refs: {},
+        misc: { sc: 6 },
+      },
+    ];
+
+    const downloadStream = mockStream(...events);
+
+    await update({ downloadStream, store, callback });
+
+    assert.deepEqual(await store.kanji.toArray(), [
+      {
+        c: 13318,
+        r: {},
+        m: ['to follow'],
+        rad: { x: 4 },
+        refs: {},
+        misc: { sc: 6 },
+      },
+    ]);
+  });
 });
 
 function mockStream(
