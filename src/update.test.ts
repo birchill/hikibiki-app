@@ -217,7 +217,116 @@ describe('update', () => {
     ]);
   });
 
-  // XXX should apply a series of version in succession
+  it('should apply a series of versions in succession', async () => {
+    const events: Array<DownloadEvent> = [
+      // Base version has two records
+      {
+        ...VERSION_1_0_0,
+        type: 'version',
+        partial: false,
+      },
+      {
+        type: 'entry',
+        c: '㐂',
+        r: {},
+        m: [],
+        rad: { x: 1 },
+        refs: { nelson_c: 265, halpern_njecd: 2028 },
+        misc: { sc: 6 },
+      },
+      {
+        type: 'entry',
+        c: '㐆',
+        r: {},
+        m: ['to follow'],
+        rad: { x: 4 },
+        refs: {},
+        misc: { sc: 6 },
+      },
+
+      // First patch adds one record and deletes another
+      {
+        ...VERSION_1_0_0,
+        patch: 1,
+        type: 'version',
+        partial: true,
+      },
+      {
+        type: 'entry',
+        c: '㐬',
+        r: {},
+        m: [
+          'a cup with pendants',
+          'a pennant',
+          'wild',
+          'barren',
+          'uncultivated',
+        ],
+        rad: { x: 8 },
+        refs: {},
+        misc: { sc: 7 },
+      },
+      {
+        type: 'deletion',
+        c: '㐆',
+      },
+
+      // Second patch adds one more record
+      {
+        ...VERSION_1_0_0,
+        patch: 2,
+        type: 'version',
+        partial: true,
+      },
+      {
+        type: 'entry',
+        c: '㐮',
+        r: {},
+        m: ['to help', 'to assist', 'to achieve', 'to rise', 'to raise'],
+        rad: { x: 8 },
+        refs: {},
+        misc: { sc: 13 },
+      },
+    ];
+
+    const downloadStream = mockStream(...events);
+
+    await update({ downloadStream, store, callback });
+
+    assert.deepEqual(await store.kanji.toArray(), [
+      {
+        c: 13314,
+        r: {},
+        m: [],
+        rad: { x: 1 },
+        refs: { nelson_c: 265, halpern_njecd: 2028 },
+        misc: { sc: 6 },
+      },
+      {
+        c: 13356,
+        r: {},
+        m: [
+          'a cup with pendants',
+          'a pennant',
+          'wild',
+          'barren',
+          'uncultivated',
+        ],
+        rad: { x: 8 },
+        refs: {},
+        misc: { sc: 7 },
+      },
+      {
+        c: 13358,
+        r: {},
+        m: ['to help', 'to assist', 'to achieve', 'to rise', 'to raise'],
+        rad: { x: 8 },
+        refs: {},
+        misc: { sc: 13 },
+      },
+    ]);
+  });
+
   // XXX should delete everything when doing a full update
 });
 
