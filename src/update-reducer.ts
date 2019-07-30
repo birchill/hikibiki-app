@@ -7,7 +7,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
       return { state: 'offline', lastCheck: state.lastCheck };
 
     case 'online':
-      return { state: 'initializing', lastCheck: state.lastCheck };
+      return { state: 'idle', lastCheck: state.lastCheck };
 
     case 'startupdate':
       return { state: 'checking', lastCheck: state.lastCheck };
@@ -33,7 +33,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
       };
 
     case 'finish':
-      return { state: 'uptodate', lastCheck: action.checkDate };
+      return { state: 'idle', lastCheck: action.checkDate };
 
     case 'error':
       return {

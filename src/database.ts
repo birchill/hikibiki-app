@@ -20,11 +20,28 @@ export const enum DatabaseState {
 
 export class KanjiDatabase {
   state: DatabaseState = DatabaseState.Initializing;
-  updateState: UpdateState = { state: 'initializing', lastCheck: null };
+  updateState: UpdateState = { state: 'idle', lastCheck: null };
   store: KanjiStore;
+  private readyPromise: Promise<void>;
 
   constructor() {
     this.store = new KanjiStore();
+
+    // Check initial state
+    this.readyPromise = new Promise<void>(resolve => {
+      this.getDbVersion().then(version => {
+        if (typeof version === 'undefined') {
+          this.state = DatabaseState.Empty;
+        } else {
+          this.state = DatabaseState.Ok;
+        }
+        resolve();
+      });
+    });
+  }
+
+  get ready() {
+    return this.readyPromise;
   }
 
   async getDbVersion(): Promise<DatabaseVersion | undefined> {
@@ -64,6 +81,10 @@ export class KanjiDatabase {
     } catch (e) {
       reducer({ type: 'error', error: e });
     }
+  }
+
+  async destroy() {
+    return this.store.destroy();
   }
 
   // XXX Check for offline events?
