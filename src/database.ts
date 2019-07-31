@@ -96,6 +96,7 @@ export class KanjiDatabase {
       reducer({ type: 'finish', checkDate });
     } catch (e) {
       reducer({ type: 'error', error: e });
+      throw e;
     }
   }
 

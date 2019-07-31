@@ -111,16 +111,31 @@ describe('database', () => {
 
     fetchMock.mock('end:kanji-rc-en-version.json', 404);
 
-    await db.update();
+    let exception;
+    try {
+      await db.update();
+    } catch (e) {
+      exception = e;
+    }
 
-    assert.equal(db.updateState.state, 'error');
-    assert.instanceOf(
-      (db.updateState as ErrorUpdateState).error,
-      DownloadError
+    const isVersionFileNotFoundError = (e?: Error) =>
+      e &&
+      e instanceof DownloadError &&
+      e.code === DownloadErrorCode.VersionFileNotFound;
+
+    // Check exception
+    assert.isTrue(
+      isVersionFileNotFoundError(exception),
+      `Should have thrown a VersionFileNotFound exception. Got: ${exception}`
     );
-    assert.equal(
-      ((db.updateState as ErrorUpdateState).error as DownloadError).code,
-      DownloadErrorCode.VersionFileNotFound
+
+    // Check update state
+    assert.equal(db.updateState.state, 'error');
+    assert.isTrue(
+      isVersionFileNotFoundError((db.updateState as ErrorUpdateState).error),
+      `Update state should have a VersionFileNotFound error. Got: ${
+        (db.updateState as ErrorUpdateState).error
+      }`
     );
   });
 
