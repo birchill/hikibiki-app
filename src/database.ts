@@ -69,7 +69,7 @@ export class KanjiDatabase {
   }
 
   private async doUpdate() {
-    const dbVersion = await this.getDbVersion();
+    await this.ready;
     const reducer = (action: UpdateAction) => {
       this.updateState = updateReducer(this.updateState, action);
       if (action.type === 'finishdownload') {
@@ -85,7 +85,7 @@ export class KanjiDatabase {
 
       const downloadStream = await download({
         maxSupportedMajorVersion: 1,
-        currentVersion: dbVersion,
+        currentVersion: this.dbVersion,
       });
       await update({
         downloadStream,
