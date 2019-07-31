@@ -81,12 +81,35 @@ describe('database', () => {
     await db.destroy();
   });
 
-  // XXX Check for overlapping calls to update()
-  // (Not exactly sure what the behavior should be here yet)
-  // XXX Check for out-of-date state (not sure exactly when this happens)
+  it('should ignore redundant calls to update', async () => {
+    const db = new KanjiDatabase();
+    await db.ready;
+
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}
+`
+    );
+
+    const firstUpdate = db.update();
+    const secondUpdate = db.update();
+
+    await Promise.all([firstUpdate, secondUpdate]);
+
+    assert.equal(
+      fetchMock.calls('end:kanji-rc-en-1.0.0-full.ljson').length,
+      1,
+      'Should only fetch things once'
+    );
+
+    await db.destroy();
+  });
+
   // XXX Check for error handling from update()
+  // XXX Add cancel() method
   // XXX Events / Observer notifications whenever updateState or state is
   //     updated
-  // XXX Add cancel() method
+  // XXX Check for out-of-date state (not sure exactly when this happens)
   // XXX Offline handling
 });

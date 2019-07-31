@@ -22,9 +22,10 @@ export class KanjiDatabase {
   state: DatabaseState = DatabaseState.Initializing;
   updateState: UpdateState = { state: 'idle', lastCheck: null };
   store: KanjiStore;
-  dbVersion: DatabaseVersion | undefined = undefined;
+  dbVersion: DatabaseVersion | undefined;
 
   private readyPromise: Promise<void>;
+  private inProgressUpdate: Promise<void> | undefined;
 
   constructor() {
     this.store = new KanjiStore();
@@ -54,9 +55,20 @@ export class KanjiDatabase {
       typeof version === 'undefined' ? DatabaseState.Empty : DatabaseState.Ok;
   }
 
-  async update() {
-    // XXX Check for an in-progress update and either cancel it or simply return
+  update(): Promise<void> {
+    if (this.inProgressUpdate) {
+      return this.inProgressUpdate;
+    }
 
+    this.inProgressUpdate = this.doUpdate();
+    this.inProgressUpdate.finally(() => {
+      this.inProgressUpdate = undefined;
+    });
+
+    return this.inProgressUpdate;
+  }
+
+  private async doUpdate() {
     const dbVersion = await this.getDbVersion();
     const reducer = (action: UpdateAction) => {
       this.updateState = updateReducer(this.updateState, action);
