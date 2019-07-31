@@ -23,6 +23,11 @@ export type ProgressUpdateAction = {
   total: number | null;
 };
 
+export type FinishDownloadUpdateAction = {
+  type: 'finishdownload';
+  version: DatabaseVersion;
+};
+
 export type FinishUpdateAction = {
   type: 'finish';
   checkDate: Date;
@@ -39,5 +44,6 @@ export type UpdateAction =
   | StartUpdateAction
   | StartDownloadUpdateAction
   | ProgressUpdateAction
+  | FinishDownloadUpdateAction
   | FinishUpdateAction
   | ErrorUpdateAction;

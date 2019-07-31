@@ -38,7 +38,7 @@ describe('update', () => {
     return store.delete();
   });
 
-  it('should produce a startdownload action after reading the version', async () => {
+  it('should produce startdownload/finishdownload actions after reading the version', async () => {
     const versionEvent: VersionEvent = {
       ...VERSION_1_0_0,
       type: 'version',
@@ -50,6 +50,7 @@ describe('update', () => {
 
     assert.deepEqual(actions, [
       { type: 'startdownload', version: VERSION_1_0_0 },
+      { type: 'finishdownload', version: VERSION_1_0_0 },
     ]);
   });
 
@@ -214,6 +215,7 @@ describe('update', () => {
       { type: 'startdownload', version: VERSION_1_0_0 },
       { type: 'progress', loaded: 0, total: 1 },
       { type: 'progress', loaded: 1, total: 1 },
+      { type: 'finishdownload', version: VERSION_1_0_0 },
     ]);
   });
 

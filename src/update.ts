@@ -85,6 +85,11 @@ export async function update({
     recordsToPut = [];
     recordsToDelete = [];
 
+    callback({
+      type: 'finishdownload',
+      version: currentVersion,
+    });
+
     currentVersion = undefined;
     partialVersion = false;
   };

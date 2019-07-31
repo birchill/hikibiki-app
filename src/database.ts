@@ -22,21 +22,16 @@ export class KanjiDatabase {
   state: DatabaseState = DatabaseState.Initializing;
   updateState: UpdateState = { state: 'idle', lastCheck: null };
   store: KanjiStore;
+  dbVersion: DatabaseVersion | undefined = undefined;
+
   private readyPromise: Promise<void>;
 
   constructor() {
     this.store = new KanjiStore();
 
     // Check initial state
-    this.readyPromise = new Promise<void>(resolve => {
-      this.getDbVersion().then(version => {
-        if (typeof version === 'undefined') {
-          this.state = DatabaseState.Empty;
-        } else {
-          this.state = DatabaseState.Ok;
-        }
-        resolve();
-      });
+    this.readyPromise = this.getDbVersion().then(version => {
+      return this.updateDbVersion(version);
     });
   }
 
@@ -44,7 +39,7 @@ export class KanjiDatabase {
     return this.readyPromise;
   }
 
-  async getDbVersion(): Promise<DatabaseVersion | undefined> {
+  private async getDbVersion(): Promise<DatabaseVersion | undefined> {
     const versionDoc = await this.store.dbVersion.get(1);
     if (!versionDoc) {
       return undefined;
@@ -53,12 +48,21 @@ export class KanjiDatabase {
     return stripFields(versionDoc, ['id']);
   }
 
+  private async updateDbVersion(version: DatabaseVersion | undefined) {
+    this.dbVersion = version;
+    this.state =
+      typeof version === 'undefined' ? DatabaseState.Empty : DatabaseState.Ok;
+  }
+
   async update() {
     // XXX Check for an in-progress update and either cancel it or simply return
 
     const dbVersion = await this.getDbVersion();
     const reducer = (action: UpdateAction) => {
       this.updateState = updateReducer(this.updateState, action);
+      if (action.type === 'finishdownload') {
+        this.updateDbVersion(action.version);
+      }
       // TODO: In future this should probably dispatch some event sharing the
       // updated state
     };

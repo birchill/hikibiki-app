@@ -32,6 +32,9 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
         lastCheck: state.lastCheck,
       };
 
+    case 'finishdownload':
+      return state;
+
     case 'finish':
       return { state: 'idle', lastCheck: action.checkDate };
 
