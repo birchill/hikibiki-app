@@ -1,7 +1,9 @@
 import { assert } from 'chai';
 import fetchMock from 'fetch-mock';
 
+import { DownloadError, DownloadErrorCode } from './download';
 import { DatabaseState, KanjiDatabase } from './database';
+import { ErrorUpdateState } from './update-state';
 import { stripFields } from './utils';
 
 mocha.setup('bdd');
@@ -101,6 +103,27 @@ describe('database', () => {
       fetchMock.calls('end:kanji-rc-en-1.0.0-full.ljson').length,
       1,
       'Should only fetch things once'
+    );
+
+    await db.destroy();
+  });
+
+  it('should update the error state accordingly', async () => {
+    const db = new KanjiDatabase();
+    await db.ready;
+
+    fetchMock.mock('end:kanji-rc-en-version.json', 404);
+
+    await db.update();
+
+    assert.equal(db.updateState.state, 'error');
+    assert.instanceOf(
+      (db.updateState as ErrorUpdateState).error,
+      DownloadError
+    );
+    assert.equal(
+      ((db.updateState as ErrorUpdateState).error as DownloadError).code,
+      DownloadErrorCode.VersionFileNotFound
     );
 
     await db.destroy();
