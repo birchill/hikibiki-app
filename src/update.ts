@@ -45,6 +45,11 @@ export type UpdateCallback = (action: UpdateAction) => void;
 // IndexedDB. So, for now, we just have to recommend only updating once database
 // at a time to limit memory usage.
 
+const inProgressUpdates: Map<
+  KanjiStore,
+  ReadableStreamDefaultReader<DownloadEvent>
+> = new Map();
+
 export async function update({
   downloadStream,
   store,
@@ -54,7 +59,13 @@ export async function update({
   store: KanjiStore;
   callback: UpdateCallback;
 }) {
+  if (inProgressUpdates.has(store)) {
+    throw new Error('Overlapping calls to update');
+  }
+
   const reader = downloadStream.getReader();
+
+  inProgressUpdates.set(store, reader);
 
   let recordsToPut: Array<KanjiRecord> = [];
   let recordsToDelete: Array<number> = [];
@@ -100,6 +111,7 @@ export async function update({
       readResult = await reader.read();
     } catch (e) {
       reader.releaseLock();
+      inProgressUpdates.delete(store);
       throw e;
     }
 
@@ -107,6 +119,7 @@ export async function update({
 
     if (done) {
       await finishCurrentVersion();
+      inProgressUpdates.delete(store);
       return;
     }
 
@@ -146,4 +159,14 @@ export async function update({
         break;
     }
   }
+}
+
+export function cancelUpdate(store: KanjiStore): boolean {
+  const reader = inProgressUpdates.get(store);
+  if (!reader) {
+    return false;
+  }
+
+  reader.cancel();
+  return true;
 }

@@ -38,6 +38,9 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
     case 'finish':
       return { state: 'idle', lastCheck: action.checkDate };
 
+    case 'abort':
+      return { state: 'idle', lastCheck: action.checkDate || state.lastCheck };
+
     case 'error':
       return {
         state: 'error',

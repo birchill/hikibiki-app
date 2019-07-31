@@ -85,8 +85,6 @@ describe('database', () => {
   });
 
   it('should ignore redundant calls to update', async () => {
-    await db.ready;
-
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -107,8 +105,6 @@ describe('database', () => {
   });
 
   it('should update the error state accordingly', async () => {
-    await db.ready;
-
     fetchMock.mock('end:kanji-rc-en-version.json', 404);
 
     let exception;
@@ -139,8 +135,101 @@ describe('database', () => {
     );
   });
 
-  // XXX Check for error handling from update()
-  // XXX Add cancel() method
+  it('should allow canceling the update', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}`
+    );
+
+    const update = db.update();
+    db.cancelUpdate();
+
+    let exception;
+    try {
+      await update;
+    } catch (e) {
+      exception = e;
+    }
+
+    assert.isDefined(exception);
+    assert.equal(exception.message, 'AbortError');
+
+    assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
+
+    // Also check that a redundant call to cancelUpdate doesn't break anything.
+    db.cancelUpdate();
+  });
+
+  it('should allow canceling the update mid-stream', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 1,
+      },
+    });
+    // (We need to cancel from this second request, otherwise we don't seem to
+    // exercise the code path where we actually cancel the reader.)
+    fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', () => {
+      db.cancelUpdate();
+      return '';
+    });
+
+    const update = db.update();
+
+    let exception;
+    try {
+      await update;
+    } catch (e) {
+      exception = e;
+    }
+
+    assert.isDefined(exception);
+    assert.equal(exception.message, 'AbortError');
+
+    assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
+
+    assert.isFalse(
+      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      'Should not download next data file'
+    );
+  });
+
+  it('should update the last check time if we wrote something', async () => {
+    fetchMock.mock('end:kanji-rc-en-version.json', {
+      latest: {
+        ...VERSION_1_0_0.latest,
+        patch: 1,
+      },
+    });
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `
+{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
+`
+    );
+    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', () => {
+      db.cancelUpdate();
+      return '';
+    });
+
+    const update = db.update();
+
+    let exception;
+    try {
+      await update;
+    } catch (e) {
+      exception = e;
+    }
+
+    assert.isDefined(exception);
+    assert.equal(exception.message, 'AbortError');
+
+    assert.equal(db.updateState.state, 'idle');
+    assert.isDefined(db.updateState.lastCheck);
+  });
+
   // XXX Events / Observer notifications whenever updateState or state is
   //     updated
   // XXX Check for out-of-date state (not sure exactly when this happens)

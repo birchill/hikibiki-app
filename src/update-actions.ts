@@ -33,6 +33,11 @@ export type FinishUpdateAction = {
   checkDate: Date;
 };
 
+export type AbortUpdateAction = {
+  type: 'abort';
+  checkDate: Date | null;
+};
+
 export type ErrorUpdateAction = {
   type: 'error';
   error: Error;
@@ -46,4 +51,5 @@ export type UpdateAction =
   | ProgressUpdateAction
   | FinishDownloadUpdateAction
   | FinishUpdateAction
+  | AbortUpdateAction
   | ErrorUpdateAction;

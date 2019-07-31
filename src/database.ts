@@ -4,7 +4,7 @@ import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
 import { reducer as updateReducer } from './update-reducer';
-import { update } from './update';
+import { update, cancelUpdate } from './update';
 import { stripFields } from './utils';
 
 export const enum DatabaseState {
@@ -69,35 +69,74 @@ export class KanjiDatabase {
   }
 
   private async doUpdate() {
-    await this.ready;
+    let wroteSomething = false;
+
     const reducer = (action: UpdateAction) => {
       this.updateState = updateReducer(this.updateState, action);
       if (action.type === 'finishdownload') {
+        wroteSomething = true;
         this.updateDbVersion(action.version);
       }
       // TODO: In future this should probably dispatch some event sharing the
       // updated state
     };
 
+    await this.ready;
+
+    // Check if we have been canceled while waiting to become ready
+    if (!this.inProgressUpdate) {
+      // TODO: Make sure we notify observers in this case
+      reducer({ type: 'abort', checkDate: null });
+      throw new Error('AbortError');
+    }
+
+    const checkDate = new Date();
+
     try {
-      const checkDate = new Date();
       reducer({ type: 'startupdate' });
 
       const downloadStream = await download({
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersion,
       });
+
+      if (!this.inProgressUpdate) {
+        throw new Error('AbortError');
+      }
+
       await update({
         downloadStream,
         store: this.store,
         callback: reducer,
       });
 
+      if (!this.inProgressUpdate) {
+        throw new Error('AbortError');
+      }
+
       reducer({ type: 'finish', checkDate });
     } catch (e) {
-      reducer({ type: 'error', error: e });
+      if (e.message === 'AbortError') {
+        // We should only update the last-check date if we actually made some
+        // sort of update.
+        reducer({
+          type: 'abort',
+          checkDate: wroteSomething ? checkDate : null,
+        });
+      } else {
+        reducer({ type: 'error', error: e });
+      }
       throw e;
     }
+  }
+
+  cancelUpdate(): boolean {
+    const hadProgressUpdate = !!this.inProgressUpdate;
+    this.inProgressUpdate = undefined;
+
+    cancelUpdate(this.store);
+
+    return hadProgressUpdate;
   }
 
   async destroy() {
