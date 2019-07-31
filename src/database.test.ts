@@ -56,9 +56,31 @@ describe('database', () => {
     await db.destroy();
   });
 
-  // XXX Mock fetch and call update. Test that:
-  // - update state is updated
-  // XXX Check we update the latest check date
+  it('should update the update state after updating', async () => {
+    const db = new KanjiDatabase();
+    await db.ready;
+    assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
+
+    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanji-rc-en-1.0.0-full.ljson',
+      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}
+`
+    );
+
+    const updateStart = new Date();
+    await db.update();
+    const updateEnd = new Date();
+
+    assert.deepEqual(db.updateState.state, 'idle');
+    assert.isDefined(db.updateState.lastCheck);
+    // XXX Include chai date here and do this properly
+    assert.isTrue(db.updateState.lastCheck! >= updateStart);
+    assert.isTrue(db.updateState.lastCheck! <= updateEnd);
+
+    await db.destroy();
+  });
+
   // XXX Check for overlapping calls to update()
   // (Not exactly sure what the behavior should be here yet)
   // XXX Check for out-of-date state (not sure exactly when this happens)
