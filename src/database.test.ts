@@ -20,23 +20,29 @@ const VERSION_1_0_0 = {
 };
 
 describe('database', () => {
-  afterEach(fetchMock.restore);
+  let db: KanjiDatabase;
+
+  beforeEach(() => {
+    db = new KanjiDatabase();
+  });
+
+  afterEach(async () => {
+    fetchMock.restore();
+    if (db) {
+      await db.destroy();
+    }
+  });
 
   it('should initially be initializing', async () => {
-    const db = new KanjiDatabase();
     assert.equal(db.state, DatabaseState.Initializing);
-    await db.destroy();
   });
 
   it('should resolve to being empty', async () => {
-    const db = new KanjiDatabase();
     await db.ready;
     assert.equal(db.state, DatabaseState.Empty);
-    await db.destroy();
   });
 
   it('should resolve the version after updating', async () => {
-    const db = new KanjiDatabase();
     await db.ready;
     assert.isUndefined(db.dbVersion);
 
@@ -54,12 +60,9 @@ describe('database', () => {
       stripFields(VERSION_1_0_0.latest, ['snapshot'])
     );
     assert.equal(db.state, DatabaseState.Ok);
-
-    await db.destroy();
   });
 
   it('should update the update state after updating', async () => {
-    const db = new KanjiDatabase();
     await db.ready;
     assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
 
@@ -79,12 +82,9 @@ describe('database', () => {
     // XXX Include chai date here and do this properly
     assert.isTrue(db.updateState.lastCheck! >= updateStart);
     assert.isTrue(db.updateState.lastCheck! <= updateEnd);
-
-    await db.destroy();
   });
 
   it('should ignore redundant calls to update', async () => {
-    const db = new KanjiDatabase();
     await db.ready;
 
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
@@ -104,12 +104,9 @@ describe('database', () => {
       1,
       'Should only fetch things once'
     );
-
-    await db.destroy();
   });
 
   it('should update the error state accordingly', async () => {
-    const db = new KanjiDatabase();
     await db.ready;
 
     fetchMock.mock('end:kanji-rc-en-version.json', 404);
@@ -125,8 +122,6 @@ describe('database', () => {
       ((db.updateState as ErrorUpdateState).error as DownloadError).code,
       DownloadErrorCode.VersionFileNotFound
     );
-
-    await db.destroy();
   });
 
   // XXX Check for error handling from update()
