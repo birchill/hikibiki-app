@@ -1,4 +1,5 @@
-import { assert } from 'chai';
+import chai, { assert } from 'chai';
+import chaiDateTime from 'chai-datetime';
 import fetchMock from 'fetch-mock';
 
 import { DownloadError, DownloadErrorCode } from './download';
@@ -7,6 +8,7 @@ import { ErrorUpdateState } from './update-state';
 import { stripFields } from './utils';
 
 mocha.setup('bdd');
+chai.use(chaiDateTime);
 
 const VERSION_1_0_0 = {
   latest: {
@@ -79,9 +81,7 @@ describe('database', () => {
 
     assert.deepEqual(db.updateState.state, 'idle');
     assert.isDefined(db.updateState.lastCheck);
-    // XXX Include chai date here and do this properly
-    assert.isTrue(db.updateState.lastCheck! >= updateStart);
-    assert.isTrue(db.updateState.lastCheck! <= updateEnd);
+    assert.withinTime(updateStart, db.updateState.lastCheck!, updateEnd);
   });
 
   it('should ignore redundant calls to update', async () => {
