@@ -5,7 +5,7 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "jsxFactory": "h",
-    "lib": ["dom", "dom.iterable", "es2017", "es2017.object"],
+    "lib": ["dom", "dom.iterable", "es2017", "es2017.object", "webworker"],
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,

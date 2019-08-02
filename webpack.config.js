@@ -7,9 +7,10 @@ const prod = mode === 'production';
 module.exports = {
   entry: {
     kanjichamp: ['./src/main.tsx'],
+    'db-worker': ['./src/db-worker.ts'],
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js'],
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -20,11 +21,6 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/,
       },

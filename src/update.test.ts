@@ -395,7 +395,7 @@ function mockStream(
   ...events: Array<DownloadEvent>
 ): ReadableStream<DownloadEvent> {
   return new ReadableStream({
-    start(controller) {
+    start(controller: ReadableStreamDefaultController<DownloadEvent>) {
       for (const event of events) {
         controller.enqueue(event);
       }

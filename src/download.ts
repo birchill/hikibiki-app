@@ -130,7 +130,7 @@ export function download({
   const abortController = new AbortController();
 
   return new ReadableStream({
-    async start(controller) {
+    async start(controller: ReadableStreamDefaultController<DownloadEvent>) {
       // Get the latest version info
       let versionInfo: VersionInfo;
       try {
@@ -392,7 +392,7 @@ function isEntryLine(a: any): a is EntryLine {
     typeof a.rad === 'object' &&
     a.rad !== null &&
     typeof a.rad.x === 'number' &&
-    (typeof a.rad.nelson === 'undefined' || a.rad.nelson === 'number') &&
+    (typeof a.rad.nelson === 'undefined' || typeof a.rad.nelson === 'number') &&
     (typeof a.rad.name === 'undefined' || isArrayOfStrings(a.rad.name)) &&
     // refs
     typeof a.refs === 'object' &&

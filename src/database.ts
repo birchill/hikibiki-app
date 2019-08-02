@@ -77,15 +77,12 @@ export class KanjiDatabase {
         wroteSomething = true;
         this.updateDbVersion(action.version);
       }
-      // TODO: In future this should probably dispatch some event sharing the
-      // updated state
     };
 
     await this.ready;
 
     // Check if we have been canceled while waiting to become ready
     if (!this.inProgressUpdate) {
-      // TODO: Make sure we notify observers in this case
       reducer({ type: 'abort', checkDate: null });
       throw new Error('AbortError');
     }

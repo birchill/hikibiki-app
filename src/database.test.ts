@@ -230,8 +230,6 @@ describe('database', () => {
     assert.isDefined(db.updateState.lastCheck);
   });
 
-  // XXX Events / Observer notifications whenever updateState or state is
-  //     updated
   // XXX Check for out-of-date state (not sure exactly when this happens)
   // XXX Offline handling
 });

@@ -1,5 +1,5 @@
 import { UpdateAction } from './update-actions';
-import { UpdateState, UpdatingUpdateState } from './update-state';
+import { UpdateState } from './update-state';
 
 export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
   switch (action.type) {
@@ -22,12 +22,19 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
 
     case 'progress':
       console.assert(
-        state.state === 'updating',
-        'Should only get a progress action when we are updating'
+        state.state === 'updating' || state.state === 'checking',
+        'Should only get a progress action when we are updating or checking'
       );
+
+      // We don't bother reporting progress while we are downloading the version
+      // file.
+      if (state.state !== 'updating') {
+        return state;
+      }
+
       return {
         state: 'updating',
-        downloadVersion: (state as UpdatingUpdateState).downloadVersion,
+        downloadVersion: state.downloadVersion,
         progress: action.total ? action.loaded / action.total : undefined,
         lastCheck: state.lastCheck,
       };
