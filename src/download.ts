@@ -479,9 +479,22 @@ async function* getEvents({
     );
   }
 
-  // The server needs to send CORS header "Access-Control-Expose-Headers:
-  // content-length" in order for us to be able to get this.
-  const contentLengthStr = response.headers.get('content-length');
+  // Try to determine the size of the content. Normally we'd use the
+  // Content-Length header for this, but the byte sizes we get here will
+  // correspond to the decompressed size so we actually want to use that
+  // decompressed size of the content.
+  //
+  // For gzipped content we upload we set an x-amz-meta-content-size header with
+  // this value.
+  //
+  // Note that in order for the following to work, the server will need to send:
+  //
+  //   Access-Control-Expose-Headers: Content-Length, Content-Encoding, x-amz-meta-content-size
+  //
+  const isCompressed = response.headers.get('content-encoding') === 'gzip';
+  const contentLengthStr = isCompressed
+    ? response.headers.get('x-amz-meta-content-size')
+    : response.headers.get('content-length');
   const contentLength =
     contentLengthStr === null ? null : parseInt(contentLengthStr, 10);
 
