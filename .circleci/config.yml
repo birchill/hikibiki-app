@@ -36,3 +36,7 @@ jobs:
           # Limit the number of workers to avoid out of memory issues
           # See: https://discuss.circleci.com/t/memory-problems-with-jest-and-workers/10297/3
           command: npm test
+
+      - run:
+          name: Verify storybook setup
+          command: npm run build:storybook

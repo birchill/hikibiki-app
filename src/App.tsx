@@ -1,12 +1,14 @@
 import { h, Component } from 'preact';
 
-import { DownloadState } from './DownloadState';
-import { DatabaseStatus } from './DatabaseStatus';
+import { DatabaseStatus } from './components/DatabaseStatus';
 import { updateDb, WorkerMessage } from './worker-messages';
-
-const downloadState = DownloadState.Initializing;
+import { DatabaseState } from './database';
+import { UpdateState } from './update-state';
 
 const dbWorker = new Worker('db-worker.js');
+
+let databaseState: DatabaseState = DatabaseState.Initializing;
+let updateState: UpdateState = { state: 'idle', lastCheck: null };
 
 dbWorker.onmessage = (evt: MessageEvent) => {
   switch ((evt.data as WorkerMessage).type) {
@@ -37,6 +39,8 @@ window.requestIdleCallback(
 
 export class App extends Component {
   render() {
-    return <DatabaseStatus downloadState={downloadState} />;
+    return (
+      <DatabaseStatus databaseState={databaseState} updateState={updateState} />
+    );
   }
 }

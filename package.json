@@ -4,10 +4,14 @@
   "description": "Lists of kanji. That is all.",
   "main": "src/main.tsx",
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@storybook/preact": "^5.1.10",
     "@types/chai": "^4.1.7",
     "@types/chai-datetime": "0.0.32",
     "@types/fetch-mock": "^7.3.1",
     "@types/mocha": "^5.2.7",
+    "@types/storybook__preact": "^5.0.1",
+    "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "chai-datetime": "^1.5.0",
     "cross-env": "^5.2.0",
@@ -34,7 +38,9 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack-dev-server --content-base public",
-    "test": "karma start --single-run"
+    "test": "karma start --single-run",
+    "storybook": "start-storybook -p 9001 -c .storybook -s public",
+    "build:storybook": "build-storybook -c .storybook -s public"
   },
   "repository": {
     "type": "git",
