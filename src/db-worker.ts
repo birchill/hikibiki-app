@@ -1,5 +1,4 @@
 import { KanjiDatabase } from './database';
-import { toCloneable } from './update-state';
 import {
   notifyDbStateUpdated,
   notifyUpdateStateUpdated,
@@ -9,6 +8,13 @@ import {
 declare var self: DedicatedWorkerGlobalScope;
 
 const db = new KanjiDatabase();
+
+// Do the initial state update once we have loaded the database
+
+db.ready.then(() => {
+  self.postMessage(notifyDbStateUpdated(db.state));
+  self.postMessage(notifyUpdateStateUpdated(db.updateState));
+});
 
 const proxyDb = new Proxy(db, {
   set: function(obj, prop, value) {
@@ -21,9 +27,7 @@ const proxyDb = new Proxy(db, {
           break;
 
         case 'updateState':
-          self.postMessage(
-            notifyUpdateStateUpdated(toCloneable(db.updateState))
-          );
+          self.postMessage(notifyUpdateStateUpdated(db.updateState));
           break;
       }
     } catch (e) {

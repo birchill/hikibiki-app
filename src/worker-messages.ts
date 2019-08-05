@@ -1,5 +1,5 @@
 import { DatabaseState } from './database';
-import { CloneableUpdateState } from './update-state';
+import { toCloneable, UpdateState } from './update-state';
 
 export const updateDb = () => ({
   type: 'update',
@@ -10,9 +10,9 @@ export const notifyDbStateUpdated = (state: DatabaseState) => ({
   state,
 });
 
-export const notifyUpdateStateUpdated = (state: CloneableUpdateState) => ({
+export const notifyUpdateStateUpdated = (state: UpdateState) => ({
   type: 'updatestateupdated',
-  state,
+  state: toCloneable(state),
 });
 
 export type WorkerMessage =
