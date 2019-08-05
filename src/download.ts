@@ -1,4 +1,4 @@
-import { KanjiEntry } from './common';
+import { DatabaseVersion, KanjiEntry } from './common';
 
 // Produces a ReadableStream of DownloadEvents
 //
@@ -25,7 +25,7 @@ export type VersionEvent = {
 export type ProgressEvent = {
   type: 'progress';
   loaded: number;
-  total: number | null;
+  total: number;
 };
 
 export type DownloadEvent =
@@ -94,9 +94,9 @@ export const enum DownloadErrorCode {
   VersionFileInvalid,
   DatabaseFileNotFound,
   DatabaseFileNotAccessible,
-  DatabaseFileVersionMissing,
+  DatabaseFileHeaderMissing,
+  DatabaseFileHeaderDuplicate,
   DatabaseFileVersionMismatch,
-  DatabaseFileVersionDuplicate,
   DatabaseFileInvalidJSON,
   DatabaseFileInvalidRecord,
   DatabaseFileDeletionInSnapshot,
@@ -343,24 +343,25 @@ async function getVersionInfo({
   return versionInfo;
 }
 
-type VersionLine = {
-  type: 'version';
-  major: number;
-  minor: number;
-  patch: number;
-  databaseVersion: string;
-  dateOfCreation: string;
+type HeaderLine = {
+  type: 'header';
+  version: DatabaseVersion;
+  records: number;
 };
 
-function isVersionLine(a: any): a is VersionLine {
+function isHeaderLine(a: any): a is HeaderLine {
   return (
     typeof a === 'object' &&
     a !== null &&
-    typeof a.major === 'number' &&
-    typeof a.minor === 'number' &&
-    typeof a.patch === 'number' &&
-    typeof a.databaseVersion === 'string' &&
-    typeof a.dateOfCreation === 'string'
+    typeof a.type === 'string' &&
+    a.type === 'header' &&
+    typeof a.version === 'object' &&
+    typeof a.version.major === 'number' &&
+    typeof a.version.minor === 'number' &&
+    typeof a.version.patch === 'number' &&
+    typeof a.version.databaseVersion === 'string' &&
+    typeof a.version.dateOfCreation === 'string' &&
+    typeof a.records === 'number'
   );
 }
 
@@ -479,67 +480,47 @@ async function* getEvents({
     );
   }
 
-  // Try to determine the size of the content. Normally we'd use the
-  // Content-Length header for this, but the byte sizes we get here will
-  // correspond to the decompressed size so we actually want to use that
-  // decompressed size of the content.
-  //
-  // For gzipped content we upload we set an x-amz-meta-content-size header with
-  // this value.
-  //
-  // Note that in order for the following to work, the server will need to send:
-  //
-  //   Access-Control-Expose-Headers: Content-Length, Content-Encoding, x-amz-meta-content-size
-  //
-  const isCompressed = response.headers.get('content-encoding') === 'gzip';
-  const contentLengthStr = isCompressed
-    ? response.headers.get('x-amz-meta-content-size')
-    : response.headers.get('content-length');
-  const contentLength =
-    contentLengthStr === null ? null : parseInt(contentLengthStr, 10);
-
-  // Dispatch the first ProgressEvent. The caller can check if 'total' is null
-  // or not to determine if they should initialize any progress as an
-  // indeterminate state or a zero state.
-  yield { type: 'progress', loaded: 0, total: contentLength };
-
-  let versionRead = false;
+  let headerRead = false;
   let lastProgressPercent = 0;
+  let recordsRead = 0;
+  let totalRecords = 0;
 
-  for await (const [line, bytesRead] of ljsonStreamIterator(response.body)) {
-    if (isVersionLine(line)) {
-      if (versionRead) {
+  for await (const line of ljsonStreamIterator(response.body)) {
+    if (isHeaderLine(line)) {
+      if (headerRead) {
         throw new DownloadError(
-          DownloadErrorCode.DatabaseFileVersionDuplicate,
-          `Expected database version but got ${JSON.stringify(line)}`
+          DownloadErrorCode.DatabaseFileHeaderDuplicate,
+          `Got duplicate database header: ${JSON.stringify(line)}`
         );
       }
 
-      if (compareVersions(line, version) !== 0) {
+      if (compareVersions(line.version, version) !== 0) {
         throw new DownloadError(
           DownloadErrorCode.DatabaseFileVersionMismatch,
-          `Expected database version but got ${JSON.stringify(line)}`
+          `Got mismatched database versions (Expected: ${JSON.stringify(
+            version
+          )} got: ${JSON.stringify(line.version)})`
         );
       }
 
       const versionEvent: VersionEvent = {
+        ...line.version,
         type: 'version',
-        major: line.major,
-        minor: line.minor,
-        patch: line.patch,
-        databaseVersion: line.databaseVersion,
-        dateOfCreation: line.dateOfCreation,
         partial: fileType === 'patch',
       };
       yield versionEvent;
-      versionRead = true;
+
+      totalRecords = line.records;
+      headerRead = true;
     } else {
-      if (!versionRead) {
+      if (!headerRead) {
         throw new DownloadError(
-          DownloadErrorCode.DatabaseFileVersionMissing,
+          DownloadErrorCode.DatabaseFileHeaderMissing,
           `Expected database version but got ${JSON.stringify(line)}`
         );
       }
+
+      recordsRead++;
 
       if (isEntryLine(line)) {
         const entryEvent: EntryEvent = {
@@ -579,23 +560,22 @@ async function* getEvents({
 
     // Dispatch a new ProgressEvent if we have passed the appropriate threshold
     if (
-      contentLength &&
-      bytesRead / contentLength - lastProgressPercent > maxProgressResolution
+      totalRecords &&
+      recordsRead / totalRecords - lastProgressPercent > maxProgressResolution
     ) {
-      lastProgressPercent = bytesRead / contentLength;
-      yield { type: 'progress', loaded: bytesRead, total: contentLength };
+      lastProgressPercent = recordsRead / totalRecords;
+      yield { type: 'progress', loaded: recordsRead, total: totalRecords };
     }
   }
 }
 
 async function* ljsonStreamIterator(
   stream: ReadableStream<Uint8Array>
-): AsyncIterableIterator<[object, number]> {
+): AsyncIterableIterator<object> {
   const reader = stream.getReader();
   const lineEnd = /\n|\r|\r\n/m;
   const decoder = new TextDecoder('utf-8');
   let buffer = '';
-  let bytesRead = 0;
 
   const parseLine = (line: string): any => {
     let json;
@@ -629,7 +609,7 @@ async function* ljsonStreamIterator(
     if (done) {
       buffer += decoder.decode();
       if (buffer) {
-        yield [parseLine(buffer), bytesRead];
+        yield parseLine(buffer);
         buffer = '';
       }
 
@@ -640,26 +620,17 @@ async function* ljsonStreamIterator(
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split(lineEnd);
 
-    // This is pretty rough. The actual result could be different due to how
-    // much was in the buffer already and how much we leave in the buffer at the
-    // end.
-    const bytesPerLine = value.byteLength / lines.length;
-
     // We don't know if the last line is actually the last line of the
     // input or not until we get done: true so we just assume it is
     // a partial line for now.
     buffer = lines.length ? lines.splice(lines.length - 1, 1)[0] : '';
 
-    for (const [i, line] of lines.entries()) {
+    for (const line of lines) {
       if (!line) {
         continue;
       }
 
-      yield [parseLine(line), bytesRead + (i + 1) * bytesPerLine];
+      yield parseLine(line);
     }
-
-    // We add the actual number of bytes read here so we don't accumulate
-    // error from our rough estimate above.
-    bytesRead += value.byteLength;
   }
 }

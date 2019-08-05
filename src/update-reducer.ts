@@ -35,7 +35,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
       return {
         state: 'updating',
         downloadVersion: state.downloadVersion,
-        progress: action.total ? action.loaded / action.total : undefined,
+        progress: action.total ? action.loaded / action.total : 0,
         lastCheck: state.lastCheck,
       };
 

@@ -51,7 +51,7 @@ describe('database', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
 
@@ -71,7 +71,7 @@ describe('database', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
 
@@ -88,7 +88,7 @@ describe('database', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
 
@@ -139,7 +139,7 @@ describe('database', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"}`
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}`
     );
 
     const update = db.update();
@@ -205,7 +205,7 @@ describe('database', () => {
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 `
     );

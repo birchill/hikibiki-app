@@ -29,7 +29,7 @@ export type CheckingUpdateState = {
 export type UpdatingUpdateState = {
   state: 'updating';
   downloadVersion: DatabaseVersion | undefined;
-  progress: number | undefined;
+  progress: number;
   lastCheck: Date | null;
 };
 

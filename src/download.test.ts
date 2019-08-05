@@ -30,7 +30,7 @@ describe('download', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
     const reader = download().getReader();
@@ -165,7 +165,7 @@ describe('download', () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
 
@@ -188,7 +188,7 @@ describe('download', () => {
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
 `
@@ -225,7 +225,7 @@ describe('download', () => {
     });
   });
 
-  it('should fail if no version record appears', async () => {
+  it('should fail if no header record appears', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
@@ -243,7 +243,7 @@ describe('download', () => {
       const [downloadError, events] = parseDrainError(e);
       assert.strictEqual(
         downloadError.code,
-        DownloadErrorCode.DatabaseFileVersionMissing
+        DownloadErrorCode.DatabaseFileHeaderMissing
       );
       assert.strictEqual(events.length, 0);
     }
@@ -268,19 +268,19 @@ describe('download', () => {
       const [downloadError, events] = parseDrainError(e);
       assert.strictEqual(
         downloadError.code,
-        DownloadErrorCode.DatabaseFileVersionMissing
+        DownloadErrorCode.DatabaseFileHeaderMissing
       );
       assert.strictEqual(events.length, 0);
     }
   });
 
-  it('should fail if multiple version records appear', async () => {
+  it('should fail if multiple header records appear', async () => {
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
 `
@@ -294,7 +294,7 @@ describe('download', () => {
       const [downloadError, events] = parseDrainError(e);
       assert.strictEqual(
         downloadError.code,
-        DownloadErrorCode.DatabaseFileVersionDuplicate
+        DownloadErrorCode.DatabaseFileHeaderDuplicate
       );
       assert.strictEqual(events.length, 1);
     }
@@ -354,7 +354,7 @@ describe('download', () => {
       fetchMock.mock(
         'end:kanji-rc-en-1.0.0-full.ljson',
         `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 ${entry}
 `
       );
@@ -388,7 +388,7 @@ ${entry}
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
       `
-{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":null,"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
 `
@@ -471,7 +471,7 @@ ${entry}
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.2-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"},"records":0}
 `
     );
 
@@ -501,7 +501,7 @@ ${entry}
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.2-patch.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"},"records":1}
 {"c":"鍋","deleted":true}`
     );
 
@@ -519,7 +519,7 @@ ${entry}
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","deleted":true}`
     );
@@ -544,7 +544,7 @@ ${entry}
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
     fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 404);
@@ -569,7 +569,7 @@ ${entry}
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
     fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 'yer');
@@ -594,12 +594,12 @@ ${entry}
     });
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
     fetchMock.mock(
       'end:kanji-rc-en-1.0.1-patch.ljson',
-      `{"type":"version","major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":2},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
 
@@ -762,7 +762,7 @@ ${entry}
     fetchMock.mock('end:kanji-rc-fr-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-fr-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
 
@@ -790,7 +790,7 @@ ${entry}
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}`
     );
@@ -814,7 +814,7 @@ ${entry}
     fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
       'end:kanji-rc-en-1.0.0-full.ljson',
-      `{"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":26}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
 {"c":"㐬","r":{},"m":["a cup with pendants","a pennant","wild","barren","uncultivated"],"rad":{"x":8},"refs":{},"misc":{"sc":7}}
@@ -857,9 +857,8 @@ ${entry}
     let previousLoaded = null;
     let previousTotal = null;
     for (const event of progressEvents) {
-      assert.isNumber(event.total);
       if (previousTotal) {
-        assert.strictEqual(event.total as number, previousTotal);
+        assert.strictEqual(event.total, previousTotal);
       } else {
         previousTotal = event.total;
       }
@@ -889,7 +888,7 @@ function mockAllDataFilesWithEmpty() {
     assert.isNotNull(matches);
     assert.strictEqual(matches!.length, 5);
     const [, major, minor, patch] = matches!;
-    return `{"type":"version","major":${major},"minor":${minor},"patch":${patch},"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}`;
+    return `{"type":"header","version":{"major":${major},"minor":${minor},"patch":${patch},"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}`;
   });
 }
 

@@ -20,7 +20,7 @@ export type StartDownloadUpdateAction = {
 export type ProgressUpdateAction = {
   type: 'progress';
   loaded: number;
-  total: number | null;
+  total: number;
 };
 
 export type FinishDownloadUpdateAction = {
