@@ -78,6 +78,11 @@ export async function update({
       return;
     }
 
+    callback({
+      type: 'finishdownload',
+      version: currentVersion,
+    });
+
     const versionRecord: DatabaseVersionRecord = {
       id: 1,
       ...currentVersion,
@@ -95,11 +100,6 @@ export async function update({
 
     recordsToPut = [];
     recordsToDelete = [];
-
-    callback({
-      type: 'finishdownload',
-      version: currentVersion,
-    });
 
     currentVersion = undefined;
     partialVersion = false;

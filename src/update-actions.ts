@@ -1,55 +1,55 @@
 import { DatabaseVersion } from './common';
 
-export type OfflineUpdateAction = {
+export type OfflineAction = {
   type: 'offline';
 };
 
-export type OnlineUpdateAction = {
+export type OnlineAction = {
   type: 'online';
 };
 
-export type StartUpdateAction = {
-  type: 'startupdate';
+export type StartAction = {
+  type: 'start';
 };
 
-export type StartDownloadUpdateAction = {
+export type StartDownloadAction = {
   type: 'startdownload';
   version: DatabaseVersion;
 };
 
-export type ProgressUpdateAction = {
+export type ProgressAction = {
   type: 'progress';
   loaded: number;
   total: number;
 };
 
-export type FinishDownloadUpdateAction = {
+export type FinishDownloadAction = {
   type: 'finishdownload';
   version: DatabaseVersion;
 };
 
-export type FinishUpdateAction = {
+export type FinishAction = {
   type: 'finish';
   checkDate: Date;
 };
 
-export type AbortUpdateAction = {
+export type AbortAction = {
   type: 'abort';
   checkDate: Date | null;
 };
 
-export type ErrorUpdateAction = {
+export type ErrorAction = {
   type: 'error';
   error: Error;
 };
 
 export type UpdateAction =
-  | OfflineUpdateAction
-  | OnlineUpdateAction
-  | StartUpdateAction
-  | StartDownloadUpdateAction
-  | ProgressUpdateAction
-  | FinishDownloadUpdateAction
-  | FinishUpdateAction
-  | AbortUpdateAction
-  | ErrorUpdateAction;
+  | OfflineAction
+  | OnlineAction
+  | StartAction
+  | StartDownloadAction
+  | ProgressAction
+  | FinishDownloadAction
+  | FinishAction
+  | AbortAction
+  | ErrorAction;

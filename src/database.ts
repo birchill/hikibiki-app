@@ -90,7 +90,7 @@ export class KanjiDatabase {
     const checkDate = new Date();
 
     try {
-      reducer({ type: 'startupdate' });
+      reducer({ type: 'start' });
 
       const downloadStream = await download({
         maxSupportedMajorVersion: 1,

@@ -15,21 +15,29 @@ export type IdleUpdateState = {
   lastCheck: Date | null;
 };
 
-// We have started the download process yet but we don't know yet whether
+// We are still downloading the version metadata so we don't know yet whether
 // or not we are up-to-date.
 export type CheckingUpdateState = {
   state: 'checking';
   lastCheck: Date | null;
 };
 
-// Downloading / applying an update.
+// Downloading an update.
 // - The `downloadVersion` value specifies the version we are currently
 //   downloading.
 // - The `progress` value specifies how far we are through the update.
-export type UpdatingUpdateState = {
-  state: 'updating';
-  downloadVersion: DatabaseVersion | undefined;
+export type DownloadingUpdateState = {
+  state: 'downloading';
+  downloadVersion: DatabaseVersion;
   progress: number;
+  lastCheck: Date | null;
+};
+
+// Downloading has finished and we are now applying an update to the local
+// database.
+export type UpdatingDbUpdateState = {
+  state: 'updatingdb';
+  downloadVersion: DatabaseVersion;
   lastCheck: Date | null;
 };
 
@@ -44,7 +52,8 @@ export type UpdateState =
   | OfflineUpdateState
   | IdleUpdateState
   | CheckingUpdateState
-  | UpdatingUpdateState
+  | DownloadingUpdateState
+  | UpdatingDbUpdateState
   | ErrorUpdateState;
 
 // Error objects can't be cloned so we provide a variation that is suitable for
@@ -64,7 +73,8 @@ export type CloneableUpdateState =
   | OfflineUpdateState
   | IdleUpdateState
   | CheckingUpdateState
-  | UpdatingUpdateState
+  | DownloadingUpdateState
+  | UpdatingDbUpdateState
   | CloneableErrorUpdateState;
 
 // Turn the object into something we can postMessage
