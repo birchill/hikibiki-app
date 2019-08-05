@@ -26,10 +26,5 @@ module.exports = {
     ],
   },
   mode,
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
-  ],
   devtool: prod ? false : 'source-map',
 };
