@@ -1,3 +1,4 @@
+import { DatabaseVersion } from './common';
 import { DatabaseState } from './database';
 import { toCloneable, UpdateState } from './update-state';
 
@@ -10,6 +11,11 @@ export const notifyDbStateUpdated = (state: DatabaseState) => ({
   state,
 });
 
+export const notifyDbVersionUpdated = (version?: DatabaseVersion) => ({
+  type: 'dbversionupdated',
+  version,
+});
+
 export const notifyUpdateStateUpdated = (state: UpdateState) => ({
   type: 'updatestateupdated',
   state: toCloneable(state),
@@ -18,4 +24,5 @@ export const notifyUpdateStateUpdated = (state: UpdateState) => ({
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
   | ReturnType<typeof notifyDbStateUpdated>
+  | ReturnType<typeof notifyDbVersionUpdated>
   | ReturnType<typeof notifyUpdateStateUpdated>;
