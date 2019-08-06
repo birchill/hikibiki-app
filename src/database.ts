@@ -137,7 +137,11 @@ export class KanjiDatabase {
   }
 
   async destroy() {
-    return this.store.destroy();
+    await this.store.destroy();
+    this.store = new KanjiStore();
+    this.state = DatabaseState.Empty;
+    this.updateState = { state: 'idle', lastCheck: null };
+    this.dbVersion = undefined;
   }
 
   // XXX Check for offline events?

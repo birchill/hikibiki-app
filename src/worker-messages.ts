@@ -6,6 +6,14 @@ export const updateDb = () => ({
   type: 'update',
 });
 
+export const cancelDbUpdate = () => ({
+  type: 'cancelupdate',
+});
+
+export const destroyDb = () => ({
+  type: 'destroy',
+});
+
 export const notifyDbStateUpdated = (state: DatabaseState) => ({
   type: 'dbstateupdated',
   state,
@@ -23,6 +31,8 @@ export const notifyUpdateStateUpdated = (state: UpdateState) => ({
 
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
+  | ReturnType<typeof cancelDbUpdate>
+  | ReturnType<typeof destroyDb>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof notifyDbVersionUpdated>
   | ReturnType<typeof notifyUpdateStateUpdated>;

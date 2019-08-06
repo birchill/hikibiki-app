@@ -8,6 +8,9 @@ type Props = {
   databaseState: DatabaseState;
   databaseVersion?: DatabaseVersion;
   updateState: CloneableUpdateState;
+  onUpdate?: () => void;
+  onCancel?: () => void;
+  onDestroy?: () => void;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -49,7 +52,9 @@ function renderBody(props: Props) {
           {renderDatabaseSummary(props)}
           <div class="status-with-button">
             <div class="status-line">{status}</div>
-            <button class="primary">Check for updates</button>
+            <button class="primary" onClick={props.onUpdate}>
+              Check for updates
+            </button>
           </div>
         </div>
       );
@@ -59,7 +64,7 @@ function renderBody(props: Props) {
       return (
         <div class="status-with-button">
           <div class="status-line">Checking for updates&hellip;</div>
-          <button>Cancel</button>
+          <button onClick={props.onCancel}>Cancel</button>
         </div>
       );
 
@@ -77,7 +82,7 @@ function renderBody(props: Props) {
               <label for="update-progress">{label}&hellip;</label>
             </div>
           </div>
-          <button>Cancel</button>
+          <button onClick={props.onCancel}>Cancel</button>
         </div>
       );
     }
@@ -106,7 +111,9 @@ function renderBody(props: Props) {
             <div class="error-message">
               Update failed: {updateState.error.message}
             </div>
-            <button class="primary">Retry</button>
+            <button class="primary" onClick={props.onUpdate}>
+              Retry
+            </button>
           </div>
         </div>
       );

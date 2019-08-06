@@ -51,5 +51,13 @@ onmessage = (evt: MessageEvent) => {
     case 'update':
       proxyDb.update();
       break;
+
+    case 'cancelupdate':
+      proxyDb.cancelUpdate();
+      break;
+
+    case 'destroy':
+      proxyDb.destroy();
+      break;
   }
 };

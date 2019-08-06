@@ -9,6 +9,9 @@ type Props = {
   databaseState: DatabaseState;
   databaseVersion?: DatabaseVersion;
   updateState: CloneableUpdateState;
+  onUpdateDb?: () => void;
+  onCancelDbUpdate?: () => void;
+  onDestroyDb?: () => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
@@ -17,6 +20,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       databaseState={props.databaseState}
       databaseVersion={props.databaseVersion}
       updateState={props.updateState}
+      onUpdate={props.onUpdateDb}
+      onCancel={props.onCancelDbUpdate}
+      onDestroy={props.onDestroyDb}
     />
   );
 };
