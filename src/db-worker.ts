@@ -47,6 +47,12 @@ const proxyDb = new Proxy(db, {
 });
 
 onmessage = (evt: MessageEvent) => {
+  // We seem to get random events here occasionally. Not sure where they come
+  // from.
+  if (!evt.data) {
+    return;
+  }
+
   switch ((evt.data as WorkerMessage).type) {
     case 'update':
       proxyDb.update();
