@@ -152,15 +152,16 @@ export class KanjiDatabase {
     }
 
     const ids = kanji.map(kanji => kanji.codePointAt(0)!);
-    const records = await this.store.kanji
-      .where('c')
-      .anyOf(ids)
-      .toArray();
+    const records = await this.store.kanji.bulkGet(ids);
 
-    return records.map((record: KanjiRecord) => ({
-      ...record,
-      c: String.fromCodePoint(record.c),
-    }));
+    return records
+      .filter(
+        (record: KanjiRecord | undefined) => typeof record !== 'undefined'
+      )
+      .map((record: KanjiRecord) => ({
+        ...record,
+        c: String.fromCodePoint(record.c),
+      }));
   }
 
   // XXX Check for offline events?

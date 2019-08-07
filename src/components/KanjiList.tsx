@@ -29,7 +29,7 @@ function renderEntry(entry: KanjiEntry): JSX.Element {
         target="_blank"
         rel="noreferrer noopener"
       >
-        KanjiAlive
+        Kanji alive
       </a>
     </div>
   );
