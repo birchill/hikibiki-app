@@ -118,8 +118,10 @@ export async function update({
     const { done, value } = readResult;
 
     if (done) {
-      await finishCurrentVersion();
-      inProgressUpdates.delete(store);
+      if (inProgressUpdates.has(store)) {
+        await finishCurrentVersion();
+        inProgressUpdates.delete(store);
+      }
       return;
     }
 
@@ -167,6 +169,7 @@ export function cancelUpdate(store: KanjiStore): boolean {
     return false;
   }
 
+  inProgressUpdates.delete(store);
   reader.cancel();
   return true;
 }
