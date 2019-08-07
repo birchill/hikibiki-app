@@ -1,6 +1,6 @@
-import { DatabaseVersion } from './common';
+import { DatabaseVersion, KanjiEntry } from './common';
 import { download } from './download';
-import { KanjiStore } from './store';
+import { KanjiStore, KanjiRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
 import { reducer as updateReducer } from './update-reducer';
@@ -142,6 +142,25 @@ export class KanjiDatabase {
     this.state = DatabaseState.Empty;
     this.updateState = { state: 'idle', lastCheck: null };
     this.dbVersion = undefined;
+  }
+
+  async getKanji(kanji: Array<string>): Promise<Array<KanjiEntry>> {
+    await this.ready;
+
+    if (this.state !== DatabaseState.Ok) {
+      return [];
+    }
+
+    const ids = kanji.map(kanji => kanji.codePointAt(0)!);
+    const records = await this.store.kanji
+      .where('c')
+      .anyOf(ids)
+      .toArray();
+
+    return records.map((record: KanjiRecord) => ({
+      ...record,
+      c: String.fromCodePoint(record.c),
+    }));
   }
 
   // XXX Check for offline events?

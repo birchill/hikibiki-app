@@ -2,6 +2,7 @@ import { KanjiDatabase } from './database';
 import {
   notifyDbStateUpdated,
   notifyDbVersionUpdated,
+  notifyQueryResult,
   notifyUpdateStateUpdated,
   WorkerMessage,
 } from './worker-messages';
@@ -65,5 +66,10 @@ onmessage = (evt: MessageEvent) => {
     case 'destroy':
       proxyDb.destroy();
       break;
+
+    case 'query':
+      proxyDb.getKanji(evt.data.kanji).then(result => {
+        self.postMessage(notifyQueryResult(result));
+      });
   }
 };

@@ -1,4 +1,4 @@
-import { DatabaseVersion } from './common';
+import { DatabaseVersion, KanjiEntry } from './common';
 import { DatabaseState } from './database';
 import { toCloneable, UpdateState } from './update-state';
 
@@ -12,6 +12,11 @@ export const cancelDbUpdate = () => ({
 
 export const destroyDb = () => ({
   type: 'destroy',
+});
+
+export const query = ({ kanji }: { kanji: Array<string> }) => ({
+  type: 'query',
+  kanji,
 });
 
 export const notifyDbStateUpdated = (state: DatabaseState) => ({
@@ -29,10 +34,17 @@ export const notifyUpdateStateUpdated = (state: UpdateState) => ({
   state: toCloneable(state),
 });
 
+export const notifyQueryResult = (entries: Array<KanjiEntry>) => ({
+  type: 'queryresult',
+  entries,
+});
+
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
+  | ReturnType<typeof query>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof notifyDbVersionUpdated>
-  | ReturnType<typeof notifyUpdateStateUpdated>;
+  | ReturnType<typeof notifyUpdateStateUpdated>
+  | ReturnType<typeof notifyQueryResult>;

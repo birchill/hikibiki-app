@@ -10,9 +10,10 @@ body {
   margin: 0;
   padding: 8px;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: 'Noto Sans Japanese', 'ヒラギノ角ゴ Pro W3',
+    'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, Osaka, 'ＭＳ Ｐゴシック',
+    'MS PGothic', sans-serif;
   font-size: 18px;
-
   margin: 50px auto 0;
   max-width: 800px;
 }
@@ -68,6 +69,39 @@ button:active {
 
 button:focus {
   border-color: #666;
+}
+
+/***********************************************************************
+ *
+ * Kanji list
+ *
+ ***********************************************************************/
+
+.kanji-list {
+  background: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px 0px;
+}
+
+.kanji-list > .kanji-entry {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  line-height: 1.5;
+}
+
+.kanji-list > .kanji-entry + .kanji-entry {
+  border-top: 3px dotted hsl(208, 0%, 80%);
+  padding-top: 20px;
+}
+
+.kanji-list > .kanji-entry > .kanji {
+  font-size: 50px;
+}
+
+.kanji-list + .database-status {
+  margin-top: 30px;
 }
 
 /***********************************************************************
