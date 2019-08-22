@@ -13,13 +13,15 @@ import {
 mocha.setup('bdd');
 
 const VERSION_1_0_0 = {
-  latest: {
-    major: 1,
-    minor: 0,
-    patch: 0,
-    snapshot: 0,
-    databaseVersion: '175',
-    dateOfCreation: '2019-07-09',
+  kanjidb: {
+    latest: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    },
   },
 };
 
@@ -27,9 +29,9 @@ describe('download', () => {
   afterEach(fetchMock.restore);
 
   it('should download the initial version information', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
@@ -50,7 +52,7 @@ describe('download', () => {
   });
 
   it('should fail if there is no version file available', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', 404);
+    fetchMock.mock('end:jpdict-rc-en-version.json', 404);
 
     const reader = download().getReader();
     try {
@@ -83,7 +85,7 @@ describe('download', () => {
   }
 
   it('should fail if the version file is corrupt', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', 'yer');
+    fetchMock.mock('end:jpdict-rc-en-version.json', 'yer');
 
     const reader = download().getReader();
     try {
@@ -100,13 +102,15 @@ describe('download', () => {
   });
 
   it('should fail if the version file is missing required fields', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          major: 1,
+          patch: 0,
+          snapshot: 0,
+          databaseVersion: '175',
+          dateOfCreation: '2019-07-09',
+        },
       },
     });
 
@@ -125,8 +129,8 @@ describe('download', () => {
   });
 
   it('should fail if the version file has invalid fields', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0, major: 0 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, major: 0 } },
     });
 
     const reader = download().getReader();
@@ -144,8 +148,8 @@ describe('download', () => {
   });
 
   it('should fail if the base snapshot is not available', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
-    fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', 404);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:kanjidb-rc-en-1.0.0-full.ljson', 404);
 
     const reader = download().getReader();
     try {
@@ -162,9 +166,9 @@ describe('download', () => {
   });
 
   it('should fail if the version of the base snapshot does not match', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
@@ -184,9 +188,9 @@ describe('download', () => {
   });
 
   it('should download the base snapshot', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
@@ -226,9 +230,9 @@ describe('download', () => {
   });
 
   it('should fail if no header record appears', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
@@ -250,9 +254,9 @@ describe('download', () => {
   });
 
   it('should fail if the version appears mid-stream', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"type":"version","major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"}
@@ -275,9 +279,9 @@ describe('download', () => {
   });
 
   it('should fail if multiple header records appear', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
@@ -350,9 +354,9 @@ describe('download', () => {
 
     for (const entry of invalidEntries) {
       fetchMock.restore();
-      fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+      fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
       fetchMock.mock(
-        'end:kanji-rc-en-1.0.0-full.ljson',
+        'end:kanjidb-rc-en-1.0.0-full.ljson',
         `
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 ${entry}
@@ -375,18 +379,20 @@ ${entry}
   });
 
   it('should still return entries prior to invalid ones', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        major: 1,
-        minor: 0,
-        patch: 0,
-        snapshot: 0,
-        databaseVersion: '175',
-        dateOfCreation: '2019-07-09',
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          major: 1,
+          minor: 0,
+          patch: 0,
+          snapshot: 0,
+          databaseVersion: '175',
+          dateOfCreation: '2019-07-09',
+        },
       },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
@@ -411,10 +417,12 @@ ${entry}
   });
 
   it('should fetch subsequent patches', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 2,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 2,
+        },
       },
     });
     mockAllDataFilesWithEmpty();
@@ -422,24 +430,26 @@ ${entry}
     await drainEvents(download().getReader());
 
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
       'Should get baseline'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.1-patch.ljson'),
       'Should get first patch'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.2-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.2-patch.ljson'),
       'Should get second patch'
     );
   });
 
   it('should fetch appropriate patches when a current version is supplied', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 2,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 2,
+        },
       },
     });
     mockAllDataFilesWithEmpty();
@@ -449,28 +459,30 @@ ${entry}
     );
 
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
       'Should NOT get baseline'
     );
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.1-patch.ljson'),
       'Should NOT get first patch'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.2-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.2-patch.ljson'),
       'Should get second patch'
     );
   });
 
   it('sets the partial field appropriately for patches', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 2,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 2,
+        },
       },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.2-patch.ljson',
+      'end:kanjidb-rc-en-1.0.2-patch.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"},"records":0}
 `
     );
@@ -493,14 +505,16 @@ ${entry}
   });
 
   it('reports deletion events', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 2,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 2,
+        },
       },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.2-patch.ljson',
+      'end:kanjidb-rc-en-1.0.2-patch.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":2,"databaseVersion":"2019-175","dateOfCreation":"2019-06-24"},"records":1}
 {"c":"鍋","deleted":true}`
     );
@@ -516,9 +530,9 @@ ${entry}
   });
 
   it('should fail if there are deletion records in a full file', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","deleted":true}`
@@ -539,15 +553,15 @@ ${entry}
   });
 
   it('should fail if one of the patch is missing', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
-    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 404);
+    fetchMock.mock('end:kanjidb-rc-en-1.0.1-patch.ljson', 404);
 
     const reader = download().getReader();
     try {
@@ -564,15 +578,15 @@ ${entry}
   });
 
   it('should fail if one of the patches is corrupt', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
-    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', 'yer');
+    fetchMock.mock('end:kanjidb-rc-en-1.0.1-patch.ljson', 'yer');
 
     const reader = download().getReader();
     try {
@@ -589,16 +603,16 @@ ${entry}
   });
 
   it('should fail if one of the patches has a mismatched header', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.1-patch.ljson',
+      'end:kanjidb-rc-en-1.0.1-patch.ljson',
       `{"type":"header","version":{"major":1,"minor":1,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":2},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
@@ -618,11 +632,13 @@ ${entry}
   });
 
   it('should download from the closest snapshot when no current version is supplied', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 7,
-        snapshot: 5,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 7,
+          snapshot: 5,
+        },
       },
     });
     mockAllDataFilesWithEmpty();
@@ -630,30 +646,30 @@ ${entry}
     await drainEvents(download().getReader());
 
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
       'Should NOT get baseline'
     );
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.5-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.5-patch.ljson'),
       'Should NOT get patch corresponding to snapshot'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.5-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.5-full.ljson'),
       'Should get snapshot'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.6-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.6-patch.ljson'),
       'Should get first patch'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.0.7-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.7-patch.ljson'),
       'Should get second patch'
     );
   });
 
   it('should fail when the latest version is less than the current version', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
     });
 
     const reader = download({
@@ -669,8 +685,8 @@ ${entry}
   });
 
   it('should do nothing when the latest version equals the current version', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, patch: 1 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
     });
 
     const reader = download({
@@ -682,8 +698,15 @@ ${entry}
   });
 
   it('should re-download from the latest snapshot when there is a new minor version', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: { ...VERSION_1_0_0.latest, minor: 2, patch: 11, snapshot: 10 },
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          minor: 2,
+          patch: 11,
+          snapshot: 10,
+        },
+      },
     });
     mockAllDataFilesWithEmpty();
 
@@ -693,23 +716,25 @@ ${entry}
     await drainEvents(reader);
 
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.2.10-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.2.10-full.ljson'),
       'Should get snapshot'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-1.2.11-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.2.11-patch.ljson'),
       'Should get first patch'
     );
   });
 
   it('should re-download from the latest snapshot when there is a new major version we support', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        major: 3,
-        minor: 0,
-        patch: 11,
-        snapshot: 10,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          major: 3,
+          minor: 0,
+          patch: 11,
+          snapshot: 10,
+        },
       },
     });
     mockAllDataFilesWithEmpty();
@@ -721,23 +746,25 @@ ${entry}
     await drainEvents(reader);
 
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-3.0.10-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-3.0.10-full.ljson'),
       'Should get snapshot'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-en-3.0.11-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-3.0.11-patch.ljson'),
       'Should get first patch'
     );
   });
 
   it("should fail when there is a new major version we don't support", async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        major: 3,
-        minor: 0,
-        patch: 11,
-        snapshot: 10,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          major: 3,
+          minor: 0,
+          patch: 11,
+          snapshot: 10,
+        },
       },
     });
     mockAllDataFilesWithEmpty();
@@ -759,9 +786,9 @@ ${entry}
   });
 
   it('should request the appropriate language', async () => {
-    fetchMock.mock('end:kanji-rc-fr-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-fr-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-fr-1.0.0-full.ljson',
+      'end:kanjidb-rc-fr-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
@@ -769,27 +796,27 @@ ${entry}
     await drainEvents(download({ lang: 'fr' }).getReader());
 
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-version.json'),
+      fetchMock.called('end:jpdict-rc-en-version.json'),
       'Should NOT get en version'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-fr-version.json'),
+      fetchMock.called('end:jpdict-rc-fr-version.json'),
       'Should get fr version'
     );
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.0-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
       'Should NOT get en database file'
     );
     assert.isTrue(
-      fetchMock.called('end:kanji-rc-fr-1.0.0-full.ljson'),
+      fetchMock.called('end:kanjidb-rc-fr-1.0.0-full.ljson'),
       'Should get fr database file'
     );
   });
 
   it('should cancel any fetches if the download is canceled', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":2}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}`
@@ -811,9 +838,9 @@ ${entry}
   });
 
   it('should produce progress events', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":26}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}
@@ -882,7 +909,7 @@ ${entry}
 
 function mockAllDataFilesWithEmpty() {
   // (This needs to be updated to ignore the language)
-  const patchFileRegexp = /kanji-rc-en-(\d+).(\d+).(\d+)-(patch|full).ljson/;
+  const patchFileRegexp = /kanjidb-rc-en-(\d+).(\d+).(\d+)-(patch|full).ljson/;
   fetchMock.mock(patchFileRegexp, url => {
     const matches = url.match(patchFileRegexp);
     assert.isNotNull(matches);

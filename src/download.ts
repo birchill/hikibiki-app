@@ -39,40 +39,46 @@ const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
 // How many percentage should change before we dispatch a new progress event.
 const DEFAULT_MAX_PROGRESS_RESOLUTION = 0.05;
 
-type VersionInfo = {
-  latest: {
-    major: number;
-    minor: number;
-    patch: number;
-    snapshot: number;
-    databaseVersion: string;
-    dateOfCreation: string;
-  };
-};
+interface VersionInfo {
+  major: number;
+  minor: number;
+  patch: number;
+  snapshot: number;
+  databaseVersion: string;
+  dateOfCreation: string;
+}
 
-function isVersionInfo(a: any): a is VersionInfo {
+interface FullVersionInfo {
+  kanjidb: {
+    latest: VersionInfo;
+  };
+}
+
+function isFullVersionInfo(a: any): a is FullVersionInfo {
   return (
     typeof a === 'object' &&
     a !== null &&
-    typeof a.latest === 'object' &&
-    a.latest !== null &&
-    typeof a.latest.major === 'number' &&
-    typeof a.latest.minor === 'number' &&
-    typeof a.latest.patch === 'number' &&
-    typeof a.latest.snapshot === 'number' &&
-    typeof a.latest.databaseVersion === 'string' &&
-    typeof a.latest.dateOfCreation === 'string'
+    typeof a.kanjidb === 'object' &&
+    a.kanjidb !== null &&
+    typeof a.kanjidb.latest === 'object' &&
+    a.kanjidb.latest !== null &&
+    typeof a.kanjidb.latest.major === 'number' &&
+    typeof a.kanjidb.latest.minor === 'number' &&
+    typeof a.kanjidb.latest.patch === 'number' &&
+    typeof a.kanjidb.latest.snapshot === 'number' &&
+    typeof a.kanjidb.latest.databaseVersion === 'string' &&
+    typeof a.kanjidb.latest.dateOfCreation === 'string'
   );
 }
 
 function validateVersionInfo(versionInfo: VersionInfo): boolean {
   return (
-    versionInfo.latest.major >= 1 &&
-    versionInfo.latest.minor >= 0 &&
-    versionInfo.latest.patch >= 0 &&
-    versionInfo.latest.snapshot >= 0 &&
-    !!versionInfo.latest.databaseVersion.length &&
-    !!versionInfo.latest.dateOfCreation.length
+    versionInfo.major >= 1 &&
+    versionInfo.minor >= 0 &&
+    versionInfo.patch >= 0 &&
+    versionInfo.snapshot >= 0 &&
+    !!versionInfo.databaseVersion.length &&
+    !!versionInfo.dateOfCreation.length
   );
 }
 
@@ -146,17 +152,14 @@ export function download({
       }
 
       // Check the local database is not ahead of what we're about to download
-      if (
-        currentVersion &&
-        compareVersions(currentVersion, versionInfo.latest) > 0
-      ) {
+      if (currentVersion && compareVersions(currentVersion, versionInfo) > 0) {
         const versionToString = ({ major, minor, patch }: Version) =>
           `${major}.${minor}.${patch}`;
         controller.error(
           new DownloadError(
             DownloadErrorCode.DatabaseTooOld,
             `Database version (${versionToString(
-              versionInfo.latest
+              versionInfo
             )}) older than current version (${versionToString(currentVersion)})`
           )
         );
@@ -167,7 +170,7 @@ export function download({
       // Check the version we're about to download is supported
       if (
         typeof maxSupportedMajorVersion === 'number' &&
-        maxSupportedMajorVersion < versionInfo.latest.major
+        maxSupportedMajorVersion < versionInfo.major
       ) {
         const versionToString = ({ major, minor, patch }: Version) =>
           `${major}.${minor}.${patch}`;
@@ -175,7 +178,7 @@ export function download({
           new DownloadError(
             DownloadErrorCode.UnsupportedDatabaseVersion,
             `Database version (${versionToString(
-              versionInfo.latest
+              versionInfo
             )}) is not supported (supported version: ${maxSupportedMajorVersion})`
           )
         );
@@ -196,20 +199,20 @@ export function download({
         !currentVersion ||
         // Check for a change in minor version
         compareVersions(currentVersion, {
-          ...versionInfo.latest,
+          ...versionInfo,
           patch: 0,
         }) < 0
       ) {
-        currentPatch = versionInfo.latest.snapshot;
+        currentPatch = versionInfo.snapshot;
         try {
           for await (const event of getEvents({
             baseUrl,
             lang,
             maxProgressResolution,
             version: {
-              major: versionInfo.latest.major,
-              minor: versionInfo.latest.minor,
-              patch: versionInfo.latest.snapshot,
+              major: versionInfo.major,
+              minor: versionInfo.minor,
+              patch: versionInfo.snapshot,
             },
             fileType: 'full',
             signal: abortController.signal,
@@ -231,7 +234,7 @@ export function download({
       }
 
       // Do incremental updates
-      while (currentPatch < versionInfo.latest.patch) {
+      while (currentPatch < versionInfo.patch) {
         currentPatch++;
         try {
           for await (const event of getEvents({
@@ -239,8 +242,8 @@ export function download({
             lang,
             maxProgressResolution,
             version: {
-              major: versionInfo.latest.major,
-              minor: versionInfo.latest.minor,
+              major: versionInfo.major,
+              minor: versionInfo.minor,
               patch: currentPatch,
             },
             fileType: 'patch',
@@ -307,7 +310,7 @@ async function getVersionInfo({
   signal: AbortSignal;
 }): Promise<VersionInfo> {
   // Get the file
-  const response = await fetch(`${baseUrl}kanji-rc-${lang}-version.json`, {
+  const response = await fetch(`${baseUrl}jpdict-rc-${lang}-version.json`, {
     signal,
   });
   if (!response.ok) {
@@ -333,14 +336,17 @@ async function getVersionInfo({
   }
 
   // Check it is valid
-  if (!isVersionInfo(versionInfo) || !validateVersionInfo(versionInfo)) {
+  if (
+    !isFullVersionInfo(versionInfo) ||
+    !validateVersionInfo(versionInfo.kanjidb.latest)
+  ) {
     throw new DownloadError(
       DownloadErrorCode.VersionFileInvalid,
       `Invalid version object: ${JSON.stringify(versionInfo)}`
     );
   }
 
-  return versionInfo;
+  return versionInfo.kanjidb.latest;
 }
 
 type HeaderLine = {
@@ -459,7 +465,7 @@ async function* getEvents({
   fileType: 'full' | 'patch';
   signal: AbortSignal;
 }): AsyncIterableIterator<DownloadEvent> {
-  const url = `${baseUrl}kanji-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
+  const url = `${baseUrl}kanjidb-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
   const response = await fetch(url, { signal });
 
   if (!response.ok) {

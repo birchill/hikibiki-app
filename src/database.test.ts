@@ -11,13 +11,15 @@ mocha.setup('bdd');
 chai.use(chaiDateTime);
 
 const VERSION_1_0_0 = {
-  latest: {
-    major: 1,
-    minor: 0,
-    patch: 0,
-    snapshot: 0,
-    databaseVersion: '175',
-    dateOfCreation: '2019-07-09',
+  kanjidb: {
+    latest: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      databaseVersion: '175',
+      dateOfCreation: '2019-07-09',
+    },
   },
 };
 
@@ -48,9 +50,9 @@ describe('database', () => {
     await db.ready;
     assert.isUndefined(db.dbVersion);
 
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
@@ -59,7 +61,7 @@ describe('database', () => {
 
     assert.deepEqual(
       db.dbVersion,
-      stripFields(VERSION_1_0_0.latest, ['snapshot'])
+      stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
     );
     assert.equal(db.state, DatabaseState.Ok);
   });
@@ -68,9 +70,9 @@ describe('database', () => {
     await db.ready;
     assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
 
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
@@ -85,9 +87,9 @@ describe('database', () => {
   });
 
   it('should ignore redundant calls to update', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
@@ -98,14 +100,14 @@ describe('database', () => {
     await Promise.all([firstUpdate, secondUpdate]);
 
     assert.equal(
-      fetchMock.calls('end:kanji-rc-en-1.0.0-full.ljson').length,
+      fetchMock.calls('end:kanjidb-rc-en-1.0.0-full.ljson').length,
       1,
       'Should only fetch things once'
     );
   });
 
   it('should update the error state accordingly', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', 404);
+    fetchMock.mock('end:jpdict-rc-en-version.json', 404);
 
     let exception;
     try {
@@ -136,9 +138,9 @@ describe('database', () => {
   });
 
   it('should allow canceling the update', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}`
     );
 
@@ -162,15 +164,17 @@ describe('database', () => {
   });
 
   it('should allow canceling the update mid-stream', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 1,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 1,
+        },
       },
     });
     // (We need to cancel from this second request, otherwise we don't seem to
     // exercise the code path where we actually cancel the reader.)
-    fetchMock.mock('end:kanji-rc-en-1.0.0-full.ljson', () => {
+    fetchMock.mock('end:kanjidb-rc-en-1.0.0-full.ljson', () => {
       db.cancelUpdate();
       return '';
     });
@@ -190,26 +194,28 @@ describe('database', () => {
     assert.deepEqual(db.updateState, { state: 'idle', lastCheck: null });
 
     assert.isFalse(
-      fetchMock.called('end:kanji-rc-en-1.0.1-patch.ljson'),
+      fetchMock.called('end:kanjidb-rc-en-1.0.1-patch.ljson'),
       'Should not download next data file'
     );
   });
 
   it('should update the last check time if we wrote something', async () => {
-    fetchMock.mock('end:kanji-rc-en-version.json', {
-      latest: {
-        ...VERSION_1_0_0.latest,
-        patch: 1,
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        latest: {
+          ...VERSION_1_0_0.kanjidb.latest,
+          patch: 1,
+        },
       },
     });
     fetchMock.mock(
-      'end:kanji-rc-en-1.0.0-full.ljson',
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
       `
 {"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":1}
 {"c":"㐂","r":{},"m":[],"rad":{"x":1},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}
 `
     );
-    fetchMock.mock('end:kanji-rc-en-1.0.1-patch.ljson', () => {
+    fetchMock.mock('end:kanjidb-rc-en-1.0.1-patch.ljson', () => {
       db.cancelUpdate();
       return '';
     });
