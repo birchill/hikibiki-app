@@ -301,8 +301,8 @@ async function getVersionInfo({
     );
   }
 
-  // Check it is valid
-  const dbVersionInfo = getDbVersionInfo(versionInfo, 'kanjidb');
+  // Inspect and extract the database version information
+  const dbVersionInfo = getLatestDbVersionInfo(versionInfo, 'kanjidb');
   if (!dbVersionInfo) {
     throw new DownloadError(
       DownloadErrorCode.VersionFileInvalid,
@@ -313,7 +313,7 @@ async function getVersionInfo({
   return dbVersionInfo;
 }
 
-function getDbVersionInfo(a: any, dbName: string): VersionInfo | null {
+function getLatestDbVersionInfo(a: any, dbName: string): VersionInfo | null {
   if (!a || typeof a !== 'object') {
     return null;
   }
