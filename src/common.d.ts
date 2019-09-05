@@ -45,7 +45,7 @@ interface DatabaseVersion {
   major: number;
   minor: number;
   patch: number;
-  databaseVersion: string;
+  databaseVersion?: string;
   dateOfCreation: string;
 }
 

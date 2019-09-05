@@ -341,7 +341,7 @@ function getLatestDbVersionInfo(a: any, dbName: string): VersionInfo | null {
     versionInfo.minor < 0 ||
     versionInfo.patch < 0 ||
     versionInfo.snapshot < 0 ||
-    !!versionInfo.dateOfCreation.length
+    !versionInfo.dateOfCreation.length
   ) {
     return null;
   }
