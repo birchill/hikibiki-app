@@ -24,6 +24,7 @@ function renderEntry(entry: KanjiEntry): JSX.Element {
       <div class="refs">
         <div class="ref">Henshall: {entry.refs.henshall}</div>
         <div class="ref">漢検: {renderKanKen(entry.misc.kk)}</div>
+        {entry.comp ? <div class="ref">Components: {entry.comp}</div> : null}
       </div>
       <a
         href={`https://app.kanjialive.com/${encodeURIComponent(entry.c)}`}
