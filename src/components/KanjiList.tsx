@@ -23,6 +23,7 @@ function renderEntry(entry: KanjiEntry): JSX.Element {
       <div class="readings">{commonReadings}</div>
       <div class="refs">
         <div class="ref">Henshall: {entry.refs.henshall}</div>
+        <div class="ref">漢検: {renderKanKen(entry.misc.kk)}</div>
       </div>
       <a
         href={`https://app.kanjialive.com/${encodeURIComponent(entry.c)}`}
@@ -33,4 +34,17 @@ function renderEntry(entry: KanjiEntry): JSX.Element {
       </a>
     </div>
   );
+}
+
+function renderKanKen(level: number | undefined): string {
+  if (!level) {
+    return '—';
+  }
+  if (level === 15) {
+    return '準1級';
+  }
+  if (level === 25) {
+    return '準2級';
+  }
+  return `${level}級`;
 }

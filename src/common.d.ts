@@ -11,6 +11,7 @@ export interface KanjiEntry {
   rad: Radical;
   refs: References;
   misc: Misc;
+  comp?: string;
 }
 
 interface Readings {
@@ -23,6 +24,7 @@ interface Radical {
   x: number;
   nelson?: number;
   name?: Array<string>;
+  var?: string;
 }
 
 interface References {
