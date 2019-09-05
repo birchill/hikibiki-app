@@ -8,7 +8,7 @@ import { update, cancelUpdate } from './update';
 import { stripFields } from './utils';
 
 export const enum DatabaseState {
-  // We don't know yet it we have a database or not
+  // We don't know yet if we have a database or not
   Initializing,
   // No data has been stored yet
   Empty,

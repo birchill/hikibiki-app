@@ -20,6 +20,8 @@ interface Readings {
   na?: Array<string>;
 }
 
+// Note this refers to a radical components of a KanjiEntry. See RadicalEntry
+// below for the actual record in the radical (bushu) database.
 interface Radical {
   x: number;
   nelson?: number;
@@ -45,4 +47,17 @@ interface DatabaseVersion {
   patch: number;
   databaseVersion: string;
   dateOfCreation: string;
+}
+
+export interface RadicalEntry {
+  r: number;
+  b?: string;
+  k?: string;
+  pua?: number;
+  s: number;
+  na: Array<string>;
+  posn?: 'hen' | 'tsukuri' | 'kanmuri' | 'ashi' | 'tare' | 'nyou' | 'kamae';
+  m: {
+    [lang: string]: Array<string>;
+  };
 }
