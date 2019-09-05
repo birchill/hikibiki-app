@@ -17,7 +17,7 @@ export type VersionEvent = {
   major: number;
   minor: number;
   patch: number;
-  databaseVersion: string;
+  databaseVersion?: string;
   dateOfCreation: string;
   partial: boolean;
 };
@@ -46,40 +46,6 @@ interface VersionInfo {
   snapshot: number;
   databaseVersion: string;
   dateOfCreation: string;
-}
-
-interface FullVersionInfo {
-  kanjidb: {
-    latest: VersionInfo;
-  };
-}
-
-function isFullVersionInfo(a: any): a is FullVersionInfo {
-  return (
-    typeof a === 'object' &&
-    a !== null &&
-    typeof a.kanjidb === 'object' &&
-    a.kanjidb !== null &&
-    typeof a.kanjidb.latest === 'object' &&
-    a.kanjidb.latest !== null &&
-    typeof a.kanjidb.latest.major === 'number' &&
-    typeof a.kanjidb.latest.minor === 'number' &&
-    typeof a.kanjidb.latest.patch === 'number' &&
-    typeof a.kanjidb.latest.snapshot === 'number' &&
-    typeof a.kanjidb.latest.databaseVersion === 'string' &&
-    typeof a.kanjidb.latest.dateOfCreation === 'string'
-  );
-}
-
-function validateVersionInfo(versionInfo: VersionInfo): boolean {
-  return (
-    versionInfo.major >= 1 &&
-    versionInfo.minor >= 0 &&
-    versionInfo.patch >= 0 &&
-    versionInfo.snapshot >= 0 &&
-    !!versionInfo.databaseVersion.length &&
-    !!versionInfo.dateOfCreation.length
-  );
 }
 
 type DownloadOptions = {
@@ -336,17 +302,51 @@ async function getVersionInfo({
   }
 
   // Check it is valid
-  if (
-    !isFullVersionInfo(versionInfo) ||
-    !validateVersionInfo(versionInfo.kanjidb.latest)
-  ) {
+  const dbVersionInfo = getDbVersionInfo(versionInfo, 'kanjidb');
+  if (!dbVersionInfo) {
     throw new DownloadError(
       DownloadErrorCode.VersionFileInvalid,
       `Invalid version object: ${JSON.stringify(versionInfo)}`
     );
   }
 
-  return versionInfo.kanjidb.latest;
+  return dbVersionInfo;
+}
+
+function getDbVersionInfo(a: any, dbName: string): VersionInfo | null {
+  if (!a || typeof a !== 'object') {
+    return null;
+  }
+
+  if (
+    typeof a[dbName] !== 'object' ||
+    a[dbName] === null ||
+    typeof a[dbName].latest !== 'object' ||
+    a[dbName].latest === null ||
+    typeof a[dbName].latest.major !== 'number' ||
+    typeof a[dbName].latest.minor !== 'number' ||
+    typeof a[dbName].latest.patch !== 'number' ||
+    typeof a[dbName].latest.snapshot !== 'number' ||
+    (typeof a[dbName].latest.databaseVersion !== 'string' &&
+      typeof a[dbName].latest.databaseVersion !== 'undefined') ||
+    typeof a[dbName].latest.dateOfCreation !== 'string'
+  ) {
+    return null;
+  }
+
+  const versionInfo = a[dbName].latest as VersionInfo;
+
+  if (
+    versionInfo.major < 1 ||
+    versionInfo.minor < 0 ||
+    versionInfo.patch < 0 ||
+    versionInfo.snapshot < 0 ||
+    !!versionInfo.dateOfCreation.length
+  ) {
+    return null;
+  }
+
+  return versionInfo;
 }
 
 type HeaderLine = {
