@@ -8,6 +8,7 @@ import {
   ProgressEvent,
   VersionEvent,
 } from './download';
+import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
 import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
 import { update } from './update';
@@ -21,6 +22,10 @@ const VERSION_1_0_0: DatabaseVersion = {
   databaseVersion: 'yer',
   dateOfCreation: '2019-07-23',
 };
+
+type KanjiEntryEvent = EntryEvent<KanjiEntryLine>;
+type KanjiDeletionEvent = DeletionEvent<KanjiDeletionLine>;
+type KanjiDownloadEvent = DownloadEvent<KanjiEntryLine, KanjiDeletionLine>;
 
 describe('update', () => {
   let store: KanjiStore;
@@ -77,7 +82,7 @@ describe('update', () => {
       type: 'version',
       partial: false,
     };
-    const entryEvents: Array<EntryEvent> = [
+    const entryEvents: Array<KanjiEntryEvent> = [
       {
         type: 'entry',
         c: '㐂',
@@ -161,9 +166,10 @@ describe('update', () => {
       type: 'version',
       partial: true,
     };
-    const deletionEvent: DeletionEvent = {
+    const deletionEvent: KanjiDeletionEvent = {
       type: 'deletion',
       c: '㐂',
+      deleted: true,
     };
     const downloadStream = mockStream(versionEvent, deletionEvent);
 
@@ -187,7 +193,7 @@ describe('update', () => {
       loaded: 0,
       total: 1,
     };
-    const entryEvent: EntryEvent = {
+    const entryEvent: KanjiEntryEvent = {
       type: 'entry',
       c: '㐂',
       r: {},
@@ -220,7 +226,7 @@ describe('update', () => {
   });
 
   it('should apply a series of versions in succession', async () => {
-    const events: Array<DownloadEvent> = [
+    const events: Array<KanjiDownloadEvent> = [
       // Base version has two records
       {
         ...VERSION_1_0_0,
@@ -271,6 +277,7 @@ describe('update', () => {
       {
         type: 'deletion',
         c: '㐆',
+        deleted: true,
       },
 
       // Second patch adds one more record
@@ -330,7 +337,7 @@ describe('update', () => {
   });
 
   it('should delete everything when doing a full update', async () => {
-    const events: Array<DownloadEvent> = [
+    const events: Array<KanjiDownloadEvent> = [
       // Base version has two records
       {
         ...VERSION_1_0_0,
@@ -392,10 +399,10 @@ describe('update', () => {
 });
 
 function mockStream(
-  ...events: Array<DownloadEvent>
-): ReadableStream<DownloadEvent> {
+  ...events: Array<KanjiDownloadEvent>
+): ReadableStream<KanjiDownloadEvent> {
   return new ReadableStream({
-    start(controller: ReadableStreamDefaultController<DownloadEvent>) {
+    start(controller: ReadableStreamDefaultController<KanjiDownloadEvent>) {
       for (const event of events) {
         controller.enqueue(event);
       }

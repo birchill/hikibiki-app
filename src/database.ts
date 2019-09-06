@@ -1,5 +1,6 @@
 import { DatabaseVersion, KanjiEntry } from './common';
 import { download } from './download';
+import { isKanjiEntryLine, isKanjiDeletionLine } from './kanjidb';
 import { KanjiStore, KanjiRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
@@ -96,6 +97,8 @@ export class KanjiDatabase {
         dbName: 'kanjidb',
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersion,
+        isEntryLine: isKanjiEntryLine,
+        isDeletionLine: isKanjiDeletionLine,
       });
 
       if (!this.inProgressUpdate) {

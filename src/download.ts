@@ -1,18 +1,15 @@
-import { DatabaseVersion, KanjiEntry } from './common';
+import { DatabaseVersion } from './common';
 
 // Produces a ReadableStream of DownloadEvents
 //
 // This really should have been an async generator instead of a stream but
 // I didn't realize that until later. Oh well.
 
-export type EntryEvent = KanjiEntry & { type: 'entry' };
+export type EntryEvent<EntryLine> = { type: 'entry' } & EntryLine;
 
-export type DeletionEvent = {
-  type: 'deletion';
-  c: string;
-};
+export type DeletionEvent<DeletionLine> = { type: 'deletion' } & DeletionLine;
 
-export type VersionEvent = {
+export interface VersionEvent {
   type: 'version';
   major: number;
   minor: number;
@@ -20,18 +17,18 @@ export type VersionEvent = {
   databaseVersion?: string;
   dateOfCreation: string;
   partial: boolean;
-};
+}
 
-export type ProgressEvent = {
+export interface ProgressEvent {
   type: 'progress';
   loaded: number;
   total: number;
-};
+}
 
-export type DownloadEvent =
+export type DownloadEvent<EntryLine, DeletionLine> =
   | VersionEvent
-  | EntryEvent
-  | DeletionEvent
+  | EntryEvent<EntryLine>
+  | DeletionEvent<DeletionLine>
   | ProgressEvent;
 
 const DEFAULT_BASE_URL = 'https://d1uxefubru78xw.cloudfront.net/';
@@ -48,7 +45,7 @@ interface VersionInfo {
   dateOfCreation: string;
 }
 
-type DownloadOptions = {
+export type DownloadOptions<EntryLine, DeletionLine> = {
   baseUrl?: string;
   dbName: string;
   maxSupportedMajorVersion?: number;
@@ -59,6 +56,8 @@ type DownloadOptions = {
   };
   lang?: string;
   maxProgressResolution?: number;
+  isEntryLine: (a: any) => a is EntryLine;
+  isDeletionLine: (a: any) => a is DeletionLine;
 };
 
 export const enum DownloadErrorCode {
@@ -93,18 +92,24 @@ export class DownloadError extends Error {
   }
 }
 
-export function download({
+export function download<EntryLine, DeletionLine>({
   baseUrl = DEFAULT_BASE_URL,
   dbName,
   maxSupportedMajorVersion,
   currentVersion,
   lang = 'en',
   maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
-}: DownloadOptions): ReadableStream {
+  isEntryLine,
+  isDeletionLine,
+}: DownloadOptions<EntryLine, DeletionLine>): ReadableStream {
   const abortController = new AbortController();
 
   return new ReadableStream({
-    async start(controller: ReadableStreamDefaultController<DownloadEvent>) {
+    async start(
+      controller: ReadableStreamDefaultController<
+        DownloadEvent<EntryLine, DeletionLine>
+      >
+    ) {
       // Get the latest version info
       let versionInfo: VersionInfo;
       try {
@@ -185,6 +190,8 @@ export function download({
             },
             fileType: 'full',
             signal: abortController.signal,
+            isEntryLine,
+            isDeletionLine,
           })) {
             if (abortController.signal.aborted) {
               const abortError = new Error();
@@ -217,6 +224,8 @@ export function download({
             },
             fileType: 'patch',
             signal: abortController.signal,
+            isEntryLine,
+            isDeletionLine,
           })) {
             if (abortController.signal.aborted) {
               const abortError = new Error();
@@ -370,98 +379,22 @@ function isHeaderLine(a: any): a is HeaderLine {
     typeof a.version.major === 'number' &&
     typeof a.version.minor === 'number' &&
     typeof a.version.patch === 'number' &&
-    typeof a.version.databaseVersion === 'string' &&
+    (typeof a.version.databaseVersion === 'string' ||
+      typeof a.version.databaseVersion === 'undefined') &&
     typeof a.version.dateOfCreation === 'string' &&
     typeof a.records === 'number'
   );
 }
 
-type EntryLine = KanjiEntry;
-
-// We're pretty strict about checking this. Since it's coming over the network
-// it's basically untrusted data. Arguably nothing we're doing is privacy
-// sensitive and adding all these checks just makes maintenance more difficult
-// (since if we change the type of one of these fields we need to remember to
-// update it here) but for now being conservative seems like the best default
-// option.
-
-function isEntryLine(a: any): a is EntryLine {
-  return (
-    typeof a === 'object' &&
-    a !== null &&
-    // c
-    typeof a.c === 'string' &&
-    !!(a.c as string).length &&
-    // r
-    typeof a.r === 'object' &&
-    a.r !== null &&
-    (typeof a.r.on === 'undefined' || isArrayOfStrings(a.r.on)) &&
-    (typeof a.r.kun === 'undefined' || isArrayOfStrings(a.r.kun)) &&
-    (typeof a.r.na === 'undefined' || isArrayOfStrings(a.r.na)) &&
-    // m
-    isArrayOfStrings(a.m) &&
-    // rad
-    typeof a.rad === 'object' &&
-    a.rad !== null &&
-    typeof a.rad.x === 'number' &&
-    (typeof a.rad.nelson === 'undefined' || typeof a.rad.nelson === 'number') &&
-    (typeof a.rad.name === 'undefined' || isArrayOfStrings(a.rad.name)) &&
-    // refs
-    typeof a.refs === 'object' &&
-    a.refs !== null &&
-    isArrayOfStringsOrNumbers(Object.values(a.refs)) &&
-    // misc
-    typeof a.misc !== 'undefined' &&
-    a.misc !== null &&
-    (typeof a.misc.gh === 'undefined' || typeof a.misc.gh === 'number') &&
-    typeof a.misc.sc === 'number' &&
-    (typeof a.misc.freq === 'undefined' || typeof a.misc.freq === 'number') &&
-    (typeof a.misc.jlpt === 'undefined' || typeof a.misc.jlpt === 'number') &&
-    (typeof a.misc.kk === 'undefined' || typeof a.misc.kk === 'number') &&
-    // deleted (should NOT be present)
-    typeof a.deleted === 'undefined'
-  );
-}
-
-function isArrayOfStrings(a: any) {
-  return (
-    Array.isArray(a) &&
-    (a as Array<any>).every(elem => typeof elem === 'string')
-  );
-}
-
-function isArrayOfStringsOrNumbers(a: any) {
-  return (
-    Array.isArray(a) &&
-    (a as Array<any>).every(
-      elem => typeof elem === 'string' || typeof elem === 'number'
-    )
-  );
-}
-
-type DeletionLine = {
-  c: string;
-  deleted: true;
-};
-
-function isDeletionLine(a: any): a is DeletionLine {
-  return (
-    typeof a === 'object' &&
-    a !== null &&
-    typeof a.c === 'string' &&
-    !!(a.c as string).length &&
-    typeof a.deleted === 'boolean' &&
-    a.deleted
-  );
-}
-
-async function* getEvents({
+async function* getEvents<EntryLine, DeletionLine>({
   baseUrl,
   lang,
   maxProgressResolution,
   version,
   fileType,
   signal,
+  isEntryLine,
+  isDeletionLine,
 }: {
   baseUrl: string;
   lang: string;
@@ -469,7 +402,9 @@ async function* getEvents({
   version: Version;
   fileType: 'full' | 'patch';
   signal: AbortSignal;
-}): AsyncIterableIterator<DownloadEvent> {
+  isEntryLine: (a: any) => a is EntryLine;
+  isDeletionLine: (a: any) => a is DeletionLine;
+}): AsyncIterableIterator<DownloadEvent<EntryLine, DeletionLine>> {
   const url = `${baseUrl}kanjidb-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
   const response = await fetch(url, { signal });
 
@@ -534,7 +469,7 @@ async function* getEvents({
       recordsRead++;
 
       if (isEntryLine(line)) {
-        const entryEvent: EntryEvent = {
+        const entryEvent: EntryEvent<EntryLine> = {
           type: 'entry',
           ...line,
         };
@@ -547,9 +482,9 @@ async function* getEvents({
           );
         }
 
-        const deletionEvent: DeletionEvent = {
+        const deletionEvent: DeletionEvent<DeletionLine> = {
           type: 'deletion',
-          c: line.c,
+          ...line,
         };
         yield deletionEvent;
       } else {

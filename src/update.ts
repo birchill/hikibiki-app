@@ -1,6 +1,7 @@
 import { DatabaseVersion } from './common';
-import { KanjiStore, KanjiRecord, DatabaseVersionRecord } from './store';
 import { DownloadEvent } from './download';
+import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
+import { KanjiStore, KanjiRecord, DatabaseVersionRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { stripFields } from './utils';
 
@@ -47,7 +48,7 @@ export type UpdateCallback = (action: UpdateAction) => void;
 
 const inProgressUpdates: Map<
   KanjiStore,
-  ReadableStreamDefaultReader<DownloadEvent>
+  ReadableStreamDefaultReader<DownloadEvent<KanjiEntryLine, KanjiDeletionLine>>
 > = new Map();
 
 export async function update({
@@ -55,7 +56,9 @@ export async function update({
   store,
   callback,
 }: {
-  downloadStream: ReadableStream<DownloadEvent>;
+  downloadStream: ReadableStream<
+    DownloadEvent<KanjiEntryLine, KanjiDeletionLine>
+  >;
   store: KanjiStore;
   callback: UpdateCallback;
 }) {
@@ -106,7 +109,9 @@ export async function update({
   };
 
   while (true) {
-    let readResult: ReadableStreamReadResult<DownloadEvent>;
+    let readResult: ReadableStreamReadResult<
+      DownloadEvent<KanjiEntryLine, KanjiDeletionLine>
+    >;
     try {
       readResult = await reader.read();
     } catch (e) {
