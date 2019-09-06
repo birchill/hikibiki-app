@@ -6,7 +6,10 @@ import { CloneableUpdateState } from '../update-state';
 
 type Props = {
   databaseState: DatabaseState;
-  databaseVersion?: DatabaseVersion;
+  databaseVersions: {
+    kanjidb?: DatabaseVersion;
+    bushudb?: DatabaseVersion;
+  };
   updateState: CloneableUpdateState;
   onUpdate?: () => void;
   onCancel?: () => void;
@@ -15,8 +18,8 @@ type Props = {
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   let versionLabel = null;
-  if (props.databaseVersion) {
-    const { major, minor, patch } = props.databaseVersion;
+  if (props.databaseVersions.kanjidb) {
+    const { major, minor, patch } = props.databaseVersions.kanjidb;
     versionLabel = (
       <div className="version-label">{`${major}.${minor}.${patch}`}</div>
     );
@@ -123,11 +126,11 @@ function renderBody(props: Props) {
 }
 
 function renderDatabaseSummary(props: Props): JSX.Element | null {
-  if (!props.databaseVersion) {
+  if (!props.databaseVersions.kanjidb) {
     return null;
   }
 
-  const version = props.databaseVersion;
+  const kanjiDbVersion = props.databaseVersions.kanjidb;
 
   return (
     <div class="database-summary">
@@ -138,8 +141,8 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
       >
         KANJIDIC
       </a>{' '}
-      version {version.databaseVersion} generated on {version.dateOfCreation}.
-      This data is the property of the{' '}
+      version {kanjiDbVersion.databaseVersion} generated on{' '}
+      {kanjiDbVersion.dateOfCreation}. This data is the property of the{' '}
       <a href="https://www.edrdg.org/" target="_blank">
         Electronic Dictionary Research and Development Group
       </a>

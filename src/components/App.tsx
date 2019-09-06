@@ -9,7 +9,10 @@ import { KanjiList } from './KanjiList';
 
 type Props = {
   databaseState: DatabaseState;
-  databaseVersion?: DatabaseVersion;
+  databaseVersions: {
+    kanjidb?: DatabaseVersion;
+    bushudb?: DatabaseVersion;
+  };
   updateState: CloneableUpdateState;
   entries: Array<KanjiEntry>;
   onUpdateDb?: () => void;
@@ -23,7 +26,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       <KanjiList entries={props.entries} />
       <DatabaseStatus
         databaseState={props.databaseState}
-        databaseVersion={props.databaseVersion}
+        databaseVersions={props.databaseVersions}
         updateState={props.updateState}
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}

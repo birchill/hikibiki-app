@@ -11,7 +11,10 @@ import { App } from './components/App';
 const dbWorker = new Worker('db-worker.js');
 
 let databaseState: DatabaseState = DatabaseState.Initializing;
-let databaseVersion: DatabaseVersion | undefined;
+let databaseVersions: {
+  kanjidb?: DatabaseVersion;
+  bushudb?: DatabaseVersion;
+} = {};
 let updateState: CloneableUpdateState = { state: 'idle', lastCheck: null };
 let entries: Array<KanjiEntry> = [];
 
@@ -30,8 +33,8 @@ dbWorker.onmessage = (evt: MessageEvent) => {
       update();
       break;
 
-    case 'dbversionupdated':
-      databaseVersion = evt.data.version;
+    case 'dbversionsupdated':
+      databaseVersions = evt.data.versions;
       update();
       break;
 
@@ -87,7 +90,7 @@ function update() {
   rootNode = render(
     <App
       databaseState={databaseState}
-      databaseVersion={databaseVersion}
+      databaseVersions={databaseVersions}
       updateState={updateState}
       entries={entries}
       onUpdateDb={updateDb}
