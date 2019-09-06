@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
 
-import { DatabaseVersion, KanjiEntry } from './common';
+import { DatabaseVersion } from './common';
 import { WorkerMessage } from './worker-messages';
 import * as messages from './worker-messages';
-import { DatabaseState } from './database';
+import { DatabaseState, KanjiResult } from './database';
 import { CloneableUpdateState } from './update-state';
 
 import { App } from './components/App';
@@ -16,7 +16,7 @@ let databaseVersions: {
   bushudb?: DatabaseVersion;
 } = {};
 let updateState: CloneableUpdateState = { state: 'idle', lastCheck: null };
-let entries: Array<KanjiEntry> = [];
+let entries: Array<KanjiResult> = [];
 
 dbWorker.onmessage = (evt: MessageEvent) => {
   switch ((evt.data as WorkerMessage).type) {
@@ -44,7 +44,7 @@ dbWorker.onmessage = (evt: MessageEvent) => {
       break;
 
     case 'queryresult':
-      entries = evt.data.entries;
+      entries = evt.data.results;
       update();
       break;
   }

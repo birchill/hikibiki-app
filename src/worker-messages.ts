@@ -1,5 +1,5 @@
-import { DatabaseVersion, KanjiEntry } from './common';
-import { DatabaseState } from './database';
+import { DatabaseVersion } from './common';
+import { DatabaseState, KanjiResult } from './database';
 import { toCloneable, UpdateState } from './update-state';
 
 export const updateDb = () => ({
@@ -37,9 +37,9 @@ export const notifyUpdateStateUpdated = (state: UpdateState) => ({
   state: toCloneable(state),
 });
 
-export const notifyQueryResult = (entries: Array<KanjiEntry>) => ({
+export const notifyQueryResult = (results: Array<KanjiResult>) => ({
   type: 'queryresult',
-  entries,
+  results,
 });
 
 export type WorkerMessage =

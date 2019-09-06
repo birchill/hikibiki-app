@@ -1,7 +1,7 @@
 import { h, FunctionalComponent } from 'preact';
 
-import { DatabaseVersion, KanjiEntry } from '../common';
-import { DatabaseState } from '../database';
+import { DatabaseVersion } from '../common';
+import { DatabaseState, KanjiResult } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
 import { DatabaseStatus } from './DatabaseStatus';
@@ -14,7 +14,7 @@ type Props = {
     bushudb?: DatabaseVersion;
   };
   updateState: CloneableUpdateState;
-  entries: Array<KanjiEntry>;
+  entries: Array<KanjiResult>;
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;

@@ -1,7 +1,11 @@
 import { isRadicalEntryLine, isRadicalDeletionLine } from './bushudb';
-import { DatabaseVersion, KanjiEntry } from './common';
+import { DatabaseVersion } from './common';
 import { download } from './download';
-import { isKanjiEntryLine, isKanjiDeletionLine } from './kanjidb';
+import {
+  KanjiEntryLine,
+  isKanjiEntryLine,
+  isKanjiDeletionLine,
+} from './kanjidb';
 import { KanjiStore, KanjiRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
@@ -193,7 +197,7 @@ export class KanjiDatabase {
     this.dbVersions = { kanjidb: undefined, bushudb: undefined };
   }
 
-  async getKanji(kanji: Array<string>): Promise<Array<KanjiEntry>> {
+  async getKanji(kanji: Array<string>): Promise<Array<KanjiResult>> {
     await this.ready;
 
     if (this.state !== DatabaseState.Ok) {
@@ -215,3 +219,5 @@ export class KanjiDatabase {
 
   // XXX Check for offline events?
 }
+
+export interface KanjiResult extends KanjiEntryLine {}

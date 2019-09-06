@@ -16,8 +16,6 @@ interface Readings {
   na?: Array<string>;
 }
 
-// Note this refers to a radical components of a KanjiEntry. See RadicalEntry
-// below for the actual record in the radical (bushu) database.
 interface Radical {
   x: number;
   nelson?: number;

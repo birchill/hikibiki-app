@@ -1,16 +1,16 @@
 import { h, FunctionalComponent } from 'preact';
 
-import { KanjiEntry } from '../common';
+import { KanjiResult } from '../database';
 
 type Props = {
-  entries: Array<KanjiEntry>;
+  entries: Array<KanjiResult>;
 };
 
 export const KanjiList: FunctionalComponent<Props> = (props: Props) => {
   return <div class="kanji-list">{props.entries.map(renderEntry)}</div>;
 };
 
-function renderEntry(entry: KanjiEntry): JSX.Element {
+function renderEntry(entry: KanjiResult): JSX.Element {
   const commonReadings = [
     ...(entry.r.on ? entry.r.on : []),
     ...(entry.r.kun ? entry.r.kun : []),
