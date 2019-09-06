@@ -29,26 +29,36 @@ export class KanjiDatabase {
   state: DatabaseState = DatabaseState.Initializing;
   updateState: UpdateState = { state: 'idle', lastCheck: null };
   store: KanjiStore;
-  dbVersion: DatabaseVersion | undefined;
+  dbVersions: {
+    kanjidb: DatabaseVersion | undefined;
+    bushudb: DatabaseVersion | undefined;
+  } = { kanjidb: undefined, bushudb: undefined };
 
-  private readyPromise: Promise<void>;
+  private readyPromise: Promise<any>;
   private inProgressUpdate: Promise<void> | undefined;
 
   constructor() {
     this.store = new KanjiStore();
 
     // Check initial state
-    this.readyPromise = this.getDbVersion().then(version => {
-      return this.updateDbVersion(version);
-    });
+    const getKanjiDbVersion = this.getDbVersion('kanjidb').then(version =>
+      this.updateDbVersion('kanjidb', version)
+    );
+    const getRadicalDbVersion = this.getDbVersion('bushudb').then(version =>
+      this.updateDbVersion('bushudb', version)
+    );
+
+    this.readyPromise = Promise.all([getKanjiDbVersion, getRadicalDbVersion]);
   }
 
   get ready() {
     return this.readyPromise;
   }
 
-  private async getDbVersion(): Promise<DatabaseVersion | undefined> {
-    const versionDoc = await this.store.dbVersion.get(1);
+  private async getDbVersion(
+    db: 'kanjidb' | 'bushudb'
+  ): Promise<DatabaseVersion | undefined> {
+    const versionDoc = await this.store.dbVersion.get(db === 'kanjidb' ? 1 : 2);
     if (!versionDoc) {
       return undefined;
     }
@@ -56,10 +66,16 @@ export class KanjiDatabase {
     return stripFields(versionDoc, ['id']);
   }
 
-  private async updateDbVersion(version: DatabaseVersion | undefined) {
-    this.dbVersion = version;
+  private async updateDbVersion(
+    db: 'kanjidb' | 'bushudb',
+    version: DatabaseVersion | undefined
+  ) {
+    this.dbVersions[db] = version;
     this.state =
-      typeof version === 'undefined' ? DatabaseState.Empty : DatabaseState.Ok;
+      typeof this.dbVersions.kanjidb === 'undefined' ||
+      typeof this.dbVersions.bushudb === 'undefined'
+        ? DatabaseState.Empty
+        : DatabaseState.Ok;
   }
 
   async update() {
@@ -98,7 +114,7 @@ export class KanjiDatabase {
     isDeletionLine,
     update,
   }: {
-    dbName: string;
+    dbName: 'bushudb' | 'kanjidb';
     isEntryLine: (a: any) => a is EntryLine;
     isDeletionLine: (a: any) => a is DeletionLine;
     update: (options: UpdateOptions<EntryLine, DeletionLine>) => Promise<void>;
@@ -109,7 +125,7 @@ export class KanjiDatabase {
       this.updateState = updateReducer(this.updateState, action);
       if (action.type === 'finishdownload') {
         wroteSomething = true;
-        this.updateDbVersion(action.version);
+        this.updateDbVersion(dbName, action.version);
       }
     };
 
@@ -129,7 +145,7 @@ export class KanjiDatabase {
       const downloadStream = await download({
         dbName,
         maxSupportedMajorVersion: 1,
-        currentVersion: this.dbVersion,
+        currentVersion: this.dbVersions[dbName],
         isEntryLine,
         isDeletionLine,
       });
@@ -174,7 +190,7 @@ export class KanjiDatabase {
     this.store = new KanjiStore();
     this.state = DatabaseState.Empty;
     this.updateState = { state: 'idle', lastCheck: null };
-    this.dbVersion = undefined;
+    this.dbVersions = { kanjidb: undefined, bushudb: undefined };
   }
 
   async getKanji(kanji: Array<string>): Promise<Array<KanjiEntry>> {

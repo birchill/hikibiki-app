@@ -24,9 +24,12 @@ export const notifyDbStateUpdated = (state: DatabaseState) => ({
   state,
 });
 
-export const notifyDbVersionUpdated = (version?: DatabaseVersion) => ({
-  type: 'dbversionupdated',
-  version,
+export const notifyDbVersionsUpdated = (versions: {
+  kanjidb?: DatabaseVersion;
+  bushudb?: DatabaseVersion;
+}) => ({
+  type: 'dbversionsupdated',
+  versions,
 });
 
 export const notifyUpdateStateUpdated = (state: UpdateState) => ({
@@ -45,6 +48,6 @@ export type WorkerMessage =
   | ReturnType<typeof destroyDb>
   | ReturnType<typeof query>
   | ReturnType<typeof notifyDbStateUpdated>
-  | ReturnType<typeof notifyDbVersionUpdated>
+  | ReturnType<typeof notifyDbVersionsUpdated>
   | ReturnType<typeof notifyUpdateStateUpdated>
   | ReturnType<typeof notifyQueryResult>;

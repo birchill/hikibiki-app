@@ -1,7 +1,7 @@
 import { KanjiDatabase } from './database';
 import {
   notifyDbStateUpdated,
-  notifyDbVersionUpdated,
+  notifyDbVersionsUpdated,
   notifyQueryResult,
   notifyUpdateStateUpdated,
   WorkerMessage,
@@ -15,7 +15,7 @@ const db = new KanjiDatabase();
 
 db.ready.then(() => {
   self.postMessage(notifyDbStateUpdated(db.state));
-  self.postMessage(notifyDbVersionUpdated(db.dbVersion));
+  self.postMessage(notifyDbVersionsUpdated(db.dbVersions));
   self.postMessage(notifyUpdateStateUpdated(db.updateState));
 });
 
@@ -29,8 +29,8 @@ const proxyDb = new Proxy(db, {
           self.postMessage(notifyDbStateUpdated(db.state));
           break;
 
-        case 'dbVersion':
-          self.postMessage(notifyDbVersionUpdated(db.dbVersion));
+        case 'dbVersions':
+          self.postMessage(notifyDbVersionsUpdated(db.dbVersions));
           break;
 
         case 'updateState':

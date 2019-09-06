@@ -57,7 +57,7 @@ describe('database', () => {
 
   it('should resolve the version after updating', async () => {
     await db.ready;
-    assert.isUndefined(db.dbVersion);
+    assert.isUndefined(db.dbVersions.kanjidb);
 
     fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock(
@@ -74,7 +74,7 @@ describe('database', () => {
     await db.update();
 
     assert.deepEqual(
-      db.dbVersion,
+      db.dbVersions.kanjidb,
       stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
     );
     assert.equal(db.state, DatabaseState.Ok);

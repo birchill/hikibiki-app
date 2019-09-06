@@ -81,7 +81,7 @@ export async function updateRadicals(
     table: options.store.bushu,
     toRecord: toRadicalRecord,
     getId: getIdForRadicalRecord,
-    versionId: 1,
+    versionId: 2,
   });
 }
 
