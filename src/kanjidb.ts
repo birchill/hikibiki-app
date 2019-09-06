@@ -1,3 +1,5 @@
+import { isArrayOfStrings, isArrayOfStringsOrNumbers } from './utils';
+
 export interface KanjiEntryLine {
   c: string;
   r: Readings;
@@ -84,22 +86,6 @@ export function isKanjiEntryLine(a: any): a is KanjiEntryLine {
     (typeof a.comp === 'undefined' || typeof a.comp === 'string') &&
     // deleted (should NOT be present)
     typeof a.deleted === 'undefined'
-  );
-}
-
-function isArrayOfStrings(a: any) {
-  return (
-    Array.isArray(a) &&
-    (a as Array<any>).every(elem => typeof elem === 'string')
-  );
-}
-
-function isArrayOfStringsOrNumbers(a: any) {
-  return (
-    Array.isArray(a) &&
-    (a as Array<any>).every(
-      elem => typeof elem === 'string' || typeof elem === 'number'
-    )
   );
 }
 

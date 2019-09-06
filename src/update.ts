@@ -1,12 +1,16 @@
+import { RadicalEntryLine, RadicalDeletionLine } from './bushudb';
 import { DatabaseVersion } from './common';
 import { DownloadEvent } from './download';
 import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
 import {
   getIdForKanjiRecord,
+  getIdForRadicalRecord,
   toKanjiRecord,
+  toRadicalRecord,
+  DatabaseVersionRecord,
   KanjiStore,
   KanjiRecord,
-  DatabaseVersionRecord,
+  RadicalRecord,
 } from './store';
 import { UpdateAction } from './update-actions';
 import { stripFields } from './utils';
@@ -57,14 +61,10 @@ const inProgressUpdates: Map<
   ReadableStreamDefaultReader<DownloadEvent<any, any>>
 > = new Map();
 
-export async function updateKanji(options: {
-  downloadStream: ReadableStream<
-    DownloadEvent<KanjiEntryLine, KanjiDeletionLine>
-  >;
-  store: KanjiStore;
-  callback: UpdateCallback;
-}) {
-  return update<KanjiEntryLine, KanjiDeletionLine, KanjiRecord>({
+export async function updateKanji(
+  options: UpdateOptions<KanjiEntryLine, KanjiDeletionLine>
+) {
+  return update<KanjiEntryLine, KanjiDeletionLine, KanjiRecord, number>({
     ...options,
     table: options.store.kanji,
     toRecord: toKanjiRecord,
@@ -73,10 +73,29 @@ export async function updateKanji(options: {
   });
 }
 
+export async function updateRadicals(
+  options: UpdateOptions<RadicalEntryLine, RadicalDeletionLine>
+) {
+  return update<RadicalEntryLine, RadicalDeletionLine, RadicalRecord, string>({
+    ...options,
+    table: options.store.bushu,
+    toRecord: toRadicalRecord,
+    getId: getIdForRadicalRecord,
+    versionId: 1,
+  });
+}
+
+export interface UpdateOptions<EntryLine, DeletionLine> {
+  downloadStream: ReadableStream<DownloadEvent<EntryLine, DeletionLine>>;
+  store: KanjiStore;
+  callback: UpdateCallback;
+}
+
 async function update<
   EntryLine extends Omit<object, 'type'>,
   DeletionLine,
-  RecordType
+  RecordType,
+  IdType extends number | string
 >({
   downloadStream,
   store,
@@ -88,9 +107,9 @@ async function update<
 }: {
   downloadStream: ReadableStream<DownloadEvent<EntryLine, DeletionLine>>;
   store: KanjiStore;
-  table: Dexie.Table<RecordType, number>;
+  table: Dexie.Table<RecordType, IdType>;
   toRecord: (e: EntryLine) => RecordType;
-  getId: (e: DeletionLine) => number;
+  getId: (e: DeletionLine) => IdType;
   versionId: 1 | 2;
   callback: UpdateCallback;
 }) {
@@ -103,7 +122,7 @@ async function update<
   inProgressUpdates.set(store, reader);
 
   let recordsToPut: Array<RecordType> = [];
-  let recordsToDelete: Array<number> = [];
+  let recordsToDelete: Array<IdType> = [];
 
   let currentVersion: DatabaseVersion | undefined;
   let partialVersion: boolean = false;

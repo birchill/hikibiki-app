@@ -1,3 +1,4 @@
+import { isRadicalEntryLine, isRadicalDeletionLine } from './bushudb';
 import { DatabaseVersion, KanjiEntry } from './common';
 import { download } from './download';
 import { isKanjiEntryLine, isKanjiDeletionLine } from './kanjidb';
@@ -5,7 +6,12 @@ import { KanjiStore, KanjiRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
 import { reducer as updateReducer } from './update-reducer';
-import { updateKanji, cancelUpdate } from './update';
+import {
+  cancelUpdate,
+  updateKanji,
+  updateRadicals,
+  UpdateOptions,
+} from './update';
 import { stripFields } from './utils';
 
 export const enum DatabaseState {
@@ -56,20 +62,47 @@ export class KanjiDatabase {
       typeof version === 'undefined' ? DatabaseState.Empty : DatabaseState.Ok;
   }
 
-  update(): Promise<void> {
+  async update() {
     if (this.inProgressUpdate) {
       return this.inProgressUpdate;
     }
 
-    this.inProgressUpdate = this.doUpdate();
-    this.inProgressUpdate.finally(() => {
+    try {
+      this.inProgressUpdate = this.doUpdate({
+        dbName: 'kanjidb',
+        isEntryLine: isKanjiEntryLine,
+        isDeletionLine: isKanjiDeletionLine,
+        update: updateKanji,
+      });
+      await this.inProgressUpdate;
+    } finally {
       this.inProgressUpdate = undefined;
-    });
+    }
 
-    return this.inProgressUpdate;
+    try {
+      this.inProgressUpdate = this.doUpdate({
+        dbName: 'bushudb',
+        isEntryLine: isRadicalEntryLine,
+        isDeletionLine: isRadicalDeletionLine,
+        update: updateRadicals,
+      });
+      await this.inProgressUpdate;
+    } finally {
+      this.inProgressUpdate = undefined;
+    }
   }
 
-  private async doUpdate() {
+  private async doUpdate<EntryLine, DeletionLine>({
+    dbName,
+    isEntryLine,
+    isDeletionLine,
+    update,
+  }: {
+    dbName: string;
+    isEntryLine: (a: any) => a is EntryLine;
+    isDeletionLine: (a: any) => a is DeletionLine;
+    update: (options: UpdateOptions<EntryLine, DeletionLine>) => Promise<void>;
+  }) {
     let wroteSomething = false;
 
     const reducer = (action: UpdateAction) => {
@@ -94,22 +127,18 @@ export class KanjiDatabase {
       reducer({ type: 'start' });
 
       const downloadStream = await download({
-        dbName: 'kanjidb',
+        dbName,
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersion,
-        isEntryLine: isKanjiEntryLine,
-        isDeletionLine: isKanjiDeletionLine,
+        isEntryLine,
+        isDeletionLine,
       });
 
       if (!this.inProgressUpdate) {
         throw new Error('AbortError');
       }
 
-      await updateKanji({
-        downloadStream,
-        store: this.store,
-        callback: reducer,
-      });
+      await update({ downloadStream, store: this.store, callback: reducer });
 
       if (!this.inProgressUpdate) {
         throw new Error('AbortError');

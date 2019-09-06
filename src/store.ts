@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 
-import { RadicalEntry, DatabaseVersion } from './common';
+import { RadicalEntryLine, RadicalDeletionLine } from './bushudb';
+import { DatabaseVersion } from './common';
 import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
 
 // Define a variant on KanjiEntryLine that turns 'c' into a number
@@ -19,8 +20,14 @@ export function getIdForKanjiRecord(entry: KanjiDeletionLine): number {
   return entry.c.codePointAt(0) as number;
 }
 
-export interface RadicalRecord extends RadicalEntry {
-  id: number;
+export type RadicalRecord = RadicalEntryLine;
+
+export function toRadicalRecord(entry: RadicalEntryLine): RadicalRecord {
+  return entry;
+}
+
+export function getIdForRadicalRecord(entry: RadicalDeletionLine): string {
+  return entry.id;
 }
 
 export interface DatabaseVersionRecord extends DatabaseVersion {
@@ -29,7 +36,7 @@ export interface DatabaseVersionRecord extends DatabaseVersion {
 
 export class KanjiStore extends Dexie {
   kanji: Dexie.Table<KanjiRecord, number>;
-  bushu: Dexie.Table<RadicalRecord, number>;
+  bushu: Dexie.Table<RadicalRecord, string>;
   dbVersion: Dexie.Table<DatabaseVersionRecord, number>;
 
   constructor() {

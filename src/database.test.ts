@@ -21,6 +21,15 @@ const VERSION_1_0_0 = {
       dateOfCreation: '2019-07-09',
     },
   },
+  bushudb: {
+    latest: {
+      major: 1,
+      minor: 0,
+      patch: 0,
+      snapshot: 0,
+      dateOfCreation: '2019-09-06',
+    },
+  },
 };
 
 describe('database', () => {
@@ -56,6 +65,11 @@ describe('database', () => {
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
+    fetchMock.mock(
+      'end:bushudb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
+`
+    );
 
     await db.update();
 
@@ -76,6 +90,11 @@ describe('database', () => {
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
     );
+    fetchMock.mock(
+      'end:bushudb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
+`
+    );
 
     const updateStart = new Date();
     await db.update();
@@ -83,7 +102,7 @@ describe('database', () => {
 
     assert.deepEqual(db.updateState.state, 'idle');
     assert.isDefined(db.updateState.lastCheck);
-    assert.withinTime(updateStart, db.updateState.lastCheck!, updateEnd);
+    assert.withinTime(db.updateState.lastCheck!, updateStart, updateEnd);
   });
 
   it('should ignore redundant calls to update', async () => {
@@ -91,6 +110,11 @@ describe('database', () => {
     fetchMock.mock(
       'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
+`
+    );
+    fetchMock.mock(
+      'end:bushudb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
 `
     );
 
@@ -142,6 +166,11 @@ describe('database', () => {
     fetchMock.mock(
       'end:kanjidb-rc-en-1.0.0-full.ljson',
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}`
+    );
+    fetchMock.mock(
+      'end:bushudb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
+`
     );
 
     const update = db.update();

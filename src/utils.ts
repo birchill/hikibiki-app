@@ -11,3 +11,19 @@ export function stripFields<T extends object, K extends keyof T>(
   }
   return <Omit<T, K>>result;
 }
+
+export function isArrayOfStrings(a: any) {
+  return (
+    Array.isArray(a) &&
+    (a as Array<any>).every(elem => typeof elem === 'string')
+  );
+}
+
+export function isArrayOfStringsOrNumbers(a: any) {
+  return (
+    Array.isArray(a) &&
+    (a as Array<any>).every(
+      elem => typeof elem === 'string' || typeof elem === 'number'
+    )
+  );
+}
