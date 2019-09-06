@@ -50,6 +50,7 @@ interface VersionInfo {
 
 type DownloadOptions = {
   baseUrl?: string;
+  dbName: string;
   maxSupportedMajorVersion?: number;
   currentVersion?: {
     major: number;
@@ -94,11 +95,12 @@ export class DownloadError extends Error {
 
 export function download({
   baseUrl = DEFAULT_BASE_URL,
+  dbName,
   maxSupportedMajorVersion,
   currentVersion,
   lang = 'en',
   maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
-}: DownloadOptions = {}): ReadableStream {
+}: DownloadOptions): ReadableStream {
   const abortController = new AbortController();
 
   return new ReadableStream({
@@ -107,6 +109,7 @@ export function download({
       let versionInfo: VersionInfo;
       try {
         versionInfo = await getVersionInfo({
+          dbName,
           baseUrl,
           lang,
           signal: abortController.signal,
@@ -268,10 +271,12 @@ function compareVersions(a: Version, b: Version): number {
 
 async function getVersionInfo({
   baseUrl,
+  dbName,
   lang,
   signal,
 }: {
   baseUrl: string;
+  dbName: string;
   lang: string;
   signal: AbortSignal;
 }): Promise<VersionInfo> {
@@ -302,7 +307,7 @@ async function getVersionInfo({
   }
 
   // Inspect and extract the database version information
-  const dbVersionInfo = getLatestDbVersionInfo(versionInfo, 'kanjidb');
+  const dbVersionInfo = getLatestDbVersionInfo(versionInfo, dbName);
   if (!dbVersionInfo) {
     throw new DownloadError(
       DownloadErrorCode.VersionFileInvalid,

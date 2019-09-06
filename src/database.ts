@@ -93,6 +93,7 @@ export class KanjiDatabase {
       reducer({ type: 'start' });
 
       const downloadStream = await download({
+        dbName: 'kanjidb',
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersion,
       });

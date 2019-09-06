@@ -35,7 +35,7 @@ describe('download', () => {
       `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"2019-173","dateOfCreation":"2019-06-22"},"records":0}
 `
     );
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     const events = await drainEvents(reader);
 
     assert.deepEqual(events, [
@@ -54,7 +54,7 @@ describe('download', () => {
   it('should fail if there is no version file available', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', 404);
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -87,7 +87,7 @@ describe('download', () => {
   it('should fail if the version file is corrupt', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', 'yer');
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -114,7 +114,7 @@ describe('download', () => {
       },
     });
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -133,7 +133,7 @@ describe('download', () => {
       kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, major: 0 } },
     });
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -151,7 +151,7 @@ describe('download', () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
     fetchMock.mock('end:kanjidb-rc-en-1.0.0-full.ljson', 404);
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -173,7 +173,7 @@ describe('download', () => {
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -198,7 +198,7 @@ describe('download', () => {
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     const events = await drainEvents(reader);
 
     assert.strictEqual(events.length, 3);
@@ -239,7 +239,7 @@ describe('download', () => {
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -264,7 +264,7 @@ describe('download', () => {
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -290,7 +290,7 @@ describe('download', () => {
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -363,7 +363,7 @@ ${entry}
 `
       );
 
-      const reader = download().getReader();
+      const reader = download({ dbName: 'kanjidb' }).getReader();
       try {
         await drainEvents(reader);
         assert.fail(`Should have thrown an exception for input ${entry}`);
@@ -400,7 +400,7 @@ ${entry}
 `
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -427,7 +427,7 @@ ${entry}
     });
     mockAllDataFilesWithEmpty();
 
-    await drainEvents(download().getReader());
+    await drainEvents(download({ dbName: 'kanjidb' }).getReader());
 
     assert.isTrue(
       fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
@@ -455,7 +455,10 @@ ${entry}
     mockAllDataFilesWithEmpty();
 
     await drainEvents(
-      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+      download({
+        dbName: 'kanjidb',
+        currentVersion: { major: 1, minor: 0, patch: 1 },
+      }).getReader()
     );
 
     assert.isFalse(
@@ -488,7 +491,10 @@ ${entry}
     );
 
     const events = await drainEvents(
-      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+      download({
+        dbName: 'kanjidb',
+        currentVersion: { major: 1, minor: 0, patch: 1 },
+      }).getReader()
     );
 
     assert.deepEqual(events, [
@@ -520,7 +526,10 @@ ${entry}
     );
 
     const events = await drainEvents(
-      download({ currentVersion: { major: 1, minor: 0, patch: 1 } }).getReader()
+      download({
+        dbName: 'kanjidb',
+        currentVersion: { major: 1, minor: 0, patch: 1 },
+      }).getReader()
     );
 
     assert.deepEqual(events[1], {
@@ -538,7 +547,7 @@ ${entry}
 {"c":"㐆","deleted":true}`
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -563,7 +572,7 @@ ${entry}
     );
     fetchMock.mock('end:kanjidb-rc-en-1.0.1-patch.ljson', 404);
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -588,7 +597,7 @@ ${entry}
     );
     fetchMock.mock('end:kanjidb-rc-en-1.0.1-patch.ljson', 'yer');
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -617,7 +626,7 @@ ${entry}
 {"c":"㐂","r":{},"m":[],"rad":{"x":2},"refs":{"nelson_c":265,"halpern_njecd":2028},"misc":{"sc":6}}`
     );
 
-    const reader = download().getReader();
+    const reader = download({ dbName: 'kanjidb' }).getReader();
     try {
       await drainEvents(reader);
       assert.fail('Should have thrown an exception');
@@ -643,7 +652,7 @@ ${entry}
     });
     mockAllDataFilesWithEmpty();
 
-    await drainEvents(download().getReader());
+    await drainEvents(download({ dbName: 'kanjidb' }).getReader());
 
     assert.isFalse(
       fetchMock.called('end:kanjidb-rc-en-1.0.0-full.ljson'),
@@ -673,6 +682,7 @@ ${entry}
     });
 
     const reader = download({
+      dbName: 'kanjidb',
       currentVersion: { major: 1, minor: 0, patch: 2 },
     }).getReader();
     try {
@@ -690,6 +700,7 @@ ${entry}
     });
 
     const reader = download({
+      dbName: 'kanjidb',
       currentVersion: { major: 1, minor: 0, patch: 1 },
     }).getReader();
 
@@ -711,6 +722,7 @@ ${entry}
     mockAllDataFilesWithEmpty();
 
     const reader = download({
+      dbName: 'kanjidb',
       currentVersion: { major: 1, minor: 0, patch: 2 },
     }).getReader();
     await drainEvents(reader);
@@ -740,6 +752,7 @@ ${entry}
     mockAllDataFilesWithEmpty();
 
     const reader = download({
+      dbName: 'kanjidb',
       maxSupportedMajorVersion: 3,
       currentVersion: { major: 1, minor: 0, patch: 2 },
     }).getReader();
@@ -770,6 +783,7 @@ ${entry}
     mockAllDataFilesWithEmpty();
 
     const reader = download({
+      dbName: 'kanjidb',
       maxSupportedMajorVersion: 2,
       currentVersion: { major: 1, minor: 0, patch: 2 },
     }).getReader();
@@ -793,7 +807,7 @@ ${entry}
 `
     );
 
-    await drainEvents(download({ lang: 'fr' }).getReader());
+    await drainEvents(download({ dbName: 'kanjidb', lang: 'fr' }).getReader());
 
     assert.isFalse(
       fetchMock.called('end:jpdict-rc-en-version.json'),
@@ -822,7 +836,7 @@ ${entry}
 {"c":"㐆","r":{},"m":["to follow","to trust to","to put confidence in","to depend on","to turn around","to turn the body"],"rad":{"x":4},"refs":{},"misc":{"sc":6}}`
     );
 
-    const stream = download();
+    const stream = download({ dbName: 'kanjidb' });
     const reader = stream.getReader();
 
     // Read version event
@@ -872,7 +886,7 @@ ${entry}
     );
 
     const events = await drainEvents(
-      download({ maxProgressResolution: 0.05 }).getReader(),
+      download({ dbName: 'kanjidb', maxProgressResolution: 0.05 }).getReader(),
       {
         includeProgressEvents: true,
       }
