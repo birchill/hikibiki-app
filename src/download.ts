@@ -181,6 +181,7 @@ export function download<EntryLine, DeletionLine>({
         try {
           for await (const event of getEvents({
             baseUrl,
+            dbName,
             lang,
             maxProgressResolution,
             version: {
@@ -215,6 +216,7 @@ export function download<EntryLine, DeletionLine>({
         try {
           for await (const event of getEvents({
             baseUrl,
+            dbName,
             lang,
             maxProgressResolution,
             version: {
@@ -388,6 +390,7 @@ function isHeaderLine(a: any): a is HeaderLine {
 
 async function* getEvents<EntryLine, DeletionLine>({
   baseUrl,
+  dbName,
   lang,
   maxProgressResolution,
   version,
@@ -397,6 +400,7 @@ async function* getEvents<EntryLine, DeletionLine>({
   isDeletionLine,
 }: {
   baseUrl: string;
+  dbName: string;
   lang: string;
   maxProgressResolution: number;
   version: Version;
@@ -405,7 +409,7 @@ async function* getEvents<EntryLine, DeletionLine>({
   isEntryLine: (a: any) => a is EntryLine;
   isDeletionLine: (a: any) => a is DeletionLine;
 }): AsyncIterableIterator<DownloadEvent<EntryLine, DeletionLine>> {
-  const url = `${baseUrl}kanjidb-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
+  const url = `${baseUrl}${dbName}-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
   const response = await fetch(url, { signal });
 
   if (!response.ok) {
