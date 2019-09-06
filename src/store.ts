@@ -1,10 +1,22 @@
 import Dexie from 'dexie';
 
-import { KanjiEntry, RadicalEntry, DatabaseVersion } from './common';
+import { RadicalEntry, DatabaseVersion } from './common';
+import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
 
-// Define a variant on KanjiEntry that turns 'c' into a number
-export interface KanjiRecord extends Omit<KanjiEntry, 'c'> {
+// Define a variant on KanjiEntryLine that turns 'c' into a number
+export interface KanjiRecord extends Omit<KanjiEntryLine, 'c'> {
   c: number;
+}
+
+export function toKanjiRecord(entry: KanjiEntryLine): KanjiRecord {
+  return {
+    ...entry,
+    c: entry.c.codePointAt(0) as number,
+  };
+}
+
+export function getIdForKanjiRecord(entry: KanjiDeletionLine): number {
+  return entry.c.codePointAt(0) as number;
 }
 
 export interface RadicalRecord extends RadicalEntry {

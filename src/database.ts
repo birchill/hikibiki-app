@@ -5,7 +5,7 @@ import { KanjiStore, KanjiRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
 import { reducer as updateReducer } from './update-reducer';
-import { update, cancelUpdate } from './update';
+import { updateKanji, cancelUpdate } from './update';
 import { stripFields } from './utils';
 
 export const enum DatabaseState {
@@ -105,7 +105,7 @@ export class KanjiDatabase {
         throw new Error('AbortError');
       }
 
-      await update({
+      await updateKanji({
         downloadStream,
         store: this.store,
         callback: reducer,

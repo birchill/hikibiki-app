@@ -11,7 +11,7 @@ import {
 import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
 import { KanjiStore } from './store';
 import { UpdateAction } from './update-actions';
-import { update } from './update';
+import { updateKanji } from './update';
 
 mocha.setup('bdd');
 
@@ -27,7 +27,7 @@ type KanjiEntryEvent = EntryEvent<KanjiEntryLine>;
 type KanjiDeletionEvent = DeletionEvent<KanjiDeletionLine>;
 type KanjiDownloadEvent = DownloadEvent<KanjiEntryLine, KanjiDeletionLine>;
 
-describe('update', () => {
+describe('updateKanji', () => {
   let store: KanjiStore;
   let actions: Array<UpdateAction> = [];
   const callback = (action: UpdateAction) => {
@@ -51,7 +51,7 @@ describe('update', () => {
     };
     const downloadStream = mockStream(versionEvent);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     assert.deepEqual(actions, [
       { type: 'startdownload', version: VERSION_1_0_0 },
@@ -67,7 +67,7 @@ describe('update', () => {
     };
     const downloadStream = mockStream(versionEvent);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     const dbVersion = await store.dbVersion.get(1);
     assert.deepEqual(dbVersion, {
@@ -111,7 +111,7 @@ describe('update', () => {
     ];
     const downloadStream = mockStream(versionEvent, ...entryEvents);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     const firstChar = await store.kanji.get(13314);
     assert.deepEqual(firstChar, {
@@ -173,7 +173,7 @@ describe('update', () => {
     };
     const downloadStream = mockStream(versionEvent, deletionEvent);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     const deletedChar = await store.kanji.get(13314);
     assert.isUndefined(deletedChar);
@@ -215,7 +215,7 @@ describe('update', () => {
       progressEventB
     );
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     assert.deepEqual(actions, [
       { type: 'startdownload', version: VERSION_1_0_0 },
@@ -300,7 +300,7 @@ describe('update', () => {
 
     const downloadStream = mockStream(...events);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     assert.deepEqual(await store.kanji.toArray(), [
       {
@@ -383,7 +383,7 @@ describe('update', () => {
 
     const downloadStream = mockStream(...events);
 
-    await update({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, store, callback });
 
     assert.deepEqual(await store.kanji.toArray(), [
       {

@@ -1,7 +1,13 @@
 import { DatabaseVersion } from './common';
 import { DownloadEvent } from './download';
 import { KanjiEntryLine, KanjiDeletionLine } from './kanjidb';
-import { KanjiStore, KanjiRecord, DatabaseVersionRecord } from './store';
+import {
+  getIdForKanjiRecord,
+  toKanjiRecord,
+  KanjiStore,
+  KanjiRecord,
+  DatabaseVersionRecord,
+} from './store';
 import { UpdateAction } from './update-actions';
 import { stripFields } from './utils';
 
@@ -48,18 +54,44 @@ export type UpdateCallback = (action: UpdateAction) => void;
 
 const inProgressUpdates: Map<
   KanjiStore,
-  ReadableStreamDefaultReader<DownloadEvent<KanjiEntryLine, KanjiDeletionLine>>
+  ReadableStreamDefaultReader<DownloadEvent<any, any>>
 > = new Map();
 
-export async function update({
-  downloadStream,
-  store,
-  callback,
-}: {
+export async function updateKanji(options: {
   downloadStream: ReadableStream<
     DownloadEvent<KanjiEntryLine, KanjiDeletionLine>
   >;
   store: KanjiStore;
+  callback: UpdateCallback;
+}) {
+  return update<KanjiEntryLine, KanjiDeletionLine, KanjiRecord>({
+    ...options,
+    table: options.store.kanji,
+    toRecord: toKanjiRecord,
+    getId: getIdForKanjiRecord,
+    versionId: 1,
+  });
+}
+
+async function update<
+  EntryLine extends Omit<object, 'type'>,
+  DeletionLine,
+  RecordType
+>({
+  downloadStream,
+  store,
+  table,
+  toRecord,
+  getId,
+  versionId,
+  callback,
+}: {
+  downloadStream: ReadableStream<DownloadEvent<EntryLine, DeletionLine>>;
+  store: KanjiStore;
+  table: Dexie.Table<RecordType, number>;
+  toRecord: (e: EntryLine) => RecordType;
+  getId: (e: DeletionLine) => number;
+  versionId: 1 | 2;
   callback: UpdateCallback;
 }) {
   if (inProgressUpdates.has(store)) {
@@ -70,7 +102,7 @@ export async function update({
 
   inProgressUpdates.set(store, reader);
 
-  let recordsToPut: Array<KanjiRecord> = [];
+  let recordsToPut: Array<RecordType> = [];
   let recordsToDelete: Array<number> = [];
 
   let currentVersion: DatabaseVersion | undefined;
@@ -87,17 +119,17 @@ export async function update({
     });
 
     const versionRecord: DatabaseVersionRecord = {
-      id: 1,
+      id: versionId,
       ...currentVersion,
     };
 
-    await store.transaction('rw', store.kanji, store.dbVersion, async () => {
+    await store.transaction('rw', table, store.dbVersion, async () => {
       if (!partialVersion) {
-        await store.kanji.clear();
+        await table.clear();
       } else {
-        await store.kanji.bulkDelete(recordsToDelete);
+        await table.bulkDelete(recordsToDelete);
       }
-      await store.kanji.bulkPut(recordsToPut);
+      await table.bulkPut(recordsToPut);
       await store.dbVersion.put(versionRecord);
     });
 
@@ -110,7 +142,7 @@ export async function update({
 
   while (true) {
     let readResult: ReadableStreamReadResult<
-      DownloadEvent<KanjiEntryLine, KanjiDeletionLine>
+      DownloadEvent<EntryLine, DeletionLine>
     >;
     try {
       readResult = await reader.read();
@@ -145,10 +177,14 @@ export async function update({
 
       case 'entry':
         {
-          const recordToPut: KanjiRecord = {
-            ...stripFields(value, ['type']),
-            c: value.c.codePointAt(0) as number,
-          };
+          // The following hack is here until I work out how to fix this
+          // properly:
+          //
+          //   https://stackoverflow.com/questions/57815891/how-to-define-an-object-type-that-does-not-include-a-specific-member
+          //
+          const recordToPut = toRecord((stripFields(value, [
+            'type',
+          ]) as any) as EntryLine);
           recordsToPut.push(recordToPut);
         }
         break;
@@ -158,7 +194,7 @@ export async function update({
           partialVersion,
           'Should not get deletion events if we are doing a full update'
         );
-        recordsToDelete.push(value.c.codePointAt(0) as number);
+        recordsToDelete.push(getId(value));
         break;
 
       case 'progress':
