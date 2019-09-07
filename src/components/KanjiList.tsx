@@ -26,7 +26,7 @@ function renderEntry(entry: KanjiResult): JSX.Element {
       </div>
       <div class="meanings">{entry.m.join(', ')}</div>
       <div class="bushu" lang="ja">
-        部首：{entry.rad.b || entry.rad.k}（{entry.rad.na.join('、')}）
+        部首：{renderRadical(entry.rad)}
       </div>
       <div class="refs">
         <div class="ref">Henshall: {entry.refs.henshall}</div>
@@ -48,6 +48,16 @@ function renderEntry(entry: KanjiResult): JSX.Element {
       </a>
     </div>
   );
+}
+
+function renderRadical(rad: KanjiResult['rad']): string {
+  let result = `${rad.b || rad.k}（${rad.na.join('、')}）`;
+  if (rad.base && (rad.b || rad.k) !== (rad.base.b || rad.base.k)) {
+    // TODO: We should really wrap the following in a span (and mark "from" as
+    // being English)
+    result += ` from ${rad.base.b || rad.base.k}（${rad.base.na.join(`、`)}）`;
+  }
+  return result;
 }
 
 function renderKanKen(level: number | undefined): string {

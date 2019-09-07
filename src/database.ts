@@ -211,33 +211,51 @@ export class KanjiDatabase {
       (record: KanjiRecord | undefined) => typeof record !== 'undefined'
     );
 
+    const baseRadicalIdForKanji = (record: KanjiRecord): string =>
+      record.rad.x.toString().padStart(3, '0');
     const radicalIdForKanji = (record: KanjiRecord): string => {
-      let id = record.rad.x.toString().padStart(3, '0');
+      let id = baseRadicalIdForKanji(record);
       if (record.rad.var) {
         id += `-${record.rad.var}`;
       }
       return id;
     };
 
-    const radicalsToFetch = [...new Set(kanjiRecords.map(radicalIdForKanji))];
-
+    const radicalsToFetch = [
+      ...new Set([
+        ...kanjiRecords.map(baseRadicalIdForKanji),
+        ...kanjiRecords.map(radicalIdForKanji),
+      ]),
+    ];
     const radicalRecords = await this.store.bushu.bulkGet(radicalsToFetch);
     const radicalMap = new Map<string, RadicalRecord>(
       radicalRecords.map(record => [record.id, record])
     );
 
     return kanjiRecords.map(record => {
-      const radical = radicalMap.get(radicalIdForKanji(record))!;
+      // XXX Work out what to do if the radical cannot be found
+      const radicalVariant = radicalMap.get(radicalIdForKanji(record))!;
+      const rad: KanjiResult['rad'] = {
+        ...record.rad,
+        b: radicalVariant.b,
+        k: radicalVariant.k,
+        na: radicalVariant.na,
+        m: radicalVariant.m,
+      };
+
+      // If this a variant, return the base radical information too
+      if (record.rad.var) {
+        const baseRadical = radicalMap.get(baseRadicalIdForKanji(record));
+        if (baseRadical) {
+          const { b, k, na, m } = baseRadical;
+          rad.base = { b, k, na, m };
+        }
+      }
+
       return {
         ...record,
         c: String.fromCodePoint(record.c),
-        rad: {
-          ...record.rad,
-          b: radical.b,
-          k: radical.k,
-          na: radical.na,
-          m: radical.m,
-        },
+        rad,
       };
     });
   }
@@ -253,5 +271,11 @@ export interface KanjiResult extends Omit<KanjiEntryLine, 'rad'> {
     k?: string;
     na: Array<string>;
     m: Array<string>;
+    base?: {
+      b?: string;
+      k?: string;
+      na: Array<string>;
+      m: Array<string>;
+    };
   };
 }
