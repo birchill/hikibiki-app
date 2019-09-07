@@ -6,7 +6,7 @@ import {
   isKanjiEntryLine,
   isKanjiDeletionLine,
 } from './kanjidb';
-import { KanjiStore, KanjiRecord } from './store';
+import { KanjiStore, KanjiRecord, RadicalRecord } from './store';
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
 import { reducer as updateReducer } from './update-reducer';
@@ -207,17 +207,51 @@ export class KanjiDatabase {
     const ids = kanji.map(kanji => kanji.codePointAt(0)!);
     const records = await this.store.kanji.bulkGet(ids);
 
-    return records
-      .filter(
-        (record: KanjiRecord | undefined) => typeof record !== 'undefined'
-      )
-      .map((record: KanjiRecord) => ({
+    const kanjiRecords: Array<KanjiRecord> = records.filter(
+      (record: KanjiRecord | undefined) => typeof record !== 'undefined'
+    );
+
+    const radicalIdForKanji = (record: KanjiRecord): string => {
+      let id = record.rad.x.toString().padStart(3, '0');
+      if (record.rad.var) {
+        id += `-${record.rad.var}`;
+      }
+      return id;
+    };
+
+    const radicalsToFetch = [...new Set(kanjiRecords.map(radicalIdForKanji))];
+
+    const radicalRecords = await this.store.bushu.bulkGet(radicalsToFetch);
+    const radicalMap = new Map<string, RadicalRecord>(
+      radicalRecords.map(record => [record.id, record])
+    );
+
+    return kanjiRecords.map(record => {
+      const radical = radicalMap.get(radicalIdForKanji(record))!;
+      return {
         ...record,
         c: String.fromCodePoint(record.c),
-      }));
+        rad: {
+          ...record.rad,
+          b: radical.b,
+          k: radical.k,
+          na: radical.na,
+          m: radical.m,
+        },
+      };
+    });
   }
 
   // XXX Check for offline events?
 }
 
-export interface KanjiResult extends KanjiEntryLine {}
+export interface KanjiResult extends Omit<KanjiEntryLine, 'rad'> {
+  rad: {
+    x: number;
+    nelson?: number;
+    b?: string;
+    k?: string;
+    na: Array<string>;
+    m: Array<string>;
+  };
+}

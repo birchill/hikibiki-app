@@ -18,13 +18,26 @@ function renderEntry(entry: KanjiResult): JSX.Element {
 
   return (
     <div class="kanji-entry">
-      <div class="kanji">{entry.c}</div>
+      <div class="kanji" lang="ja">
+        {entry.c}
+      </div>
+      <div class="readings" lang="ja">
+        {commonReadings}
+      </div>
       <div class="meanings">{entry.m.join(', ')}</div>
-      <div class="readings">{commonReadings}</div>
+      <div class="bushu" lang="ja">
+        部首：{entry.rad.b || entry.rad.k}（{entry.rad.na.join('、')}）
+      </div>
       <div class="refs">
         <div class="ref">Henshall: {entry.refs.henshall}</div>
-        <div class="ref">漢検: {renderKanKen(entry.misc.kk)}</div>
-        {entry.comp ? <div class="ref">Components: {entry.comp}</div> : null}
+        <div class="ref" lang="ja">
+          漢検: {renderKanKen(entry.misc.kk)}
+        </div>
+        {entry.comp ? (
+          <div class="ref" lang="ja">
+            Components: {entry.comp}
+          </div>
+        ) : null}
       </div>
       <a
         href={`https://app.kanjialive.com/${encodeURIComponent(entry.c)}`}
