@@ -1,3 +1,5 @@
+import deepEqual from 'deep-equal';
+
 import { isRadicalEntryLine, isRadicalDeletionLine } from './bushudb';
 import { DatabaseVersion } from './common';
 import { download } from './download';
@@ -29,6 +31,28 @@ export const enum DatabaseState {
   Ok,
 }
 
+export interface KanjiResult extends Omit<KanjiEntryLine, 'rad' | 'comp'> {
+  rad: {
+    x: number;
+    nelson?: number;
+    b?: string;
+    k?: string;
+    na: Array<string>;
+    m: Array<string>;
+    base?: {
+      b?: string;
+      k?: string;
+      na: Array<string>;
+      m: Array<string>;
+    };
+  };
+  comp: Array<{
+    c: string;
+    na: Array<string>;
+    m: Array<string>;
+  }>;
+}
+
 export class KanjiDatabase {
   state: DatabaseState = DatabaseState.Initializing;
   updateState: UpdateState = { state: 'idle', lastCheck: null };
@@ -40,6 +64,8 @@ export class KanjiDatabase {
 
   private readyPromise: Promise<any>;
   private inProgressUpdate: Promise<void> | undefined;
+  private radicalsPromise: Promise<Map<string, RadicalRecord>> | undefined;
+  private charToRadicalMap: Map<string, string> = new Map();
 
   constructor() {
     this.store = new KanjiStore();
@@ -53,6 +79,9 @@ export class KanjiDatabase {
     );
 
     this.readyPromise = Promise.all([getKanjiDbVersion, getRadicalDbVersion]);
+
+    // Pre-fetch the radical information
+    this.readyPromise.then(() => this.getRadicals());
   }
 
   get ready() {
@@ -74,6 +103,10 @@ export class KanjiDatabase {
     db: 'kanjidb' | 'bushudb',
     version: DatabaseVersion | undefined
   ) {
+    if (deepEqual(this.dbVersions[db], version)) {
+      return;
+    }
+
     // This is really quite hacky, but db-worker listens for changes to
     // properties on KanjiDatabase object so if we simply update a sub-property
     // it won't notice and hence won't notify the UI. As a result, we have to
@@ -84,6 +117,12 @@ export class KanjiDatabase {
       typeof this.dbVersions.bushudb === 'undefined'
         ? DatabaseState.Empty
         : DatabaseState.Ok;
+
+    // Invalidate our cached version of the radical database if we updated it
+    if (db === 'bushudb') {
+      this.radicalsPromise = undefined;
+      this.charToRadicalMap = new Map();
+    }
   }
 
   async update() {
@@ -215,16 +254,35 @@ export class KanjiDatabase {
       (record: KanjiRecord | undefined) => typeof record !== 'undefined'
     );
 
-    const baseRadicalIdForKanji = (record: KanjiRecord): string =>
-      record.rad.x.toString().padStart(3, '0');
-    const radicalIdForKanji = (record: KanjiRecord): string => {
-      let id = baseRadicalIdForKanji(record);
-      if (record.rad.var) {
-        id += `-${record.rad.var}`;
-      }
-      return id;
-    };
+    const radicalResults = await this.getRadicalForKanji(kanjiRecords);
+    if (kanjiRecords.length !== radicalResults.length) {
+      throw new Error(
+        `There should be as many kanji records (${kanjiRecords.length}) as radical blocks (${radicalResults.length})`
+      );
+    }
 
+    const componentResults = await this.getComponentsForKanji(kanjiRecords);
+    if (kanjiRecords.length !== componentResults.length) {
+      throw new Error(
+        `There should be as many kanji records (${kanjiRecords.length}) as component arrays (${componentResults.length})`
+      );
+    }
+
+    // Zip the arrays together
+    return kanjiRecords.map((record, i) => {
+      return {
+        ...record,
+        c: String.fromCodePoint(record.c),
+        rad: radicalResults[i],
+        comp: componentResults[i],
+      };
+    });
+  }
+
+  async getRadicalForKanji(
+    kanjiRecords: Array<KanjiRecord>
+  ): Promise<Array<KanjiResult['rad']>> {
+    // XXX Re-do this to use getRadicals() instead
     const radicalsToFetch = [
       ...new Set([
         ...kanjiRecords.map(baseRadicalIdForKanji),
@@ -272,30 +330,142 @@ export class KanjiDatabase {
         }
       }
 
-      return {
-        ...record,
-        c: String.fromCodePoint(record.c),
-        rad,
-      };
+      return rad;
     });
+  }
+
+  async getComponentsForKanji(
+    kanjiRecords: Array<KanjiRecord>
+  ): Promise<Array<KanjiResult['comp']>> {
+    // Collect all the characters together
+    const components = kanjiRecords.reduce<Array<string>>(
+      (components, record) =>
+        components.concat(record.comp ? [...record.comp] : []),
+      []
+    );
+
+    // Work out which kanji characters we need to lookup
+    const radicalMap = await this.getCharToRadicalMapping();
+    const kanjiToLookup = new Set<number>();
+    for (const c of components) {
+      if (c && !radicalMap.has(c)) {
+        kanjiToLookup.add(c.codePointAt(0)!);
+      }
+    }
+
+    // ... And look them up
+    let kanjiMap: Map<string, KanjiRecord> = new Map();
+    if (kanjiToLookup.size) {
+      const kanjiRecords = await this.store.kanji
+        .where('c')
+        .anyOf([...kanjiToLookup]);
+      kanjiMap = new Map(
+        (await kanjiRecords.toArray()).map(record => [
+          String.fromCodePoint(record.c),
+          record,
+        ])
+      );
+    }
+
+    // Now fill out the information
+    const radicals = await this.getRadicals();
+    const result: Array<KanjiResult['comp']> = [];
+    for (const record of kanjiRecords) {
+      const comp: KanjiResult['comp'] = [];
+      for (const c of record.comp ? [...record.comp] : []) {
+        if (radicalMap.has(c)) {
+          const radicalRecord = radicals.get(radicalMap.get(c)!);
+          if (radicalRecord) {
+            comp.push({
+              c,
+              na: radicalRecord.na,
+              m: radicalRecord.m,
+            });
+            continue;
+          }
+        } else if (kanjiMap.has(c)) {
+          const kanjiRecord = kanjiMap.get(c);
+          if (kanjiRecord) {
+            comp.push({
+              c,
+              na: kanjiRecord.r.kun || kanjiRecord.r.on || [],
+              m: kanjiRecord.m,
+            });
+            continue;
+          }
+        }
+        console.error(`Couldn't find a radical or kanji entry for ${c}`);
+      }
+
+      result.push(comp);
+    }
+
+    return result;
+  }
+
+  async getRadicals(): Promise<Map<string, RadicalRecord>> {
+    await this.ready;
+
+    if (!this.radicalsPromise) {
+      this.radicalsPromise = this.store.bushu.toArray().then(records => {
+        return new Map(records.map(record => [record.id, record]));
+      });
+    }
+
+    return this.radicalsPromise;
+  }
+
+  async getCharToRadicalMapping(): Promise<Map<string, string>> {
+    if (this.charToRadicalMap.size) {
+      return this.charToRadicalMap;
+    }
+
+    const radicals = await this.getRadicals();
+
+    let baseRadical: RadicalRecord | undefined;
+    const mapping: Map<string, string> = new Map();
+
+    for (const radical of radicals.values()) {
+      if (radical.id.indexOf('-') === -1) {
+        baseRadical = radical;
+        if (radical.b) {
+          mapping.set(radical.b, radical.id);
+        }
+        if (radical.k) {
+          mapping.set(radical.k, radical.id);
+        }
+      } else {
+        if (!baseRadical) {
+          throw new Error('Radicals out of order--no base radical found');
+        }
+        if (radical.r !== baseRadical.r) {
+          throw new Error('Radicals out of order--ID mismatch');
+        }
+        if (radical.b && radical.b !== baseRadical.b) {
+          mapping.set(radical.b, radical.id);
+        }
+        if (radical.k && radical.k !== baseRadical.k) {
+          mapping.set(radical.k, radical.id);
+        }
+      }
+    }
+
+    this.charToRadicalMap = mapping;
+
+    return mapping;
   }
 
   // XXX Check for offline events?
 }
 
-export interface KanjiResult extends Omit<KanjiEntryLine, 'rad'> {
-  rad: {
-    x: number;
-    nelson?: number;
-    b?: string;
-    k?: string;
-    na: Array<string>;
-    m: Array<string>;
-    base?: {
-      b?: string;
-      k?: string;
-      na: Array<string>;
-      m: Array<string>;
-    };
-  };
+function baseRadicalIdForKanji(record: KanjiRecord): string {
+  return record.rad.x.toString().padStart(3, '0');
+}
+
+function radicalIdForKanji(record: KanjiRecord): string {
+  let id = baseRadicalIdForKanji(record);
+  if (record.rad.var) {
+    id += `-${record.rad.var}`;
+  }
+  return id;
 }

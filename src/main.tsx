@@ -82,8 +82,6 @@ function runQuery() {
   }
 }
 
-runQuery();
-
 let rootNode: Element | undefined;
 
 function update() {

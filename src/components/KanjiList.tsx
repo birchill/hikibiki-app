@@ -33,11 +33,22 @@ function renderEntry(entry: KanjiResult): JSX.Element {
         <div class="ref" lang="ja">
           漢検: {renderKanKen(entry.misc.kk)}
         </div>
-        {entry.comp ? (
-          <div class="ref" lang="ja">
-            Components: {entry.comp}
-          </div>
-        ) : null}
+        <div class="ref" lang="ja">
+          Components:{' '}
+          {entry.comp.map(comp => {
+            return (
+              <span class="component">
+                <span class="char" lang="ja">
+                  {comp.c}
+                </span>
+                <span class="reading" lang="ja">
+                  {comp.na[0] || '-'}
+                </span>
+                <span class="meaning">{comp.m[0] || '-'}</span>
+              </span>
+            );
+          })}
+        </div>
       </div>
       <a
         href={`https://app.kanjialive.com/${encodeURIComponent(entry.c)}`}
