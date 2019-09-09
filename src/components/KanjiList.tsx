@@ -37,7 +37,7 @@ function renderEntry(entry: KanjiResult): JSX.Element {
                   {comp.c}
                 </span>
                 <span class="reading" lang="ja">
-                  {comp.na[0] || '-'}
+                  ({comp.na[0] || '-'})
                 </span>
                 <span class="meaning">{comp.m[0] || '-'}</span>
               </span>
