@@ -35,11 +35,12 @@ function renderEntry(entry: KanjiResult): JSX.Element {
               <span class="component">
                 <span class="char" lang="ja">
                   {comp.c}
-                </span>
+                </span>{' '}
+                (
                 <span class="reading" lang="ja">
-                  ({comp.na[0] || '-'})
+                  {comp.na[0] || '-'}
                 </span>
-                <span class="meaning">{comp.m[0] || '-'}</span>
+                , <span class="meaning">{comp.m[0] || '-'}</span>)
               </span>
             );
           })}
@@ -63,7 +64,7 @@ function renderEntry(entry: KanjiResult): JSX.Element {
 }
 
 function renderRadical(rad: KanjiResult['rad']): string {
-  let result = `${rad.b || rad.k}（${rad.na.join('、')}）`;
+  let result = `${rad.b || rad.k}（${rad.na.join('、')}, ${rad.m.join(',')}）`;
   if (rad.base && (rad.b || rad.k) !== (rad.base.b || rad.base.k)) {
     // TODO: We should really wrap the following in a span (and mark "from" as
     // being English)

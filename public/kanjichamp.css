@@ -113,14 +113,6 @@ button:focus {
   line-height: 1;
 }
 
-.kanji-list > .kanji-entry > .components > .component > .reading {
-  margin-left: 10px;
-}
-
-.kanji-list > .kanji-entry > .components > .component > .meaning {
-  margin-left: 10px;
-}
-
 /***********************************************************************
  *
  * Download status
