@@ -378,6 +378,7 @@ export class KanjiDatabase {
           if (kanjiRecord) {
             comp.push({
               c,
+              // XXX Strip the '.' from kun readings if we use them
               na: kanjiRecord.r.kun || kanjiRecord.r.on || [],
               m: kanjiRecord.m,
             });

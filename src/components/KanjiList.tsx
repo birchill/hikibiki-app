@@ -28,13 +28,8 @@ function renderEntry(entry: KanjiResult): JSX.Element {
       <div class="bushu" lang="ja">
         部首：{renderRadical(entry.rad)}
       </div>
-      <div class="refs">
-        <div class="ref">Henshall: {entry.refs.henshall}</div>
-        <div class="ref" lang="ja">
-          漢検: {renderKanKen(entry.misc.kk)}
-        </div>
-        <div class="ref" lang="ja">
-          Components:{' '}
+      {entry.comp.length ? (
+        <div class="components">
           {entry.comp.map(comp => {
             return (
               <span class="component">
@@ -48,6 +43,12 @@ function renderEntry(entry: KanjiResult): JSX.Element {
               </span>
             );
           })}
+        </div>
+      ) : null}
+      <div class="refs">
+        <div class="ref">Henshall: {entry.refs.henshall}</div>
+        <div class="ref" lang="ja">
+          漢検: {renderKanKen(entry.misc.kk)}
         </div>
       </div>
       <a

@@ -102,6 +102,24 @@ button:focus {
   font-size: 50px;
 }
 
+.kanji-list > .kanji-entry > .components > .component {
+  display: inline-block;
+  font-size: 15px;
+  padding: 10px 10px;
+  margin-right: 10px;
+  background-color: #def;
+  border-radius: 5px;
+  line-height: 1;
+}
+
+.kanji-list > .kanji-entry > .components > .component > .reading {
+  margin-left: 10px;
+}
+
+.kanji-list > .kanji-entry > .components > .component > .meaning {
+  margin-left: 10px;
+}
+
 /***********************************************************************
  *
  * Download status
