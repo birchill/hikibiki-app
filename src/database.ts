@@ -282,20 +282,10 @@ export class KanjiDatabase {
   async getRadicalForKanji(
     kanjiRecords: Array<KanjiRecord>
   ): Promise<Array<KanjiResult['rad']>> {
-    // XXX Re-do this to use getRadicals() instead
-    const radicalsToFetch = [
-      ...new Set([
-        ...kanjiRecords.map(baseRadicalIdForKanji),
-        ...kanjiRecords.map(radicalIdForKanji),
-      ]),
-    ];
-    const radicalRecords = await this.store.bushu.bulkGet(radicalsToFetch);
-    const radicalMap = new Map<string, RadicalRecord>(
-      radicalRecords.map(record => [record.id, record])
-    );
+    const radicals = await this.getRadicals();
 
     return kanjiRecords.map(record => {
-      const radicalVariant = radicalMap.get(radicalIdForKanji(record));
+      const radicalVariant = radicals.get(radicalIdForKanji(record));
       let rad: KanjiResult['rad'];
       if (radicalVariant) {
         rad = {
@@ -323,7 +313,7 @@ export class KanjiDatabase {
 
       // If this a variant, return the base radical information too
       if (record.rad.var) {
-        const baseRadical = radicalMap.get(baseRadicalIdForKanji(record));
+        const baseRadical = radicals.get(baseRadicalIdForKanji(record));
         if (baseRadical) {
           const { b, k, na, m } = baseRadical;
           rad.base = { b, k, na, m };
