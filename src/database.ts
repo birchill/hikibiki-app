@@ -237,15 +237,31 @@ export class KanjiDatabase {
     );
 
     return kanjiRecords.map(record => {
-      // XXX Work out what to do if the radical cannot be found
-      const radicalVariant = radicalMap.get(radicalIdForKanji(record))!;
-      const rad: KanjiResult['rad'] = {
-        ...record.rad,
-        b: radicalVariant.b,
-        k: radicalVariant.k,
-        na: radicalVariant.na,
-        m: radicalVariant.m,
-      };
+      const radicalVariant = radicalMap.get(radicalIdForKanji(record));
+      let rad: KanjiResult['rad'];
+      if (radicalVariant) {
+        rad = {
+          ...record.rad,
+          b: radicalVariant.b,
+          k: radicalVariant.k,
+          na: radicalVariant.na,
+          m: radicalVariant.m,
+        };
+      } else {
+        // The radical was not found. This should basically never happen.
+        // But rather than crash fatally, just fill in some nonsense data
+        // instead.
+        console.error(`Failed to find radical: ${radicalIdForKanji(record)}`);
+        rad = {
+          ...record.rad,
+          // We generally maintain the invariant that either 'b' or 'k' is
+          // filled in (or both for a base radical) so even though the TS
+          // typings don't require it, we should provide one here.
+          b: '�',
+          na: [''],
+          m: [''],
+        };
+      }
 
       // If this a variant, return the base radical information too
       if (record.rad.var) {
