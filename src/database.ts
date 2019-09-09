@@ -74,7 +74,11 @@ export class KanjiDatabase {
     db: 'kanjidb' | 'bushudb',
     version: DatabaseVersion | undefined
   ) {
-    this.dbVersions[db] = version;
+    // This is really quite hacky, but db-worker listens for changes to
+    // properties on KanjiDatabase object so if we simply update a sub-property
+    // it won't notice and hence won't notify the UI. As a result, we have to
+    // completely replace the dbVersions object when we update it.
+    this.dbVersions = { ...this.dbVersions, [db]: version };
     this.state =
       typeof this.dbVersions.kanjidb === 'undefined' ||
       typeof this.dbVersions.bushudb === 'undefined'
