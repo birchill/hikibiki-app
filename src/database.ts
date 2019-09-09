@@ -58,8 +58,8 @@ export class KanjiDatabase {
   updateState: UpdateState = { state: 'idle', lastCheck: null };
   store: KanjiStore;
   dbVersions: {
-    kanjidb: DatabaseVersion | undefined;
-    bushudb: DatabaseVersion | undefined;
+    kanjidb: DatabaseVersion | null | undefined;
+    bushudb: DatabaseVersion | null | undefined;
   } = { kanjidb: undefined, bushudb: undefined };
 
   private readyPromise: Promise<any>;
@@ -80,7 +80,7 @@ export class KanjiDatabase {
 
     this.readyPromise = Promise.all([getKanjiDbVersion, getRadicalDbVersion]);
 
-    // Pre-fetch the radical information
+    // Pre-fetch the radical information (but don't block on this)
     this.readyPromise.then(() => this.getRadicals());
   }
 
@@ -90,10 +90,10 @@ export class KanjiDatabase {
 
   private async getDbVersion(
     db: 'kanjidb' | 'bushudb'
-  ): Promise<DatabaseVersion | undefined> {
+  ): Promise<DatabaseVersion | null> {
     const versionDoc = await this.store.dbVersion.get(db === 'kanjidb' ? 1 : 2);
     if (!versionDoc) {
-      return undefined;
+      return null;
     }
 
     return stripFields(versionDoc, ['id']);
@@ -101,9 +101,20 @@ export class KanjiDatabase {
 
   private async updateDbVersion(
     db: 'kanjidb' | 'bushudb',
-    version: DatabaseVersion | undefined
+    version: DatabaseVersion | null
   ) {
-    if (deepEqual(this.dbVersions[db], version)) {
+    // So at some point we need to rewrite deep-equal. It:
+    //
+    // a) treats undefined and null as equal
+    //    (despite the fact that they produce different JSON output)
+    // b) treats a missing property and an undefined property as inequal
+    //    (despite the fact that they produce the same JSON output)
+    //
+    // For now we just supplement it with an extra type check.
+    if (
+      deepEqual(this.dbVersions[db], version) &&
+      typeof this.dbVersions[db] === typeof version
+    ) {
       return;
     }
 
@@ -112,11 +123,14 @@ export class KanjiDatabase {
     // it won't notice and hence won't notify the UI. As a result, we have to
     // completely replace the dbVersions object when we update it.
     this.dbVersions = { ...this.dbVersions, [db]: version };
-    this.state =
-      typeof this.dbVersions.kanjidb === 'undefined' ||
-      typeof this.dbVersions.bushudb === 'undefined'
-        ? DatabaseState.Empty
-        : DatabaseState.Ok;
+    if (this.dbVersions.kanjidb === null || this.dbVersions.bushudb === null) {
+      this.state = DatabaseState.Empty;
+    } else if (
+      typeof this.dbVersions.kanjidb !== 'undefined' &&
+      typeof this.dbVersions.bushudb !== 'undefined'
+    ) {
+      this.state = DatabaseState.Ok;
+    }
 
     // Invalidate our cached version of the radical database if we updated it
     if (db === 'bushudb') {
@@ -192,7 +206,7 @@ export class KanjiDatabase {
       const downloadStream = await download({
         dbName,
         maxSupportedMajorVersion: 1,
-        currentVersion: this.dbVersions[dbName],
+        currentVersion: this.dbVersions[dbName] || undefined,
         isEntryLine,
         isDeletionLine,
       });
@@ -233,6 +247,8 @@ export class KanjiDatabase {
   }
 
   async destroy() {
+    // Wait for radicals query to finish before tidying up
+    await this.getRadicals();
     await this.store.destroy();
     this.store = new KanjiStore();
     this.state = DatabaseState.Empty;

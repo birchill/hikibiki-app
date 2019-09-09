@@ -24,10 +24,12 @@ export const notifyDbStateUpdated = (state: DatabaseState) => ({
   state,
 });
 
-export const notifyDbVersionsUpdated = (versions: {
-  kanjidb?: DatabaseVersion;
-  bushudb?: DatabaseVersion;
-}) => ({
+export interface ResolvedDbVersions {
+  kanjidb: DatabaseVersion | null;
+  bushudb: DatabaseVersion | null;
+}
+
+export const notifyDbVersionsUpdated = (versions: ResolvedDbVersions) => ({
   type: 'dbversionsupdated',
   versions,
 });

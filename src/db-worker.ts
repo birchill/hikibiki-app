@@ -4,6 +4,7 @@ import {
   notifyDbVersionsUpdated,
   notifyQueryResult,
   notifyUpdateStateUpdated,
+  ResolvedDbVersions,
   WorkerMessage,
 } from './worker-messages';
 
@@ -15,7 +16,14 @@ const db = new KanjiDatabase();
 
 db.ready.then(() => {
   self.postMessage(notifyDbStateUpdated(db.state));
-  self.postMessage(notifyDbVersionsUpdated(db.dbVersions));
+  console.assert(
+    typeof db.dbVersions.kanjidb !== 'undefined' &&
+      typeof db.dbVersions.bushudb !== 'undefined',
+    'Database versions should be resolved by the time we are ready'
+  );
+  self.postMessage(
+    notifyDbVersionsUpdated(db.dbVersions as ResolvedDbVersions)
+  );
   self.postMessage(notifyUpdateStateUpdated(db.updateState));
 });
 
@@ -30,7 +38,16 @@ const proxyDb = new Proxy(db, {
           break;
 
         case 'dbVersions':
-          self.postMessage(notifyDbVersionsUpdated(db.dbVersions));
+          // Wait until we have finished initializing before reporting the
+          // database versions.
+          if (
+            typeof db.dbVersions.kanjidb !== 'undefined' &&
+            typeof db.dbVersions.bushudb !== 'undefined'
+          ) {
+            self.postMessage(
+              notifyDbVersionsUpdated(db.dbVersions as ResolvedDbVersions)
+            );
+          }
           break;
 
         case 'updateState':
