@@ -1,13 +1,13 @@
 Running tests:
 
 ```
-npm test
+yarn test
 ```
 
 Testing a specific browser:
 
 ```
-npm test -- --browsers FirefoxNightly
+yarn test --browsers FirefoxNightly
 ```
 
 In test watch mode:

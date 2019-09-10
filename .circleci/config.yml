@@ -11,7 +11,7 @@ jobs:
           name: Check versions
           command: |
             node --version
-            npm --version
+            yarn --version
 
       - checkout
 
@@ -20,7 +20,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies-
 
-      - run: npm install
+      - run: yarn install
 
       - save_cache:
           paths:
@@ -29,14 +29,14 @@ jobs:
 
       - run:
           name: Build
-          command: npm run build
+          command: yarn run build
 
       - run:
           name: Browser-based tests
           # Limit the number of workers to avoid out of memory issues
           # See: https://discuss.circleci.com/t/memory-problems-with-jest-and-workers/10297/3
-          command: npm test
+          command: yarn test
 
       - run:
           name: Verify storybook setup
-          command: npm run build:storybook
+          command: yarn run build:storybook
