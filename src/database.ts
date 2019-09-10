@@ -392,10 +392,16 @@ export class KanjiDatabase {
         } else if (kanjiMap.has(c)) {
           const kanjiRecord = kanjiMap.get(c);
           if (kanjiRecord) {
+            let na: Array<string> = [];
+            if (kanjiRecord.r.kun && kanjiRecord.r.kun.length) {
+              na = kanjiRecord.r.kun.map(reading => reading.replace('.', ''));
+            } else if (kanjiRecord.r.on && kanjiRecord.r.on.length) {
+              na = kanjiRecord.r.on;
+            }
+
             comp.push({
               c,
-              // XXX Strip the '.' from kun readings if we use them
-              na: kanjiRecord.r.kun || kanjiRecord.r.on || [],
+              na,
               m: kanjiRecord.m,
             });
             continue;
