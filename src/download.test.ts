@@ -965,7 +965,7 @@ class DrainError extends Error {
     super(...params);
     Object.setPrototypeOf(this, DrainError.prototype);
 
-    if (Error.captureStackTrace) {
+    if (typeof Error.captureStackTrace === 'function') {
       Error.captureStackTrace(this, DrainError);
     }
 
