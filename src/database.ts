@@ -71,14 +71,14 @@ export class KanjiDatabase {
     this.store = new KanjiStore();
 
     // Check initial state
-    const getKanjiDbVersion = this.getDbVersion('kanjidb').then(version =>
-      this.updateDbVersion('kanjidb', version)
-    );
-    const getRadicalDbVersion = this.getDbVersion('bushudb').then(version =>
-      this.updateDbVersion('bushudb', version)
-    );
-
-    this.readyPromise = Promise.all([getKanjiDbVersion, getRadicalDbVersion]);
+    this.readyPromise = this.getDbVersion('kanjidb')
+      .then(version => {
+        this.updateDbVersion('kanjidb', version);
+        return this.getDbVersion('bushudb');
+      })
+      .then(version => {
+        this.updateDbVersion('bushudb', version);
+      });
 
     // Pre-fetch the radical information (but don't block on this)
     this.readyPromise.then(() => this.getRadicals());
@@ -99,7 +99,7 @@ export class KanjiDatabase {
     return stripFields(versionDoc, ['id']);
   }
 
-  private async updateDbVersion(
+  private updateDbVersion(
     db: 'kanjidb' | 'bushudb',
     version: DatabaseVersion | null
   ) {
@@ -420,9 +420,9 @@ export class KanjiDatabase {
     await this.ready;
 
     if (!this.radicalsPromise) {
-      this.radicalsPromise = this.store.bushu.toArray().then(records => {
-        return new Map(records.map(record => [record.id, record]));
-      });
+      this.radicalsPromise = this.store.bushu
+        .toArray()
+        .then(records => new Map(records.map(record => [record.id, record])));
     }
 
     return this.radicalsPromise;

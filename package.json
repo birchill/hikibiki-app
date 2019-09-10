@@ -22,7 +22,7 @@
     "karma": "^4.1.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.0.0",
-    "karma-firefox-launcher": "karma-runner/karma-firefox-launcher",
+    "karma-firefox-launcher": "karma-runner/karma-firefox-launcher#b4e260e75edcb178a8b40219b4dd6c76426837f7",
     "karma-mocha": "^1.3.0",
     "karma-webpack": "^4.0.2",
     "lint-staged": "^9.2.0",

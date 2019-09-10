@@ -5349,9 +5349,9 @@ karma-chrome-launcher@^3.0.0:
   dependencies:
     which "^1.2.1"
 
-karma-firefox-launcher@karma-runner/karma-firefox-launcher:
-  version "1.2.0"
-  resolved "https://codeload.github.com/karma-runner/karma-firefox-launcher/tar.gz/1eb7e1b145d4e264602eb0b14f7e4777686fb4a7"
+karma-firefox-launcher@karma-runner/karma-firefox-launcher#b4e260e75edcb178a8b40219b4dd6c76426837f7:
+  version "1.1.0"
+  resolved "https://codeload.github.com/karma-runner/karma-firefox-launcher/tar.gz/b4e260e75edcb178a8b40219b4dd6c76426837f7"
   dependencies:
     is-wsl "^2.1.0"
 
