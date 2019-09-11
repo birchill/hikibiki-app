@@ -201,7 +201,7 @@ export class KanjiDatabase {
     const checkDate = new Date();
 
     try {
-      reducer({ type: 'start' });
+      reducer({ type: 'start', dbName });
 
       const downloadStream = await download({
         dbName,
@@ -215,7 +215,12 @@ export class KanjiDatabase {
         throw new Error('AbortError');
       }
 
-      await update({ downloadStream, store: this.store, callback: reducer });
+      await update({
+        downloadStream,
+        lang: 'en',
+        store: this.store,
+        callback: reducer,
+      });
 
       if (!this.inProgressUpdate) {
         throw new Error('AbortError');
@@ -231,7 +236,7 @@ export class KanjiDatabase {
           checkDate: wroteSomething ? checkDate : null,
         });
       } else {
-        reducer({ type: 'error', error: e });
+        reducer({ type: 'error', dbName, error: e });
       }
       throw e;
     }

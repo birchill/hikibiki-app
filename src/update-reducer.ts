@@ -10,11 +10,16 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
       return { state: 'idle', lastCheck: state.lastCheck };
 
     case 'start':
-      return { state: 'checking', lastCheck: state.lastCheck };
+      return {
+        state: 'checking',
+        dbName: action.dbName,
+        lastCheck: state.lastCheck,
+      };
 
     case 'startdownload':
       return {
         state: 'downloading',
+        dbName: action.dbName,
         downloadVersion: action.version,
         progress: 0,
         lastCheck: state.lastCheck,
@@ -31,6 +36,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
 
       return {
         state: 'downloading',
+        dbName: state.dbName,
         downloadVersion: state.downloadVersion,
         progress: action.total ? action.loaded / action.total : 0,
         lastCheck: state.lastCheck,
@@ -47,6 +53,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
 
       return {
         state: 'updatingdb',
+        dbName: state.dbName,
         downloadVersion: state.downloadVersion,
         lastCheck: state.lastCheck,
       };
@@ -60,6 +67,7 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
     case 'error':
       return {
         state: 'error',
+        dbName: action.dbName,
         error: action.error,
         lastCheck: state.lastCheck,
       };

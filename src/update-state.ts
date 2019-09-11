@@ -19,6 +19,7 @@ export type IdleUpdateState = {
 // or not we are up-to-date.
 export type CheckingUpdateState = {
   state: 'checking';
+  dbName: 'kanjidb' | 'bushudb';
   lastCheck: Date | null;
 };
 
@@ -28,6 +29,7 @@ export type CheckingUpdateState = {
 // - The `progress` value specifies how far we are through the update.
 export type DownloadingUpdateState = {
   state: 'downloading';
+  dbName: 'kanjidb' | 'bushudb';
   downloadVersion: DatabaseVersion;
   progress: number;
   lastCheck: Date | null;
@@ -37,6 +39,7 @@ export type DownloadingUpdateState = {
 // database.
 export type UpdatingDbUpdateState = {
   state: 'updatingdb';
+  dbName: 'kanjidb' | 'bushudb';
   downloadVersion: DatabaseVersion;
   lastCheck: Date | null;
 };
@@ -44,6 +47,7 @@ export type UpdatingDbUpdateState = {
 // Encountered an error on the previous attempt to update.
 export type ErrorUpdateState = {
   state: 'error';
+  dbName: 'kanjidb' | 'bushudb';
   error: Error;
   lastCheck: Date | null;
 };
@@ -61,6 +65,7 @@ export type UpdateState =
 
 export type CloneableErrorUpdateState = {
   state: 'error';
+  dbName: 'kanjidb' | 'bushudb';
   error: {
     name: string;
     message: string;

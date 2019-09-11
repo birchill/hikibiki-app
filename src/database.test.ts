@@ -74,7 +74,7 @@ describe('database', () => {
     await db.update();
 
     assert.deepEqual(
-      db.dbVersions.kanjidb,
+      stripFields(db.dbVersions.kanjidb!, ['lang']),
       stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
     );
     assert.equal(db.state, DatabaseState.Ok);

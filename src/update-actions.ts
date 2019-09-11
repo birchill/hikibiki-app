@@ -10,10 +10,12 @@ export type OnlineAction = {
 
 export type StartAction = {
   type: 'start';
+  dbName: 'kanjidb' | 'bushudb';
 };
 
 export type StartDownloadAction = {
   type: 'startdownload';
+  dbName: 'kanjidb' | 'bushudb';
   version: DatabaseVersion;
 };
 
@@ -40,6 +42,7 @@ export type AbortAction = {
 
 export type ErrorAction = {
   type: 'error';
+  dbName: 'kanjidb' | 'bushudb';
   error: Error;
 };
 

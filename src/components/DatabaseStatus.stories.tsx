@@ -23,7 +23,7 @@ storiesOf('Components|DatabaseStatus', module)
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
-        updateState={{ state: 'checking', lastCheck: null }}
+        updateState={{ state: 'checking', dbName: 'kanjidb', lastCheck: null }}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
@@ -31,12 +31,14 @@ storiesOf('Components|DatabaseStatus', module)
         updateState={{
           state: 'downloading',
           progress: 0,
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: null,
         }}
@@ -47,12 +49,14 @@ storiesOf('Components|DatabaseStatus', module)
         updateState={{
           state: 'downloading',
           progress: 0.8523452,
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: null,
         }}
@@ -62,12 +66,14 @@ storiesOf('Components|DatabaseStatus', module)
         databaseVersions={{}}
         updateState={{
           state: 'updatingdb',
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: null,
         }}
@@ -77,6 +83,7 @@ storiesOf('Components|DatabaseStatus', module)
         databaseVersions={{}}
         updateState={{
           state: 'error',
+          dbName: 'kanjidb',
           error: {
             name: 'DownloadError',
             message: 'Could not parse JSON in database file: #$%&#$%&',
@@ -98,6 +105,15 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
         updateState={{ state: 'idle', lastCheck: new Date() }}
@@ -111,9 +127,22 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
-        updateState={{ state: 'checking', lastCheck: new Date() }}
+        updateState={{
+          state: 'checking',
+          dbName: 'kanjidb',
+          lastCheck: new Date(),
+        }}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -124,17 +153,28 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
         updateState={{
           state: 'downloading',
           progress: 0,
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: new Date(),
         }}
@@ -148,17 +188,28 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
         updateState={{
           state: 'downloading',
           progress: 0.8523452,
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: new Date(),
         }}
@@ -172,16 +223,27 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
         updateState={{
           state: 'updatingdb',
+          dbName: 'kanjidb',
           downloadVersion: {
             major: 1,
             minor: 0,
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
           lastCheck: new Date(),
         }}
@@ -195,10 +257,20 @@ storiesOf('Components|DatabaseStatus', module)
             patch: 0,
             databaseVersion: '2019-197',
             dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
           },
         }}
         updateState={{
           state: 'error',
+          dbName: 'kanjidb',
           error: {
             name: 'DownloadError',
             message: 'Could not parse JSON in database file: #$%&#$%&',

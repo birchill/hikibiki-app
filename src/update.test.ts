@@ -21,6 +21,7 @@ const VERSION_1_0_0: DatabaseVersion = {
   patch: 0,
   databaseVersion: 'yer',
   dateOfCreation: '2019-07-23',
+  lang: 'en',
 };
 
 type KanjiEntryEvent = EntryEvent<KanjiEntryLine>;
@@ -51,10 +52,10 @@ describe('updateKanji', () => {
     };
     const downloadStream = mockStream(versionEvent);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     assert.deepEqual(actions, [
-      { type: 'startdownload', version: VERSION_1_0_0 },
+      { type: 'startdownload', dbName: 'kanjidb', version: VERSION_1_0_0 },
       { type: 'finishdownload', version: VERSION_1_0_0 },
     ]);
   });
@@ -67,7 +68,7 @@ describe('updateKanji', () => {
     };
     const downloadStream = mockStream(versionEvent);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     const dbVersion = await store.dbVersion.get(1);
     assert.deepEqual(dbVersion, {
@@ -111,7 +112,7 @@ describe('updateKanji', () => {
     ];
     const downloadStream = mockStream(versionEvent, ...entryEvents);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     const firstChar = await store.kanji.get(13314);
     assert.deepEqual(firstChar, {
@@ -173,7 +174,7 @@ describe('updateKanji', () => {
     };
     const downloadStream = mockStream(versionEvent, deletionEvent);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     const deletedChar = await store.kanji.get(13314);
     assert.isUndefined(deletedChar);
@@ -215,10 +216,10 @@ describe('updateKanji', () => {
       progressEventB
     );
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     assert.deepEqual(actions, [
-      { type: 'startdownload', version: VERSION_1_0_0 },
+      { type: 'startdownload', dbName: 'kanjidb', version: VERSION_1_0_0 },
       { type: 'progress', loaded: 0, total: 1 },
       { type: 'progress', loaded: 1, total: 1 },
       { type: 'finishdownload', version: VERSION_1_0_0 },
@@ -300,7 +301,7 @@ describe('updateKanji', () => {
 
     const downloadStream = mockStream(...events);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     assert.deepEqual(await store.kanji.toArray(), [
       {
@@ -383,7 +384,7 @@ describe('updateKanji', () => {
 
     const downloadStream = mockStream(...events);
 
-    await updateKanji({ downloadStream, store, callback });
+    await updateKanji({ downloadStream, lang: 'en', store, callback });
 
     assert.deepEqual(await store.kanji.toArray(), [
       {

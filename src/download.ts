@@ -367,7 +367,7 @@ function getLatestDbVersionInfo(a: any, dbName: string): VersionInfo | null {
 
 type HeaderLine = {
   type: 'header';
-  version: DatabaseVersion;
+  version: Omit<DatabaseVersion, 'lang'>;
   records: number;
 };
 

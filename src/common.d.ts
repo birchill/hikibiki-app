@@ -4,4 +4,5 @@ export interface DatabaseVersion {
   patch: number;
   databaseVersion?: string;
   dateOfCreation: string;
+  lang: string;
 }

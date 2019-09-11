@@ -66,6 +66,7 @@ export async function updateKanji(
 ) {
   return update<KanjiEntryLine, KanjiDeletionLine, KanjiRecord, number>({
     ...options,
+    dbName: 'kanjidb',
     table: options.store.kanji,
     toRecord: toKanjiRecord,
     getId: getIdForKanjiRecord,
@@ -78,6 +79,7 @@ export async function updateRadicals(
 ) {
   return update<RadicalEntryLine, RadicalDeletionLine, RadicalRecord, string>({
     ...options,
+    dbName: 'bushudb',
     table: options.store.bushu,
     toRecord: toRadicalRecord,
     getId: getIdForRadicalRecord,
@@ -87,6 +89,7 @@ export async function updateRadicals(
 
 export interface UpdateOptions<EntryLine, DeletionLine> {
   downloadStream: ReadableStream<DownloadEvent<EntryLine, DeletionLine>>;
+  lang: string;
   store: KanjiStore;
   callback: UpdateCallback;
 }
@@ -99,6 +102,8 @@ async function update<
 >({
   downloadStream,
   store,
+  lang,
+  dbName,
   table,
   toRecord,
   getId,
@@ -107,6 +112,8 @@ async function update<
 }: {
   downloadStream: ReadableStream<DownloadEvent<EntryLine, DeletionLine>>;
   store: KanjiStore;
+  lang: string;
+  dbName: 'kanjidb' | 'bushudb';
   table: Dexie.Table<RecordType, IdType>;
   toRecord: (e: EntryLine) => RecordType;
   getId: (e: DeletionLine) => IdType;
@@ -132,10 +139,7 @@ async function update<
       return;
     }
 
-    callback({
-      type: 'finishdownload',
-      version: currentVersion,
-    });
+    callback({ type: 'finishdownload', version: currentVersion });
 
     const versionRecord: DatabaseVersionRecord = {
       id: versionId,
@@ -185,11 +189,12 @@ async function update<
       case 'version':
         await finishCurrentVersion();
 
-        currentVersion = stripFields(value, ['type', 'partial']);
+        currentVersion = { ...stripFields(value, ['type', 'partial']), lang };
         partialVersion = value.partial;
 
         callback({
           type: 'startdownload',
+          dbName,
           version: currentVersion,
         });
         break;
@@ -203,7 +208,7 @@ async function update<
           //
           const recordToPut = toRecord((stripFields(value, [
             'type',
-          ]) as any) as EntryLine);
+          ]) as unknown) as EntryLine);
           recordsToPut.push(recordToPut);
         }
         break;
