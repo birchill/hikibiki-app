@@ -3,6 +3,7 @@ import {
   notifyDbStateUpdated,
   notifyDbVersionsUpdated,
   notifyQueryResult,
+  notifySetPreferredLangResult,
   notifyUpdateStateUpdated,
   ResolvedDbVersions,
   WorkerMessage,
@@ -88,5 +89,21 @@ onmessage = (evt: MessageEvent) => {
       proxyDb.getKanji(evt.data.kanji).then(result => {
         self.postMessage(notifyQueryResult(result));
       });
+      break;
+
+    case 'setpreferredlang':
+      proxyDb.setPreferredLang(evt.data.lang).then(
+        () => {
+          self.postMessage(
+            notifySetPreferredLangResult({ ok: true, lang: evt.data.lang })
+          );
+        },
+        () => {
+          self.postMessage(
+            notifySetPreferredLangResult({ ok: false, lang: evt.data.lang })
+          );
+        }
+      );
+      break;
   }
 };

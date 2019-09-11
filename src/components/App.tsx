@@ -18,6 +18,7 @@ type Props = {
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
+  onSetLang?: (lang: string) => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
@@ -31,6 +32,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
+        onSetLang={props.onSetLang}
       />
     </div>
   );

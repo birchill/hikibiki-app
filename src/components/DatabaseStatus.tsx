@@ -2,6 +2,7 @@ import { h, FunctionalComponent } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
+import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 import { CloneableUpdateState } from '../update-state';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
+  onSetLang?: (lang: string) => void;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -55,6 +57,7 @@ function renderBody(props: Props) {
           {renderDatabaseSummary(props)}
           <div class="status-with-button">
             <div class="status-line">{status}</div>
+            {renderLangSelector(props)}
             <button class="primary" onClick={props.onUpdate}>
               Check for updates
             </button>
@@ -152,6 +155,30 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
       </a>
       .
     </div>
+  );
+}
+
+function renderLangSelector(props: Props): JSX.Element {
+  const selectedLang = props.databaseVersions.kanjidb
+    ? props.databaseVersions.kanjidb.lang
+    : 'en';
+
+  return (
+    <select
+      name="lang"
+      class="lang-selector"
+      onChange={evt => {
+        if (evt && evt.target && props.onSetLang) {
+          props.onSetLang((evt.target as HTMLSelectElement).value);
+        }
+      }}
+    >
+      {DB_LANGUAGES.map(lang => (
+        <option value={lang} selected={lang === selectedLang}>
+          {DB_LANGUAGE_NAMES.get(lang)!}
+        </option>
+      ))}
+    </select>
   );
 }
 

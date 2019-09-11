@@ -2,7 +2,7 @@ import deepEqual from 'deep-equal';
 
 import { isRadicalEntryLine, isRadicalDeletionLine } from './bushudb';
 import { DatabaseVersion } from './common';
-import { download } from './download';
+import { hasLanguage, download } from './download';
 import {
   KanjiEntryLine,
   isKanjiEntryLine,
@@ -62,6 +62,7 @@ export class KanjiDatabase {
     bushudb: DatabaseVersion | null | undefined;
   } = { kanjidb: undefined, bushudb: undefined };
 
+  private preferredLang: string | null = null;
   private readyPromise: Promise<any>;
   private inProgressUpdate: Promise<void> | undefined;
   private radicalsPromise: Promise<Map<string, RadicalRecord>> | undefined;
@@ -144,9 +145,12 @@ export class KanjiDatabase {
       return this.inProgressUpdate;
     }
 
+    const lang = this.preferredLang || (await this.getDbLang()) || 'en';
+
     try {
       this.inProgressUpdate = this.doUpdate({
         dbName: 'kanjidb',
+        lang,
         isEntryLine: isKanjiEntryLine,
         isDeletionLine: isKanjiDeletionLine,
         update: updateKanji,
@@ -159,6 +163,7 @@ export class KanjiDatabase {
     try {
       this.inProgressUpdate = this.doUpdate({
         dbName: 'bushudb',
+        lang,
         isEntryLine: isRadicalEntryLine,
         isDeletionLine: isRadicalDeletionLine,
         update: updateRadicals,
@@ -171,11 +176,13 @@ export class KanjiDatabase {
 
   private async doUpdate<EntryLine, DeletionLine>({
     dbName,
+    lang,
     isEntryLine,
     isDeletionLine,
     update,
   }: {
     dbName: 'bushudb' | 'kanjidb';
+    lang: string;
     isEntryLine: (a: any) => a is EntryLine;
     isDeletionLine: (a: any) => a is DeletionLine;
     update: (options: UpdateOptions<EntryLine, DeletionLine>) => Promise<void>;
@@ -205,6 +212,7 @@ export class KanjiDatabase {
 
       const downloadStream = await download({
         dbName,
+        lang,
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersions[dbName] || undefined,
         isEntryLine,
@@ -217,7 +225,7 @@ export class KanjiDatabase {
 
       await update({
         downloadStream,
-        lang: 'en',
+        lang,
         store: this.store,
         callback: reducer,
       });
@@ -258,7 +266,52 @@ export class KanjiDatabase {
     this.store = new KanjiStore();
     this.state = DatabaseState.Empty;
     this.updateState = { state: 'idle', lastCheck: null };
-    this.dbVersions = { kanjidb: undefined, bushudb: undefined };
+    this.dbVersions = { kanjidb: null, bushudb: null };
+  }
+
+  getPreferredLang(): string | null {
+    return this.preferredLang;
+  }
+
+  async setPreferredLang(lang: string | null) {
+    if (this.preferredLang === lang) {
+      return;
+    }
+
+    // Make sure the language exists before we clobber the database
+    if (
+      this.state !== DatabaseState.Empty &&
+      lang &&
+      (!(await hasLanguage({ dbName: 'kanjidb', lang })) ||
+        !(await hasLanguage({ dbName: 'bushudb', lang })))
+    ) {
+      throw new Error(`Version information for language "${lang}" not found`);
+    }
+
+    this.preferredLang = lang;
+
+    await this.cancelUpdate();
+
+    // Before clobbering the old database, check that the actual language of the
+    // DB doesn't happen to match the preferred language already.
+    if (this.preferredLang && this.preferredLang !== (await this.getDbLang())) {
+      await this.destroy();
+    }
+
+    // We _could_ detect if we had data or had an in-progress update and
+    // automatically call update() here in that case, but it seems simpler to
+    // just let the client be responsible for deciding if/when they want to
+    // update.
+  }
+
+  async getDbLang(): Promise<string | null> {
+    await this.ready;
+
+    if (this.state === DatabaseState.Empty) {
+      return null;
+    }
+
+    return this.dbVersions.kanjidb!.lang;
   }
 
   async getKanji(kanji: Array<string>): Promise<Array<KanjiResult>> {
@@ -300,7 +353,7 @@ export class KanjiDatabase {
     });
   }
 
-  async getRadicalForKanji(
+  private async getRadicalForKanji(
     kanjiRecords: Array<KanjiRecord>
   ): Promise<Array<KanjiResult['rad']>> {
     const radicals = await this.getRadicals();
@@ -345,7 +398,7 @@ export class KanjiDatabase {
     });
   }
 
-  async getComponentsForKanji(
+  private async getComponentsForKanji(
     kanjiRecords: Array<KanjiRecord>
   ): Promise<Array<KanjiResult['comp']>> {
     // Collect all the characters together
@@ -421,7 +474,7 @@ export class KanjiDatabase {
     return result;
   }
 
-  async getRadicals(): Promise<Map<string, RadicalRecord>> {
+  private async getRadicals(): Promise<Map<string, RadicalRecord>> {
     await this.ready;
 
     if (!this.radicalsPromise) {
@@ -433,7 +486,7 @@ export class KanjiDatabase {
     return this.radicalsPromise;
   }
 
-  async getCharToRadicalMapping(): Promise<Map<string, string>> {
+  private async getCharToRadicalMapping(): Promise<Map<string, string>> {
     if (this.charToRadicalMap.size) {
       return this.charToRadicalMap;
     }

@@ -14,11 +14,6 @@ export const destroyDb = () => ({
   type: 'destroy',
 });
 
-export const query = ({ kanji }: { kanji: Array<string> }) => ({
-  type: 'query',
-  kanji,
-});
-
 export const notifyDbStateUpdated = (state: DatabaseState) => ({
   type: 'dbstateupdated',
   state,
@@ -39,17 +34,41 @@ export const notifyUpdateStateUpdated = (state: UpdateState) => ({
   state: toCloneable(state),
 });
 
+export const query = ({ kanji }: { kanji: Array<string> }) => ({
+  type: 'query',
+  kanji,
+});
+
 export const notifyQueryResult = (results: Array<KanjiResult>) => ({
   type: 'queryresult',
   results,
+});
+
+export const setPreferredLang = ({ lang }: { lang: string | null }) => ({
+  type: 'setpreferredlang',
+  lang,
+});
+
+export const notifySetPreferredLangResult = ({
+  ok,
+  lang,
+}: {
+  ok: boolean;
+  lang: string | null;
+}) => ({
+  type: 'setpreferredlangresult',
+  ok,
+  lang,
 });
 
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
-  | ReturnType<typeof query>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof notifyDbVersionsUpdated>
   | ReturnType<typeof notifyUpdateStateUpdated>
-  | ReturnType<typeof notifyQueryResult>;
+  | ReturnType<typeof query>
+  | ReturnType<typeof notifyQueryResult>
+  | ReturnType<typeof setPreferredLang>
+  | ReturnType<typeof notifySetPreferredLangResult>;

@@ -36,11 +36,12 @@ type KanjiDownloadEvent = DownloadEvent<KanjiEntryLine, KanjiDeletionLine>;
 
 type KanjiDownloadOptions = Omit<
   DownloadOptions<KanjiEntryLine, KanjiDeletionLine>,
-  'dbName' | 'isEntryLine' | 'isDeletionLine'
->;
+  'dbName' | 'isEntryLine' | 'isDeletionLine' | 'lang'
+> & { lang?: string };
 
 const kanjiDownload = (options: KanjiDownloadOptions = {}) => {
   return download({
+    lang: 'en',
     ...options,
     dbName: 'kanjidb',
     isEntryLine: isKanjiEntryLine,

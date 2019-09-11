@@ -160,6 +160,10 @@ button:focus {
   display: flex;
 }
 
+.database-status .status-with-button .lang-selector {
+  margin-inline-end: 10px;
+}
+
 .database-status .status-with-button > *:first-child {
   flex: 1;
   margin-inline-end: 20px;

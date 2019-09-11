@@ -54,7 +54,7 @@ export type DownloadOptions<EntryLine, DeletionLine> = {
     minor: number;
     patch: number;
   };
-  lang?: string;
+  lang: string;
   maxProgressResolution?: number;
   isEntryLine: (a: any) => a is EntryLine;
   isDeletionLine: (a: any) => a is DeletionLine;
@@ -92,12 +92,36 @@ export class DownloadError extends Error {
   }
 }
 
+export async function hasLanguage({
+  baseUrl = DEFAULT_BASE_URL,
+  dbName,
+  lang,
+}: {
+  baseUrl?: string;
+  dbName: string;
+  lang: string;
+}): Promise<boolean> {
+  const abortController = new AbortController();
+
+  try {
+    await getVersionInfo({
+      baseUrl,
+      dbName,
+      lang,
+      signal: abortController.signal,
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function download<EntryLine, DeletionLine>({
   baseUrl = DEFAULT_BASE_URL,
   dbName,
   maxSupportedMajorVersion,
   currentVersion,
-  lang = 'en',
+  lang,
   maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
   isEntryLine,
   isDeletionLine,
