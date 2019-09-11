@@ -145,29 +145,27 @@ export class KanjiDatabase {
       return this.inProgressUpdate;
     }
 
-    const lang = this.preferredLang || (await this.getDbLang()) || 'en';
+    this.inProgressUpdate = (async () => {
+      const lang = this.preferredLang || (await this.getDbLang()) || 'en';
 
-    try {
-      this.inProgressUpdate = this.doUpdate({
+      await this.doUpdate({
         dbName: 'kanjidb',
         lang,
         isEntryLine: isKanjiEntryLine,
         isDeletionLine: isKanjiDeletionLine,
         update: updateKanji,
       });
-      await this.inProgressUpdate;
-    } finally {
-      this.inProgressUpdate = undefined;
-    }
 
-    try {
-      this.inProgressUpdate = this.doUpdate({
+      await this.doUpdate({
         dbName: 'bushudb',
         lang,
         isEntryLine: isRadicalEntryLine,
         isDeletionLine: isRadicalDeletionLine,
         update: updateRadicals,
       });
+    })();
+
+    try {
       await this.inProgressUpdate;
     } finally {
       this.inProgressUpdate = undefined;
