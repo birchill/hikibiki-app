@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import { h, FunctionalComponent, JSX } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';

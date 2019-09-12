@@ -143,10 +143,8 @@ function runQuery() {
   }
 }
 
-let rootNode: Element | undefined;
-
 function update() {
-  rootNode = render(
+  render(
     <App
       databaseState={databaseState}
       databaseVersions={databaseVersions}
@@ -157,8 +155,7 @@ function update() {
       onDestroyDb={destroyDb}
       onSetLang={onSetLang}
     />,
-    document.body,
-    rootNode
+    document.body
   );
 }
 
