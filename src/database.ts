@@ -31,7 +31,9 @@ export const enum DatabaseState {
   Ok,
 }
 
-export interface KanjiResult extends Omit<KanjiEntryLine, 'rad' | 'comp'> {
+export interface KanjiResult
+  extends Omit<KanjiEntryLine, 'rad' | 'comp' | 'm_lang'> {
+  m_lang: string;
   rad: {
     x: number;
     nelson?: number;
@@ -39,17 +41,20 @@ export interface KanjiResult extends Omit<KanjiEntryLine, 'rad' | 'comp'> {
     k?: string;
     na: Array<string>;
     m: Array<string>;
+    m_lang: string;
     base?: {
       b?: string;
       k?: string;
       na: Array<string>;
       m: Array<string>;
+      m_lang: string;
     };
   };
   comp: Array<{
     c: string;
     na: Array<string>;
     m: Array<string>;
+    m_lang: string;
   }>;
 }
 
@@ -319,6 +324,8 @@ export class KanjiDatabase {
       return [];
     }
 
+    const lang = (await this.getDbLang())!;
+
     const ids = kanji.map(kanji => kanji.codePointAt(0)!);
     const records = await this.store.kanji.bulkGet(ids);
 
@@ -326,14 +333,17 @@ export class KanjiDatabase {
       (record: KanjiRecord | undefined) => typeof record !== 'undefined'
     );
 
-    const radicalResults = await this.getRadicalForKanji(kanjiRecords);
+    const radicalResults = await this.getRadicalForKanji(kanjiRecords, lang);
     if (kanjiRecords.length !== radicalResults.length) {
       throw new Error(
         `There should be as many kanji records (${kanjiRecords.length}) as radical blocks (${radicalResults.length})`
       );
     }
 
-    const componentResults = await this.getComponentsForKanji(kanjiRecords);
+    const componentResults = await this.getComponentsForKanji(
+      kanjiRecords,
+      lang
+    );
     if (kanjiRecords.length !== componentResults.length) {
       throw new Error(
         `There should be as many kanji records (${kanjiRecords.length}) as component arrays (${componentResults.length})`
@@ -345,6 +355,7 @@ export class KanjiDatabase {
       return {
         ...record,
         c: String.fromCodePoint(record.c),
+        m_lang: record.m_lang || lang,
         rad: radicalResults[i],
         comp: componentResults[i],
       };
@@ -352,7 +363,8 @@ export class KanjiDatabase {
   }
 
   private async getRadicalForKanji(
-    kanjiRecords: Array<KanjiRecord>
+    kanjiRecords: Array<KanjiRecord>,
+    lang: string
   ): Promise<Array<KanjiResult['rad']>> {
     const radicals = await this.getRadicals();
 
@@ -366,6 +378,7 @@ export class KanjiDatabase {
           k: radicalVariant.k,
           na: radicalVariant.na,
           m: radicalVariant.m,
+          m_lang: radicalVariant.m_lang || lang,
         };
       } else {
         // The radical was not found. This should basically never happen.
@@ -380,6 +393,7 @@ export class KanjiDatabase {
           b: '�',
           na: [''],
           m: [''],
+          m_lang: lang,
         };
       }
 
@@ -387,8 +401,8 @@ export class KanjiDatabase {
       if (record.rad.var) {
         const baseRadical = radicals.get(baseRadicalIdForKanji(record));
         if (baseRadical) {
-          const { b, k, na, m } = baseRadical;
-          rad.base = { b, k, na, m };
+          const { b, k, na, m, m_lang } = baseRadical;
+          rad.base = { b, k, na, m, m_lang: m_lang || lang };
         }
       }
 
@@ -397,7 +411,8 @@ export class KanjiDatabase {
   }
 
   private async getComponentsForKanji(
-    kanjiRecords: Array<KanjiRecord>
+    kanjiRecords: Array<KanjiRecord>,
+    lang: string
   ): Promise<Array<KanjiResult['comp']>> {
     // Collect all the characters together
     const components = kanjiRecords.reduce<Array<string>>(
@@ -442,6 +457,7 @@ export class KanjiDatabase {
               c,
               na: radicalRecord.na,
               m: radicalRecord.m,
+              m_lang: radicalRecord.m_lang || lang,
             });
             continue;
           }
@@ -459,6 +475,7 @@ export class KanjiDatabase {
               c,
               na,
               m: kanjiRecord.m,
+              m_lang: kanjiRecord.m_lang || lang,
             });
             continue;
           }

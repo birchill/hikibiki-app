@@ -4,6 +4,7 @@ export interface KanjiEntryLine {
   c: string;
   r: Readings;
   m: Array<string>;
+  m_lang?: string;
   rad: Radical;
   refs: References;
   misc: Misc;

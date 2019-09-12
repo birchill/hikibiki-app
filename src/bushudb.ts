@@ -10,6 +10,7 @@ export interface RadicalEntryLine {
   na: Array<string>;
   posn?: 'hen' | 'tsukuri' | 'kanmuri' | 'ashi' | 'tare' | 'nyou' | 'kamae';
   m: Array<string>;
+  m_lang?: string;
 }
 
 export interface RadicalDeletionLine {
