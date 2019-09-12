@@ -77,7 +77,9 @@ function renderBody(props: Props) {
     case 'downloading': {
       const { major, minor, patch } = updateState.downloadVersion;
       const { progress } = updateState;
-      const label = `Downloading version ${major}.${minor}.${patch} (${Math.round(
+      const dbLabel =
+        updateState.dbName === 'kanjidb' ? 'kanji data' : 'radical data';
+      const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
         progress * 100
       )}%)`;
       return (
@@ -95,7 +97,11 @@ function renderBody(props: Props) {
 
     case 'updatingdb': {
       const { major, minor, patch } = updateState.downloadVersion;
-      const label = `Updating database to version ${major}.${minor}.${patch}`;
+      const dbLabel =
+        updateState.dbName === 'kanjidb'
+          ? 'kanji database'
+          : 'radical database';
+      const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
       return (
         <div class="status-with-button">
           <div class="details">
