@@ -1,4 +1,3 @@
 .DS_Store
 node_modules
-public/kanjichamp.*
-public/db-worker.js
+dist/**

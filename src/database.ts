@@ -281,7 +281,16 @@ export class KanjiDatabase {
       return;
     }
 
+    // Check if the language actually matches the language we already have
+    if (lang && lang === (await this.getDbLang())) {
+      this.preferredLang = lang;
+      return;
+    }
+
     // Make sure the language exists before we clobber the database
+    //
+    // TODO: Calling hasLanguage twice below will mean two requests to the
+    // server. We should do it in one.
     if (
       this.state !== DatabaseState.Empty &&
       lang &&
@@ -294,12 +303,7 @@ export class KanjiDatabase {
     this.preferredLang = lang;
 
     await this.cancelUpdate();
-
-    // Before clobbering the old database, check that the actual language of the
-    // DB doesn't happen to match the preferred language already.
-    if (this.preferredLang && this.preferredLang !== (await this.getDbLang())) {
-      await this.destroy();
-    }
+    await this.destroy();
 
     // We _could_ detect if we had data or had an in-progress update and
     // automatically call update() here in that case, but it seems simpler to

@@ -9,7 +9,9 @@ import * as messages from './worker-messages';
 
 import { App } from './components/App';
 
-const dbWorker = new Worker('db-worker.js');
+import './index.css';
+
+const dbWorker = new Worker('./db-worker', { type: 'module' });
 
 let databaseState: DatabaseState = DatabaseState.Initializing;
 let databaseVersions: {

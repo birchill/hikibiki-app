@@ -1,30 +1,68 @@
 const path = require('path');
 
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WorkerPlugin = require('worker-plugin');
+
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
 module.exports = {
   entry: {
     kanjichamp: ['./src/main.tsx'],
-    'db-worker': ['./src/db-worker.ts'],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
-    filename: '[name].js',
-    chunkFilename: '[name].[id].js',
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
         exclude: /node_modules/,
+        use: 'ts-loader',
+      },
+      {
+        test: /\.css?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: process.env.NODE_ENV === 'development',
+            },
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: [require('tailwindcss')],
+            },
+          },
+        ],
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      excludeChunks: ['db-worker'],
+    }),
+    new MiniCssExtractPlugin({ filename: 'kanjichamp.[contenthash].css' }),
+    new WorkerPlugin({ globalObject: 'self' }),
+  ],
   mode,
   devtool: prod ? false : 'source-map',
 };
