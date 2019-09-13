@@ -32,8 +32,11 @@ const VERSION_1_0_0 = {
   },
 };
 
-describe('database', () => {
+describe('database', function() {
   let db: KanjiDatabase;
+
+  // We seem to be timing out on Chrome recently
+  this.timeout(5000);
 
   beforeEach(() => {
     db = new KanjiDatabase();
