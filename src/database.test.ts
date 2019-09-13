@@ -36,7 +36,7 @@ describe('database', function() {
   let db: KanjiDatabase;
 
   // We seem to be timing out on Chrome recently
-  this.timeout(5000);
+  this.timeout(15000);
 
   beforeEach(() => {
     db = new KanjiDatabase();
@@ -59,34 +59,28 @@ describe('database', function() {
   });
 
   it('should resolve the version after updating', async () => {
-    try {
-      await db.ready;
-      assert.isNull(db.dbVersions.kanjidb);
+    await db.ready;
+    assert.isNull(db.dbVersions.kanjidb);
 
-      fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
-      fetchMock.mock(
-        'end:kanjidb-rc-en-1.0.0-full.ljson',
-        `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
+    fetchMock.mock('end:jpdict-rc-en-version.json', VERSION_1_0_0);
+    fetchMock.mock(
+      'end:kanjidb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"databaseVersion":"175","dateOfCreation":"2019-07-09"},"records":0}
 `
-      );
-      fetchMock.mock(
-        'end:bushudb-rc-en-1.0.0-full.ljson',
-        `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
+    );
+    fetchMock.mock(
+      'end:bushudb-rc-en-1.0.0-full.ljson',
+      `{"type":"header","version":{"major":1,"minor":0,"patch":0,"dateOfCreation":"2019-09-06"},"records":0}
 `
-      );
+    );
 
-      await db.update();
+    await db.update();
 
-      assert.deepEqual(
-        stripFields(db.dbVersions.kanjidb!, ['lang']),
-        stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
-      );
-      assert.equal(db.state, DatabaseState.Ok);
-    } catch (e) {
-      console.log('Got error');
-      console.log(e);
-      throw e;
-    }
+    assert.deepEqual(
+      stripFields(db.dbVersions.kanjidb!, ['lang']),
+      stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
+    );
+    assert.equal(db.state, DatabaseState.Ok);
   });
 
   it('should update the update state after updating', async () => {

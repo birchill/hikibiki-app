@@ -153,7 +153,6 @@ export class KanjiDatabase {
     this.inProgressUpdate = (async () => {
       const lang = this.preferredLang || (await this.getDbLang()) || 'en';
 
-      console.log('Fetching kanjidb');
       await this.doUpdate({
         dbName: 'kanjidb',
         lang,
@@ -162,7 +161,6 @@ export class KanjiDatabase {
         update: updateKanji,
       });
 
-      console.log('Fetching bushudb');
       await this.doUpdate({
         dbName: 'bushudb',
         lang,
