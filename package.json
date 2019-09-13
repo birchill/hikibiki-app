@@ -5,6 +5,7 @@
   "main": "src/main.tsx",
   "devDependencies": {
     "@babel/core": "^7.6.0",
+    "@fullhuman/postcss-purgecss": "^1.2.0",
     "@storybook/preact": "^5.1.11",
     "@types/chai": "^4.2.2",
     "@types/chai-datetime": "0.0.33",
