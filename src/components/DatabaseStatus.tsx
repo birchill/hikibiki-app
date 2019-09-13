@@ -19,46 +19,60 @@ type Props = {
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
-  let versionLabel = null;
-  if (props.databaseVersions.kanjidb) {
-    const { major, minor, patch } = props.databaseVersions.kanjidb;
-    versionLabel = (
-      <div className="version-label">{`${major}.${minor}.${patch}`}</div>
-    );
-  }
-
   return (
-    <div className="database-status">
-      <h2 className="header">Kanji database{versionLabel}</h2>
+    <div className="database-status bg-orange-200 rounded p-10 max-w-xl mx-auto text-orange-1000">
+      <h2 className="text-lg tracking-tight text-center text-lg font-semibold">
+        Kanji
+      </h2>
       {renderBody(props)}
     </div>
   );
 };
 
 function renderBody(props: Props) {
-  const { databaseState, updateState } = props;
+  const { databaseState, updateState, databaseVersions } = props;
   if (databaseState === DatabaseState.Initializing) {
-    return <div class="status-line">Initializing&hellip;</div>;
+    return <div class="text-orange-1000">Initializing&hellip;</div>;
   }
+
+  const buttonStyles =
+    'bg-orange-100 font-semibold text-center p-10 rounded border-0 shadow-orange-default hover:bg-orange-50';
+  const disabledButtonStyles =
+    'bg-grey-100 text-gray-600 font-semibold text-center p-10 rounded border-0 shadow';
 
   switch (updateState.state) {
     case 'idle': {
-      let status;
-      if (databaseState === DatabaseState.Empty) {
+      let status: string | JSX.Element;
+      // TODO: We shouldn't need to check if kanjidb is available or not.
+      //
+      // If the databaseState is not Empty or Initializing (checked above) we
+      // should be able to assume it is set, but we can't because of the way we
+      // update from the worker where it first notifies us of the updated
+      // database state, and then the updated database versions. We should
+      // really fix the worker to notify of both things at once.
+      if (databaseState === DatabaseState.Empty || !databaseVersions.kanjidb) {
         status = 'No database';
-      } else if (updateState.lastCheck) {
-        status = `Up-to-date. Last check ${formatDate(updateState.lastCheck)}.`;
       } else {
-        status = 'Up-to-date.';
+        const { major, minor, patch } = databaseVersions.kanjidb!;
+        status = (
+          <div>
+            <div>
+              Version {major}.{minor}.{patch}.
+            </div>
+            {updateState.lastCheck ? (
+              <div>Last check {formatDate(updateState.lastCheck)}.</div>
+            ) : null}
+          </div>
+        );
       }
 
       return (
         <div>
           {renderDatabaseSummary(props)}
           <div class="status-with-button">
-            <div class="status-line">{status}</div>
+            <div class="italic">{status}</div>
             {renderLangSelector(props)}
-            <button class="primary" onClick={props.onUpdate}>
+            <button class={buttonStyles} onClick={props.onUpdate}>
               Check for updates
             </button>
           </div>
@@ -69,8 +83,10 @@ function renderBody(props: Props) {
     case 'checking':
       return (
         <div class="status-with-button">
-          <div class="status-line">Checking for updates&hellip;</div>
-          <button onClick={props.onCancel}>Cancel</button>
+          <div class="text-orange-1000">Checking for updates&hellip;</div>
+          <button class={buttonStyles} onClick={props.onCancel}>
+            Cancel
+          </button>
         </div>
       );
 
@@ -90,7 +106,9 @@ function renderBody(props: Props) {
               <label for="update-progress">{label}&hellip;</label>
             </div>
           </div>
-          <button onClick={props.onCancel}>Cancel</button>
+          <button class={buttonStyles} onClick={props.onCancel}>
+            Cancel
+          </button>
         </div>
       );
     }
@@ -110,7 +128,9 @@ function renderBody(props: Props) {
               <label for="update-progress">{label}&hellip;</label>
             </div>
           </div>
-          <button disabled>Cancel</button>
+          <button class={disabledButtonStyles} disabled>
+            Cancel
+          </button>
         </div>
       );
     }
@@ -123,7 +143,7 @@ function renderBody(props: Props) {
             <div class="error-message">
               Update failed: {updateState.error.message}
             </div>
-            <button class="primary" onClick={props.onUpdate}>
+            <button class={buttonStyles} onClick={props.onUpdate}>
               Retry
             </button>
           </div>

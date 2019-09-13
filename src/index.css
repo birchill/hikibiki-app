@@ -20,7 +20,6 @@ body {
   font-family: 'Noto Sans Japanese', 'ヒラギノ角ゴ Pro W3',
     'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, Osaka, 'ＭＳ Ｐゴシック',
     'MS PGothic', sans-serif;
-  font-size: 18px;
   margin: 20px auto 20px;
   max-width: 800px;
 }
@@ -125,33 +124,6 @@ button:focus {
  * Download status
  *
  ***********************************************************************/
-
-.database-status {
-  background: white;
-  padding: 20px;
-  background: white;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px 0px;
-
-  margin-bottom: 20px;
-}
-
-.database-status > .header {
-  font-weight: bold;
-  font-size: 20px;
-  margin: 0;
-  margin-bottom: 10px;
-}
-
-.database-status > .header > .version-label {
-  margin-left: 10px;
-  display: inline-block;
-  padding: 5px;
-  transform: translateY(-5px);
-  border-radius: 5px;
-  background: #fbf2a3;
-  font-size: 12px;
-  font-weight: bold;
-}
 
 .database-status .database-summary {
   line-height: 1.5;
