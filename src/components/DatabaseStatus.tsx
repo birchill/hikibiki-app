@@ -21,8 +21,11 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div className="database-status bg-orange-200 rounded px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
       <div className="my-10 flex flex-row items-center">
-        <div class="w-10 h-10 bg-orange-100 hover:bg-orange-50 rounded-sm shadow-orange-default"></div>
-        <h2 className="flex-grow text-lg tracking-tight text-center text-lg font-semibold">
+        <div class="checkbox-orange">
+          <input type="checkbox" id="kanjidb-check" />
+          <label for="kanjidb-check" />
+        </div>
+        <h2 className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer">
           Kanji
         </h2>
         <div>

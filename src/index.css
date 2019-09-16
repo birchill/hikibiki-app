@@ -1,5 +1,69 @@
 @tailwind base;
 
+/***********************************************************************
+ *
+ * Checkboxes
+ *
+ ***********************************************************************/
+
+.checkbox-orange {
+  @apply relative;
+  @apply inline-block;
+  @apply w-10;
+  @apply h-10;
+}
+
+.checkbox-orange > input[type='checkbox'] {
+  @apply opacity-0;
+  @apply w-0;
+  @apply h-0;
+  @apply absolute;
+  @apply pointer-events-none;
+}
+
+.checkbox-orange > label::before {
+  content: '';
+  @apply inline-block;
+  @apply absolute;
+  @apply left-0;
+  @apply h-10;
+  @apply w-10;
+  @apply bg-orange-100;
+  @apply rounded-sm;
+  @apply shadow-orange-default;
+  @apply cursor-pointer;
+}
+
+.checkbox-orange > label:hover::before {
+  @apply bg-orange-50;
+}
+
+.checkbox-orange > label::after {
+  content: '';
+  @apply inline-block;
+  @apply absolute;
+  @apply left-0;
+  @apply h-8;
+  @apply w-8;
+  @apply m-1;
+  @apply pointer-events-none;
+  background: center / cover
+    url('data:image/svg+xml,%3Csvg%20height%3D%228%22%20width%3D%228%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%208%22%20fill%3D%22%23841003%22%3E%3Cpath%20d%3D%22M7.707%202.71L3.71%206.705a1%201%200%201%201-1.416-1.413l3.997-3.998a1%201%200%200%201%201.416%200c.39.39.39%201.024%200%201.416zM3.708%206.707a.994.994%200%200%201-1.407%200L.291%204.699A.996.996%200%200%201%201.7%203.29l2.008%202.011a.991.991%200%200%201%200%201.406z%22%2F%3E%3C%2Fsvg%3E');
+}
+
+.checkbox-orange input[type='checkbox'] + label::after {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.checkbox-orange input[type='checkbox']:checked + label::after {
+  opacity: 1;
+}
+
+.checkbox-orange input[type='checkbox']:focus + label::before {
+  outline: #841003 dotted 1px;
+}
+
 @tailwind components;
 
 @tailwind utilities;
@@ -16,10 +80,6 @@ body {
   color: #333;
   margin: 0;
   padding: 8px;
-  box-sizing: border-box;
-  font-family: 'Noto Sans Japanese', 'ヒラギノ角ゴ Pro W3',
-    'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, Osaka, 'ＭＳ Ｐゴシック',
-    'MS PGothic', sans-serif;
   margin: 20px auto 20px;
   max-width: 800px;
 }
