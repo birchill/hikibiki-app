@@ -14,18 +14,23 @@ type Props = {
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
+  onToggle?: () => void;
   collapsed?: boolean;
+  enabled?: boolean;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div className="database-status bg-orange-200 rounded px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
+    <div className="database-status bg-orange-200 rounded-lg px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
       <div className="my-10 flex flex-row items-center">
         <div class="checkbox-orange">
-          <input type="checkbox" id="kanjidb-check" />
+          <input type="checkbox" id="kanjidb-check" checked={props.enabled} />
           <label for="kanjidb-check" />
         </div>
-        <h2 className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer">
+        <h2
+          className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
+          onClick={props.onToggle}
+        >
           Kanji
         </h2>
         <div>
