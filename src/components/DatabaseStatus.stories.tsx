@@ -287,4 +287,14 @@ storiesOf('Components|DatabaseStatus', module)
       databaseVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
     />
+  ))
+  .add('collapsed', () => (
+    <div>
+      <DatabaseStatus
+        databaseState={DatabaseState.Empty}
+        databaseVersions={{}}
+        updateState={{ state: 'idle', lastCheck: null }}
+        collapsed={true}
+      />
+    </div>
   ));

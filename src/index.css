@@ -121,33 +121,6 @@ button:focus {
 
 /***********************************************************************
  *
- * Download status
- *
- ***********************************************************************/
-
-.database-status .database-summary {
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
-
-.database-status .status-line {
-  line-height: 1.5;
-  font-style: italic;
-}
-
-.database-status .error {
-  background: hsl(0, 90%, 96%);
-  border: 1px solid hsl(0, 20%, 50%);
-  border-radius: 3px;
-  padding: 15px;
-}
-
-.database-status .error > .error-message {
-  line-height: 1.5;
-}
-
-/***********************************************************************
- *
  * Progress bars
  *
  ***********************************************************************/

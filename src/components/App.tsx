@@ -25,7 +25,6 @@ type Props = {
 export const App: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div>
-      <KanjiList entries={props.entries} />
       <DatabaseStatus
         databaseState={props.databaseState}
         databaseVersions={props.databaseVersions}
@@ -34,6 +33,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
       />
+      <KanjiList entries={props.entries} />
       <LanguageSelector
         databaseVersions={props.databaseVersions}
         onSetLang={props.onSetLang}

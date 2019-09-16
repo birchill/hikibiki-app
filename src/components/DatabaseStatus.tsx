@@ -14,23 +14,30 @@ type Props = {
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
+  collapsed?: boolean;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div className="database-status bg-orange-200 rounded px-10 max-w-xl mx-auto text-orange-1000 overflow-auto">
+    <div className="database-status bg-orange-200 rounded px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
       <div className="my-10 flex flex-row items-center">
         <div class="w-10 h-10 bg-orange-100 hover:bg-orange-50 rounded-sm shadow-orange-default"></div>
         <h2 className="flex-grow text-lg tracking-tight text-center text-lg font-semibold">
           Kanji
         </h2>
         <div>
-          <svg class="w-10 h-10 fill-current" viewBox="0 0 8 8">
+          <svg
+            class="w-10 h-10 fill-current"
+            viewBox="0 0 8 8"
+            style={props.collapsed ? { transform: 'rotate(90deg)' } : undefined}
+          >
             <path d="M3.28 6.66L.14 3.03A.62.62 0 0 1 .62 2h6.76a.62.62 0 0 1 .48 1.02L4.71 6.67a.93.93 0 0 1-1.44 0z" />
           </svg>
         </div>
       </div>
-      <div className="mb-10">{renderBody(props)}</div>
+      {props.collapsed ? null : (
+        <div className="mb-10">{renderBody(props)}</div>
+      )}
     </div>
   );
 };
@@ -148,8 +155,8 @@ function renderBody(props: Props) {
       return (
         <div>
           {renderDatabaseSummary(props)}
-          <div class="flex error">
-            <div class="flex-grow mr-8 error-message">
+          <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
+            <div class="flex-grow mr-8">
               Update failed: {updateState.error.message}
             </div>
             <div>
@@ -173,7 +180,7 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
   const kanjiDbVersion = props.databaseVersions.kanjidb;
 
   return (
-    <div class="database-summary">
+    <div class="mb-6">
       Includes data from{' '}
       <a
         href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
