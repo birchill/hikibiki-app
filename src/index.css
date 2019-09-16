@@ -135,19 +135,6 @@ button:focus {
   font-style: italic;
 }
 
-.database-status .status-with-button {
-  display: flex;
-}
-
-.database-status .status-with-button .lang-selector {
-  margin-inline-end: 10px;
-}
-
-.database-status .status-with-button > *:first-child {
-  flex: 1;
-  margin-inline-end: 20px;
-}
-
 .database-status .error {
   background: hsl(0, 90%, 96%);
   border: 1px solid hsl(0, 20%, 50%);

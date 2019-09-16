@@ -6,6 +6,7 @@ import { CloneableUpdateState } from '../update-state';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
+import { LanguageSelector } from './LanguageSelector';
 
 type Props = {
   databaseState: DatabaseState;
@@ -32,6 +33,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
+      />
+      <LanguageSelector
+        databaseVersions={props.databaseVersions}
         onSetLang={props.onSetLang}
       />
     </div>

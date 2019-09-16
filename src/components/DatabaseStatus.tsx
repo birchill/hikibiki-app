@@ -2,7 +2,6 @@ import { h, FunctionalComponent, JSX } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
-import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 import { CloneableUpdateState } from '../update-state';
 
 type Props = {
@@ -15,7 +14,6 @@ type Props = {
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
-  onSetLang?: (lang: string) => void;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -69,9 +67,8 @@ function renderBody(props: Props) {
       return (
         <div>
           {renderDatabaseSummary(props)}
-          <div class="status-with-button">
-            <div class="italic">{status}</div>
-            {renderLangSelector(props)}
+          <div class="flex">
+            <div class="flex-grow mr-8 italic">{status}</div>
             <button class={buttonStyles} onClick={props.onUpdate}>
               Check for updates
             </button>
@@ -82,8 +79,10 @@ function renderBody(props: Props) {
 
     case 'checking':
       return (
-        <div class="status-with-button">
-          <div class="text-orange-1000">Checking for updates&hellip;</div>
+        <div class="flex">
+          <div class="flex-grow mr-8 text-orange-1000">
+            Checking for updates&hellip;
+          </div>
           <button class={buttonStyles} onClick={props.onCancel}>
             Cancel
           </button>
@@ -99,8 +98,8 @@ function renderBody(props: Props) {
         progress * 100
       )}%)`;
       return (
-        <div class="status-with-button">
-          <div class="details">
+        <div class="flex">
+          <div class="flex-grow mr-8 details">
             <div class="overlaid-progress progress">
               <progress max="100" value={progress * 100} id="update-progress" />
               <label for="update-progress">{label}&hellip;</label>
@@ -121,8 +120,8 @@ function renderBody(props: Props) {
           : 'radical database';
       const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
       return (
-        <div class="status-with-button">
-          <div class="details">
+        <div class="flex">
+          <div class="flex-grow mr-8 details">
             <div class="overlaid-progress progress">
               <progress id="update-progress" />
               <label for="update-progress">{label}&hellip;</label>
@@ -139,8 +138,8 @@ function renderBody(props: Props) {
       return (
         <div>
           {renderDatabaseSummary(props)}
-          <div class="status-with-button error">
-            <div class="error-message">
+          <div class="flex error">
+            <div class="flex-grow mr-8 error-message">
               Update failed: {updateState.error.message}
             </div>
             <button class={buttonStyles} onClick={props.onUpdate}>
@@ -181,30 +180,6 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
       </a>
       .
     </div>
-  );
-}
-
-function renderLangSelector(props: Props): JSX.Element {
-  const selectedLang = props.databaseVersions.kanjidb
-    ? props.databaseVersions.kanjidb.lang
-    : 'en';
-
-  return (
-    <select
-      name="lang"
-      class="lang-selector"
-      onChange={evt => {
-        if (evt && evt.target && props.onSetLang) {
-          props.onSetLang((evt.target as HTMLSelectElement).value);
-        }
-      }}
-    >
-      {DB_LANGUAGES.map(lang => (
-        <option value={lang} selected={lang === selectedLang}>
-          {DB_LANGUAGE_NAMES.get(lang)!}
-        </option>
-      ))}
-    </select>
   );
 }
 
