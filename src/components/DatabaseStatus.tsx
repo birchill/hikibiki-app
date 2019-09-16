@@ -18,11 +18,19 @@ type Props = {
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div className="database-status bg-orange-200 rounded p-10 max-w-xl mx-auto text-orange-1000">
-      <h2 className="text-lg tracking-tight text-center text-lg font-semibold">
-        Kanji
-      </h2>
-      {renderBody(props)}
+    <div className="database-status bg-orange-200 rounded px-10 max-w-xl mx-auto text-orange-1000 overflow-auto">
+      <div className="my-10 flex flex-row items-center">
+        <div class="w-10 h-10 bg-orange-100 hover:bg-orange-50 rounded-sm shadow-orange-default"></div>
+        <h2 className="flex-grow text-lg tracking-tight text-center text-lg font-semibold">
+          Kanji
+        </h2>
+        <div>
+          <svg class="w-10 h-10 fill-current" viewBox="0 0 8 8">
+            <path d="M3.28 6.66L.14 3.03A.62.62 0 0 1 .62 2h6.76a.62.62 0 0 1 .48 1.02L4.71 6.67a.93.93 0 0 1-1.44 0z" />
+          </svg>
+        </div>
+      </div>
+      <div className="mb-10">{renderBody(props)}</div>
     </div>
   );
 };
@@ -34,9 +42,9 @@ function renderBody(props: Props) {
   }
 
   const buttonStyles =
-    'bg-orange-100 font-semibold text-center p-10 rounded border-0 shadow-orange-default hover:bg-orange-50';
+    'bg-orange-100 font-semibold text-center px-10 py-6 rounded border-0 shadow-orange-default hover:bg-orange-50';
   const disabledButtonStyles =
-    'bg-grey-100 text-gray-600 font-semibold text-center p-10 rounded border-0 shadow';
+    'bg-grey-100 text-gray-600 font-semibold text-center px-10 py-6 rounded border-0 shadow';
 
   switch (updateState.state) {
     case 'idle': {
@@ -67,11 +75,13 @@ function renderBody(props: Props) {
       return (
         <div>
           {renderDatabaseSummary(props)}
-          <div class="flex">
+          <div class="flex items-end">
             <div class="flex-grow mr-8 italic">{status}</div>
-            <button class={buttonStyles} onClick={props.onUpdate}>
-              Check for updates
-            </button>
+            <div>
+              <button class={buttonStyles} onClick={props.onUpdate}>
+                Check for updates
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -142,9 +152,11 @@ function renderBody(props: Props) {
             <div class="flex-grow mr-8 error-message">
               Update failed: {updateState.error.message}
             </div>
-            <button class={buttonStyles} onClick={props.onUpdate}>
-              Retry
-            </button>
+            <div>
+              <button class={buttonStyles} onClick={props.onUpdate}>
+                Retry
+              </button>
+            </div>
           </div>
         </div>
       );
