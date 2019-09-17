@@ -50,11 +50,11 @@
   opacity: 1;
 }
 
-.checkbox.-orange input[type='checkbox']:focus + label::before {
+.checkbox.-orange input[type='checkbox']:focus-visible + label::before {
   outline: theme('colors.orange.1000') dotted 1px;
 }
 
-.checkbox.-gray input[type='checkbox']:focus + label::before {
+.checkbox.-gray input[type='checkbox']:focus-visible + label::before {
   outline: theme('colors.gray.900') dotted 1px;
 }
 

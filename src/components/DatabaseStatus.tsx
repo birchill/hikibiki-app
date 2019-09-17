@@ -67,7 +67,7 @@ function renderSettingsIcon(props: Props) {
   let containerStyles =
     props.panelState === PanelState.Collapsed ? 'text-orange-400' : undefined;
   containerStyles +=
-    ' border-0 bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000';
+    ' border-0 bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border border-transparent border-dotted focus:outline-none focus:border-orange-600';
 
   if (props.panelState === PanelState.Disabled) {
     containerStyles += ' invisible pointer-events-none';
