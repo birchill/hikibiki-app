@@ -209,6 +209,11 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
     return null;
   }
 
+  const linkStyles = {
+    class: 'text-orange-800 visited:text-orange-800 underline',
+    style: { 'text-decoration-style': 'dotted' },
+  };
+
   const kanjiDbVersion = props.databaseVersions.kanjidb;
 
   return (
@@ -217,16 +222,21 @@ function renderDatabaseSummary(props: Props): JSX.Element | null {
       <a
         href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
         target="_blank"
+        {...linkStyles}
       >
         KANJIDIC
       </a>{' '}
       version {kanjiDbVersion.databaseVersion} generated on{' '}
       {kanjiDbVersion.dateOfCreation}. This data is the property of the{' '}
-      <a href="https://www.edrdg.org/" target="_blank">
+      <a href="https://www.edrdg.org/" target="_blank" {...linkStyles}>
         Electronic Dictionary Research and Development Group
       </a>
       , and is used in conformance with the Group's{' '}
-      <a href="https://www.edrdg.org/edrdg/licence.html" target="_blank">
+      <a
+        href="https://www.edrdg.org/edrdg/licence.html"
+        target="_blank"
+        {...linkStyles}
+      >
         licence
       </a>
       .
