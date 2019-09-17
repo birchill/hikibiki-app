@@ -4,6 +4,8 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
+import { ProgressWithLabel } from './ProgressWithLabel';
+
 export const enum PanelState {
   Disabled,
   Collapsed,
@@ -26,7 +28,7 @@ type Props = {
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div className="database-status bg-orange-200 rounded-lg px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
+    <div className="database-status bg-orange-200 rounded-lg px-10 max-w-3xl mx-auto text-orange-1000 overflow-auto">
       <div className="my-10 flex flex-row items-center">
         <div class="checkbox-orange">
           <input
@@ -83,7 +85,7 @@ function renderBody(props: Props) {
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow-orange-default hover:bg-orange-50';
   const disabledButtonStyles =
-    'bg-grey-100 text-gray-600 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow';
+    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow cursor-default';
 
   switch (updateState.state) {
     case 'idle': {
@@ -149,10 +151,11 @@ function renderBody(props: Props) {
       return (
         <div class="flex">
           <div class="flex-grow mr-8 details">
-            <div class="overlaid-progress progress">
-              <progress max="100" value={progress * 100} id="update-progress" />
-              <label for="update-progress">{label}&hellip;</label>
-            </div>
+            <ProgressWithLabel
+              max={100}
+              value={progress * 100}
+              label={`${label}…`}
+            />
           </div>
           <button class={buttonStyles} onClick={props.onCancel}>
             Cancel
@@ -171,10 +174,7 @@ function renderBody(props: Props) {
       return (
         <div class="flex">
           <div class="flex-grow mr-8 details">
-            <div class="overlaid-progress progress">
-              <progress id="update-progress" />
-              <label for="update-progress">{label}&hellip;</label>
-            </div>
+            <ProgressWithLabel label={`${label}…`} />
           </div>
           <button class={disabledButtonStyles} disabled>
             Cancel
