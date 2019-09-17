@@ -4,6 +4,12 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
+export const enum PanelState {
+  Disabled,
+  Collapsed,
+  Expanded,
+}
+
 type Props = {
   databaseState: DatabaseState;
   databaseVersions: {
@@ -15,8 +21,7 @@ type Props = {
   onCancel?: () => void;
   onDestroy?: () => void;
   onToggle?: () => void;
-  collapsed?: boolean;
-  enabled?: boolean;
+  panelState: PanelState;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -24,7 +29,11 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
     <div className="database-status bg-orange-200 rounded-lg px-10 max-w-xxl mx-auto text-orange-1000 overflow-auto">
       <div className="my-10 flex flex-row items-center">
         <div class="checkbox-orange">
-          <input type="checkbox" id="kanjidb-check" checked={props.enabled} />
+          <input
+            type="checkbox"
+            id="kanjidb-check"
+            checked={props.panelState !== PanelState.Disabled}
+          />
           <label for="kanjidb-check" />
         </div>
         <h2
@@ -33,22 +42,37 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         >
           Kanji
         </h2>
-        <div>
-          <svg
-            class="w-10 h-10 fill-current"
-            viewBox="0 0 8 8"
-            style={props.collapsed ? { transform: 'rotate(90deg)' } : undefined}
-          >
-            <path d="M3.28 6.66L.14 3.03A.62.62 0 0 1 .62 2h6.76a.62.62 0 0 1 .48 1.02L4.71 6.67a.93.93 0 0 1-1.44 0z" />
-          </svg>
-        </div>
+        {renderSettingsIcon(props)}
       </div>
-      {props.collapsed ? null : (
+      {props.panelState !== PanelState.Expanded ? null : (
         <div className="mb-10">{renderBody(props)}</div>
       )}
     </div>
   );
 };
+
+function renderSettingsIcon(props: Props) {
+  if (props.panelState === PanelState.Disabled) {
+    return null;
+  }
+
+  let containerStyles =
+    props.panelState === PanelState.Collapsed ? 'text-orange-400' : undefined;
+  containerStyles +=
+    ' border-0 bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000';
+
+  return (
+    <button class={containerStyles}>
+      <svg class="w-10 h-10 fill-current" viewBox="0 0 8 8">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M6.97 3.67L7 4c0 .12-.02.22-.03.33l.94.7c.08.06.1.2.06.3l-.22.54c-.05.1-.16.19-.25.17l-1.17-.18c-.14.18-.3.33-.47.47l.18 1.17c.01.1-.06.2-.17.25l-.54.22c-.1.05-.24.02-.3-.06l-.7-.95c-.1.01-.22.04-.33.04-.12 0-.22-.02-.33-.03l-.7.94c-.06.08-.19.1-.3.06l-.54-.22c-.1-.04-.19-.16-.17-.25l.18-1.16a3.2 3.2 0 0 1-.48-.48L.5 6.04c-.1.02-.2-.06-.25-.17l-.22-.54c-.05-.1-.02-.24.05-.3l.96-.7C1.02 4.22 1 4.11 1 4s.02-.22.03-.33l-.95-.7c-.07-.06-.1-.2-.05-.3l.22-.54c.04-.1.16-.18.26-.17l1.15.18c.15-.18.3-.33.48-.47L1.96.5c-.02-.1.06-.2.17-.25l.54-.22c.1-.05.24-.02.3.06l.7.95C3.78 1.03 3.9 1 4 1s.22.03.33.04l.7-.95c.06-.08.19-.1.3-.06l.54.22c.1.05.18.16.17.25l-.18 1.17c.17.14.33.3.47.47l1.17-.18c.1-.01.2.06.25.17l.22.54c.05.1.02.24-.06.3l-.94.7zM4 3a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+        />
+      </svg>
+    </button>
+  );
+}
 
 function renderBody(props: Props) {
   const { databaseState, updateState, databaseVersions } = props;

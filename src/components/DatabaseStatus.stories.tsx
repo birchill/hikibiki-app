@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/preact';
 
-import { DatabaseStatus } from './DatabaseStatus';
+import { DatabaseStatus, PanelState } from './DatabaseStatus';
 import { DatabaseState } from '../database';
 import { DownloadErrorCode } from '../download';
 
@@ -11,6 +11,7 @@ storiesOf('Components|DatabaseStatus', module)
       databaseState={DatabaseState.Initializing}
       databaseVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
+      panelState={PanelState.Expanded}
     />
   ))
   .add('empty', () => (
@@ -19,11 +20,13 @@ storiesOf('Components|DatabaseStatus', module)
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{ state: 'idle', lastCheck: null }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{ state: 'checking', dbName: 'kanjidb', lastCheck: null }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
@@ -42,6 +45,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: null,
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
@@ -60,6 +64,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: null,
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
@@ -77,6 +82,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: null,
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
@@ -91,6 +97,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: null,
         }}
+        panelState={PanelState.Expanded}
       />
     </div>
   ))
@@ -117,6 +124,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
         }}
         updateState={{ state: 'idle', lastCheck: new Date() }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -143,6 +151,7 @@ storiesOf('Components|DatabaseStatus', module)
           dbName: 'kanjidb',
           lastCheck: new Date(),
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -178,6 +187,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: new Date(),
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -213,6 +223,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: new Date(),
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -247,6 +258,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: new Date(),
         }}
+        panelState={PanelState.Expanded}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
@@ -278,6 +290,7 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: new Date(),
         }}
+        panelState={PanelState.Expanded}
       />
     </div>
   ))
@@ -286,6 +299,7 @@ storiesOf('Components|DatabaseStatus', module)
       databaseState={DatabaseState.OutOfDate}
       databaseVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
+      panelState={PanelState.Expanded}
     />
   ))
   .add('collapsed', () => (
@@ -294,7 +308,15 @@ storiesOf('Components|DatabaseStatus', module)
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{ state: 'idle', lastCheck: null }}
-        collapsed={true}
+        panelState={PanelState.Collapsed}
       />
     </div>
+  ))
+  .add('disabled', () => (
+    <DatabaseStatus
+      databaseState={DatabaseState.Empty}
+      databaseVersions={{}}
+      updateState={{ state: 'idle', lastCheck: null }}
+      panelState={PanelState.Disabled}
+    />
   ));

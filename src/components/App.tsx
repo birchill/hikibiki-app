@@ -4,7 +4,7 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
-import { DatabaseStatus } from './DatabaseStatus';
+import { DatabaseStatus, PanelState } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
 import { LanguageSelector } from './LanguageSelector';
 
@@ -32,6 +32,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
+        panelState={PanelState.Expanded}
       />
       <KanjiList entries={props.entries} />
       <LanguageSelector
