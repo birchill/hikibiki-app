@@ -4,6 +4,7 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
+import { Checkbox } from './Checkbox';
 import { ProgressWithLabel } from './ProgressWithLabel';
 
 export const enum PanelState {
@@ -28,18 +29,25 @@ type Props = {
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
+  const panelStyles =
+    'database-status bg-orange-200 rounded-lg px-10 max-w-3xl mx-auto text-orange-1000 overflow-auto';
+  const disabledPanelStyles =
+    'database-status bg-white rounded-lg px-10 max-w-3xl mx-auto text-gray-600 overflow-auto';
+
   return (
-    <div className="database-status bg-orange-200 rounded-lg px-10 max-w-3xl mx-auto text-orange-1000 overflow-auto">
+    <div
+      className={
+        props.panelState === PanelState.Disabled
+          ? disabledPanelStyles
+          : panelStyles
+      }
+    >
       <div className="my-10 flex flex-row items-center">
-        <div class="checkbox-orange">
-          <input
-            type="checkbox"
-            id="kanjidb-check"
-            checked={props.panelState !== PanelState.Disabled}
-            onChange={props.onToggleActive}
-          />
-          <label for="kanjidb-check" />
-        </div>
+        <Checkbox
+          checked={props.panelState !== PanelState.Disabled}
+          onChange={props.onToggleActive}
+          theme={props.panelState === PanelState.Disabled ? 'gray' : 'orange'}
+        />
         <h2
           className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
           onClick={props.onToggleActive}

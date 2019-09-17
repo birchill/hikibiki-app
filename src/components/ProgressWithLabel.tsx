@@ -7,6 +7,9 @@ type Props = {
 };
 
 export const ProgressWithLabel: FunctionalComponent<Props> = (props: Props) => {
+  // TODO: Generate unique IDs here
+  // TODO: Work out where the styles go here -- should they be here or in the
+  //       css file? Should the CSS file be separate?
   return (
     <div class="relative flex flex-col justify-center">
       <progress
