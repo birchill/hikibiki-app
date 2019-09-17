@@ -81,9 +81,9 @@ function renderBody(props: Props) {
   }
 
   const buttonStyles =
-    'bg-orange-100 font-semibold text-center px-10 py-6 rounded border-0 shadow-orange-default hover:bg-orange-50';
+    'bg-orange-100 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow-orange-default hover:bg-orange-50';
   const disabledButtonStyles =
-    'bg-grey-100 text-gray-600 font-semibold text-center px-10 py-6 rounded border-0 shadow';
+    'bg-grey-100 text-gray-600 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow';
 
   switch (updateState.state) {
     case 'idle': {

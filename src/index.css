@@ -72,12 +72,6 @@ body {
   max-width: 800px;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 a {
   color: rgb(0, 100, 200);
   text-decoration: none;
@@ -89,40 +83,6 @@ a:hover {
 
 a:visited {
   color: rgb(0, 80, 160);
-}
-
-input,
-button,
-select,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-  padding: 10px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 2px;
-  line-height: 1;
-}
-
-input:disabled {
-  color: #ccc;
-}
-
-input[type='range'] {
-  height: 0;
-}
-
-button {
-  background-color: #f4f4f4;
-  outline: none;
-}
-
-button:active {
-  background-color: #ddd;
-}
-
-button:focus {
-  border-color: #666;
 }
 
 /***********************************************************************
