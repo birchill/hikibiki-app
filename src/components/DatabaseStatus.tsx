@@ -19,11 +19,12 @@ type Props = {
     bushudb?: DatabaseVersion;
   };
   updateState: CloneableUpdateState;
+  panelState: PanelState;
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
-  onToggle?: () => void;
-  panelState: PanelState;
+  onToggleActive?: () => void;
+  onToggleSettings?: () => void;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -35,12 +36,13 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
             type="checkbox"
             id="kanjidb-check"
             checked={props.panelState !== PanelState.Disabled}
+            onChange={props.onToggleActive}
           />
           <label for="kanjidb-check" />
         </div>
         <h2
           className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
-          onClick={props.onToggle}
+          onClick={props.onToggleActive}
         >
           Kanji
         </h2>
@@ -54,17 +56,17 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
 };
 
 function renderSettingsIcon(props: Props) {
-  if (props.panelState === PanelState.Disabled) {
-    return null;
-  }
-
   let containerStyles =
     props.panelState === PanelState.Collapsed ? 'text-orange-400' : undefined;
   containerStyles +=
     ' border-0 bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000';
 
+  if (props.panelState === PanelState.Disabled) {
+    containerStyles += ' invisible pointer-events-none';
+  }
+
   return (
-    <button class={containerStyles}>
+    <button class={containerStyles} onClick={props.onToggleSettings}>
       <svg class="w-10 h-10 fill-current" viewBox="0 0 8 8">
         <path
           fill-rule="evenodd"

@@ -8,6 +8,7 @@ import { WorkerMessage } from './worker-messages';
 import * as messages from './worker-messages';
 
 import { App } from './components/App';
+import { PanelState } from './components/DatabaseStatus';
 
 import './index.css';
 
@@ -136,6 +137,8 @@ async function onSetLang(lang: string) {
   updateDb();
 }
 
+let kanjiPanelState: PanelState = PanelState.Collapsed;
+
 const params = new URL(document.location.href).searchParams;
 const kanji = params.get('kanji');
 
@@ -152,10 +155,27 @@ function update() {
       databaseVersions={databaseVersions}
       updateState={updateState}
       entries={entries}
+      kanjiPanelState={kanjiPanelState}
       onUpdateDb={updateDb}
       onCancelDbUpdate={cancelDbUpdate}
       onDestroyDb={destroyDb}
       onSetLang={onSetLang}
+      onToggleActive={() => {
+        if (kanjiPanelState === PanelState.Disabled) {
+          kanjiPanelState = PanelState.Collapsed;
+        } else {
+          kanjiPanelState = PanelState.Disabled;
+        }
+        update();
+      }}
+      onToggleSettings={() => {
+        if (kanjiPanelState === PanelState.Collapsed) {
+          kanjiPanelState = PanelState.Expanded;
+        } else {
+          kanjiPanelState = PanelState.Collapsed;
+        }
+        update();
+      }}
     />,
     document.body
   );

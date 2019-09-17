@@ -16,10 +16,13 @@ type Props = {
   };
   updateState: CloneableUpdateState;
   entries: Array<KanjiResult>;
+  kanjiPanelState: PanelState;
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
   onSetLang?: (lang: string) => void;
+  onToggleActive?: () => void;
+  onToggleSettings?: () => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
@@ -29,10 +32,12 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         databaseState={props.databaseState}
         databaseVersions={props.databaseVersions}
         updateState={props.updateState}
+        panelState={props.kanjiPanelState}
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
-        panelState={PanelState.Expanded}
+        onToggleActive={props.onToggleActive}
+        onToggleSettings={props.onToggleSettings}
       />
       <KanjiList entries={props.entries} />
       <LanguageSelector
