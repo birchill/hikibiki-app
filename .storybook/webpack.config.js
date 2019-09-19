@@ -18,7 +18,7 @@ module.exports = ({ config, mode }) => {
         loader: 'postcss-loader',
         options: {
           ident: 'postcss',
-          plugins: [require('tailwindcss')],
+          plugins: [require('postcss-import'), require('tailwindcss')],
         },
       },
     ],
