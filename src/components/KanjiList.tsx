@@ -74,7 +74,7 @@ function renderRadical(rad: KanjiResult['rad']): JSX.Element {
       <span lang="ja">{rad.b || rad.k}</span>（
       <span lang="ja">{rad.na.join('、')}</span>,{' '}
       <span lang={rad.m_lang !== 'en' ? rad.m_lang : undefined}>
-        {rad.m.join(',')}
+        {rad.m.join(', ')}
       </span>
       ）
       {base ? (
