@@ -1,6 +1,7 @@
 import { h, FunctionalComponent } from 'preact';
 
 type Props = {
+  id: string;
   value?: number;
   max?: number;
   label: string;
@@ -15,10 +16,10 @@ export const ProgressWithLabel: FunctionalComponent<Props> = (props: Props) => {
       <progress
         max={props.max}
         value={props.value}
-        id="update-progress"
+        id={props.id}
         class="progress"
       />
-      <label for="progress-bar" class="absolute ml-5 text-white font-semibold">
+      <label for={props.id} class="absolute ml-5 text-white font-semibold">
         {props.label}
       </label>
     </div>

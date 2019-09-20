@@ -44,6 +44,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
     >
       <div className="my-10 flex flex-row items-center">
         <Checkbox
+          id="kanjidb-enabled"
           checked={props.panelState !== PanelState.Disabled}
           onChange={props.onToggleActive}
           theme={props.panelState === PanelState.Disabled ? 'gray' : 'orange'}
@@ -162,6 +163,7 @@ function renderBody(props: Props) {
         <div class="flex">
           <div class="flex-grow mr-8 details">
             <ProgressWithLabel
+              id="update-progress"
               max={100}
               value={progress * 100}
               label={`${label}…`}
@@ -184,7 +186,7 @@ function renderBody(props: Props) {
       return (
         <div class="flex">
           <div class="flex-grow mr-8 details">
-            <ProgressWithLabel label={`${label}…`} />
+            <ProgressWithLabel id="update-progress" label={`${label}…`} />
           </div>
           <button class={disabledButtonStyles} disabled>
             Cancel

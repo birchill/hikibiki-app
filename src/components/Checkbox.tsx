@@ -1,6 +1,7 @@
 import { h, FunctionalComponent } from 'preact';
 
 type Props = {
+  id: string;
   checked?: boolean;
   onChange?: () => void;
   theme: 'orange' | 'gray';
@@ -18,11 +19,11 @@ export const Checkbox: FunctionalComponent<Props> = (props: Props) => {
     <div class={containerStyles}>
       <input
         type="checkbox"
-        id="checkbox-checkbox"
+        id={props.id}
         checked={props.checked}
         onChange={props.onChange}
       />
-      <label for="checkbox-checkbox" />
+      <label for={props.id} />
       <svg
         class="tick inline-block absolute left-0 w-8 h-8 m-1 fill-current pointer-events-none"
         viewBox="0 0 8 8"
