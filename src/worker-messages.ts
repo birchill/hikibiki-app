@@ -1,6 +1,6 @@
 import { DatabaseVersion } from './common';
 import { DatabaseState, KanjiResult } from './database';
-import { toCloneable, UpdateState } from './update-state';
+import { UpdateState } from './update-state';
 
 export const updateDb = () => ({
   type: 'update',
@@ -14,24 +14,20 @@ export const destroyDb = () => ({
   type: 'destroy',
 });
 
-export const notifyDbStateUpdated = (state: DatabaseState) => ({
-  type: 'dbstateupdated',
-  state,
-});
+export interface CombinedDatabaseState {
+  databaseState: DatabaseState;
+  updateState: UpdateState;
+  versions: ResolvedDbVersions;
+}
 
 export interface ResolvedDbVersions {
   kanjidb: DatabaseVersion | null;
   bushudb: DatabaseVersion | null;
 }
 
-export const notifyDbVersionsUpdated = (versions: ResolvedDbVersions) => ({
-  type: 'dbversionsupdated',
-  versions,
-});
-
-export const notifyUpdateStateUpdated = (state: UpdateState) => ({
-  type: 'updatestateupdated',
-  state: toCloneable(state),
+export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
+  type: 'dbstateupdated',
+  state,
 });
 
 export const query = ({ kanji }: { kanji: Array<string> }) => ({
@@ -66,8 +62,6 @@ export type WorkerMessage =
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
   | ReturnType<typeof notifyDbStateUpdated>
-  | ReturnType<typeof notifyDbVersionsUpdated>
-  | ReturnType<typeof notifyUpdateStateUpdated>
   | ReturnType<typeof query>
   | ReturnType<typeof notifyQueryResult>
   | ReturnType<typeof setPreferredLang>

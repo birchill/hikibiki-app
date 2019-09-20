@@ -25,29 +25,19 @@ let entries: Array<KanjiResult> = [];
 dbWorker.onmessage = (evt: MessageEvent) => {
   switch ((evt.data as WorkerMessage).type) {
     case 'dbstateupdated':
+      const { state } = evt.data;
       if (
         databaseState !== DatabaseState.Ok &&
-        evt.data.state === DatabaseState.Ok
+        state.databaseState === DatabaseState.Ok
       ) {
         runQuery();
-      } else if (entries.length && evt.data.state !== DatabaseState.Ok) {
+      } else if (entries.length && state.databaseState !== DatabaseState.Ok) {
         entries = [];
       }
-      databaseState = evt.data.state;
-      update();
-      break;
-
-    case 'dbversionsupdated':
-      databaseVersions = evt.data.versions;
-      // We don't do the initial database update until we've resolved the
-      // database version since otherwise we won't know what language to
-      // request.
+      databaseState = state.databaseState;
+      updateState = state.updateState;
+      databaseVersions = state.versions;
       runInitialDbUpdate();
-      update();
-      break;
-
-    case 'updatestateupdated':
-      updateState = evt.data.state;
       update();
       break;
 

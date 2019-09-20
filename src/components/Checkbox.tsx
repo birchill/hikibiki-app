@@ -8,10 +8,6 @@ type Props = {
 };
 
 export const Checkbox: FunctionalComponent<Props> = (props: Props) => {
-  // TODO: Generate unique IDs here
-  // TODO: Move the styles needed for this to a separate file and use
-  //       postcss-import
-
   const containerStyles =
     props.theme === 'orange' ? 'checkbox -orange' : 'checkbox -gray';
 

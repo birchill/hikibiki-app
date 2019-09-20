@@ -66,6 +66,7 @@ export class KanjiDatabase {
     kanjidb: DatabaseVersion | null | undefined;
     bushudb: DatabaseVersion | null | undefined;
   } = { kanjidb: undefined, bushudb: undefined };
+  onChange?: (topic: 'updatestate') => void;
 
   private preferredLang: string | null = null;
   private readyPromise: Promise<any>;
@@ -86,12 +87,21 @@ export class KanjiDatabase {
         this.updateDbVersion('bushudb', version);
       });
 
+    // Let observers know (but don't block)
+    this.readyPromise.then(() => this.notifyChanged());
+
     // Pre-fetch the radical information (but don't block on this)
     this.readyPromise.then(() => this.getRadicals());
   }
 
   get ready() {
     return this.readyPromise;
+  }
+
+  private notifyChanged() {
+    if (this.onChange) {
+      this.onChange('updatestate');
+    }
   }
 
   private async getDbVersion(
@@ -124,11 +134,7 @@ export class KanjiDatabase {
       return;
     }
 
-    // This is really quite hacky, but db-worker listens for changes to
-    // properties on KanjiDatabase object so if we simply update a sub-property
-    // it won't notice and hence won't notify the UI. As a result, we have to
-    // completely replace the dbVersions object when we update it.
-    this.dbVersions = { ...this.dbVersions, [db]: version };
+    this.dbVersions[db] = version;
     if (this.dbVersions.kanjidb === null || this.dbVersions.bushudb === null) {
       this.state = DatabaseState.Empty;
     } else if (
@@ -143,6 +149,8 @@ export class KanjiDatabase {
       this.radicalsPromise = undefined;
       this.charToRadicalMap = new Map();
     }
+
+    this.notifyChanged();
   }
 
   async update() {
@@ -174,6 +182,7 @@ export class KanjiDatabase {
       await this.inProgressUpdate;
     } finally {
       this.inProgressUpdate = undefined;
+      this.notifyChanged();
     }
   }
 
@@ -198,6 +207,7 @@ export class KanjiDatabase {
         wroteSomething = true;
         this.updateDbVersion(dbName, action.version);
       }
+      this.notifyChanged();
     };
 
     await this.ready;
@@ -270,6 +280,7 @@ export class KanjiDatabase {
     this.state = DatabaseState.Empty;
     this.updateState = { state: 'idle', lastCheck: null };
     this.dbVersions = { kanjidb: null, bushudb: null };
+    this.notifyChanged();
   }
 
   getPreferredLang(): string | null {

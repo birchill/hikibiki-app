@@ -1,10 +1,10 @@
 import { KanjiDatabase } from './database';
+import { toCloneable } from './update-state';
 import {
   notifyDbStateUpdated,
-  notifyDbVersionsUpdated,
   notifyQueryResult,
   notifySetPreferredLangResult,
-  notifyUpdateStateUpdated,
+  CombinedDatabaseState,
   ResolvedDbVersions,
   WorkerMessage,
 } from './worker-messages';
@@ -13,57 +13,29 @@ declare var self: DedicatedWorkerGlobalScope;
 
 const db = new KanjiDatabase();
 
-// Do the initial state update once we have loaded the database
+db.onChange = () => {
+  // Wait until we have finished resolving the database versions before
+  // reporting anything.
+  if (
+    typeof db.dbVersions.kanjidb === 'undefined' ||
+    typeof db.dbVersions.bushudb === 'undefined'
+  ) {
+    return;
+  }
 
-db.ready.then(() => {
-  self.postMessage(notifyDbStateUpdated(db.state));
-  console.assert(
-    typeof db.dbVersions.kanjidb !== 'undefined' &&
-      typeof db.dbVersions.bushudb !== 'undefined',
-    'Database versions should be resolved by the time we are ready'
-  );
-  self.postMessage(
-    notifyDbVersionsUpdated(db.dbVersions as ResolvedDbVersions)
-  );
-  self.postMessage(notifyUpdateStateUpdated(db.updateState));
-});
+  const combinedState: CombinedDatabaseState = {
+    databaseState: db.state,
+    updateState: toCloneable(db.updateState),
+    versions: db.dbVersions as ResolvedDbVersions,
+  };
 
-const proxyDb = new Proxy(db, {
-  set: function(obj, prop, value) {
-    (obj as any)[prop] = value;
-
-    try {
-      switch (prop) {
-        case 'state':
-          self.postMessage(notifyDbStateUpdated(db.state));
-          break;
-
-        case 'dbVersions':
-          // Wait until we have finished initializing before reporting the
-          // database versions.
-          if (
-            typeof db.dbVersions.kanjidb !== 'undefined' &&
-            typeof db.dbVersions.bushudb !== 'undefined'
-          ) {
-            self.postMessage(
-              notifyDbVersionsUpdated(db.dbVersions as ResolvedDbVersions)
-            );
-          }
-          break;
-
-        case 'updateState':
-          self.postMessage(notifyUpdateStateUpdated(db.updateState));
-          break;
-      }
-    } catch (e) {
-      console.log('Error posting message');
-      console.log(e);
-      return false;
-    }
-
-    return true;
-  },
-});
+  try {
+    self.postMessage(notifyDbStateUpdated(combinedState));
+  } catch (e) {
+    console.log('Error posting message');
+    console.log(e);
+  }
+};
 
 onmessage = (evt: MessageEvent) => {
   // We seem to get random events here occasionally. Not sure where they come
@@ -74,25 +46,25 @@ onmessage = (evt: MessageEvent) => {
 
   switch ((evt.data as WorkerMessage).type) {
     case 'update':
-      proxyDb.update();
+      db.update();
       break;
 
     case 'cancelupdate':
-      proxyDb.cancelUpdate();
+      db.cancelUpdate();
       break;
 
     case 'destroy':
-      proxyDb.destroy();
+      db.destroy();
       break;
 
     case 'query':
-      proxyDb.getKanji(evt.data.kanji).then(result => {
+      db.getKanji(evt.data.kanji).then(result => {
         self.postMessage(notifyQueryResult(result));
       });
       break;
 
     case 'setpreferredlang':
-      proxyDb.setPreferredLang(evt.data.lang).then(
+      db.setPreferredLang(evt.data.lang).then(
         () => {
           self.postMessage(
             notifySetPreferredLangResult({ ok: true, lang: evt.data.lang })

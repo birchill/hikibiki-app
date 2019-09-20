@@ -101,14 +101,7 @@ function renderBody(props: Props) {
   switch (updateState.state) {
     case 'idle': {
       let status: string | JSX.Element;
-      // TODO: We shouldn't need to check if kanjidb is available or not.
-      //
-      // If the databaseState is not Empty or Initializing (checked above) we
-      // should be able to assume it is set, but we can't because of the way we
-      // update from the worker where it first notifies us of the updated
-      // database state, and then the updated database versions. We should
-      // really fix the worker to notify of both things at once.
-      if (databaseState === DatabaseState.Empty || !databaseVersions.kanjidb) {
+      if (databaseState === DatabaseState.Empty) {
         status = 'No database';
       } else {
         const { major, minor, patch } = databaseVersions.kanjidb!;
