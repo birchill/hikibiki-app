@@ -9,7 +9,7 @@ type Props = {
 
 export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
   let containerStyles =
-    'toggle-pill inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 border border-transparent border-dotted cursor-pointer font-medium';
+    'inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 border border-transparent border-dotted cursor-pointer font-medium';
   if (props.checked) {
     containerStyles +=
       ' bg-orange-100 hover:bg-orange-50 shadow-orange-default focus-within:border-orange-800';
@@ -46,7 +46,10 @@ export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
   );
 
   return (
-    <div class={containerStyles}>
+    <div
+      class={containerStyles}
+      style={{ transition: 'background-color 0.2s' }}
+    >
       <label class="flex items-center cursor-pointer">
         <input
           type="checkbox"
