@@ -127,6 +127,21 @@ async function onSetLang(lang: string) {
   updateDb();
 }
 
+const enabledReferences = new Set<string>(['kanken', 'henshall']);
+const enabledLinks = new Set<string>(['kanjialive', 'wiktionary']);
+
+function toggleSetValue(set: Set<string>, key: string, state: boolean) {
+  if (state) {
+    set.add(key);
+  } else {
+    set.delete(key);
+  }
+  update();
+}
+
+const onToggleReference = toggleSetValue.bind(null, enabledReferences);
+const onToggleLink = toggleSetValue.bind(null, enabledLinks);
+
 let kanjiPanelState: PanelState = PanelState.Collapsed;
 
 const params = new URL(document.location.href).searchParams;
@@ -146,6 +161,8 @@ function update() {
       updateState={updateState}
       entries={entries}
       kanjiPanelState={kanjiPanelState}
+      enabledReferences={Array.from(enabledReferences.values())}
+      enabledLinks={Array.from(enabledLinks.values())}
       onUpdateDb={updateDb}
       onCancelDbUpdate={cancelDbUpdate}
       onDestroyDb={destroyDb}
@@ -166,6 +183,8 @@ function update() {
         }
         update();
       }}
+      onToggleReference={onToggleReference}
+      onToggleLink={onToggleLink}
     />,
     document.body
   );

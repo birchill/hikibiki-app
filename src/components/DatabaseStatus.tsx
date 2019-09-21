@@ -22,11 +22,15 @@ type Props = {
   };
   updateState: CloneableUpdateState;
   panelState: PanelState;
+  enabledReferences?: Array<string>;
+  enabledLinks?: Array<string>;
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
   onToggleActive?: () => void;
   onToggleSettings?: () => void;
+  onToggleReference?: (ref: string, state: boolean) => void;
+  onToggleLink?: (ref: string, state: boolean) => void;
 };
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
@@ -129,7 +133,12 @@ function renderBody(props: Props) {
               </button>
             </div>
           </div>
-          <ReferencesConfig />
+          <ReferencesConfig
+            enabledReferences={props.enabledReferences}
+            enabledLinks={props.enabledLinks}
+            onToggleReference={props.onToggleReference}
+            onToggleLink={props.onToggleLink}
+          />
         </div>
       );
     }

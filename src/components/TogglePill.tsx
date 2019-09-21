@@ -4,7 +4,7 @@ type Props = {
   label: string;
   value: string;
   checked?: boolean;
-  onChange?: () => void;
+  onToggle?: (state: boolean) => void;
 };
 
 export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
@@ -12,7 +12,7 @@ export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
     'toggle-pill inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 border border-transparent border-dotted cursor-pointer font-medium';
   if (props.checked) {
     containerStyles +=
-      ' bg-orange-100 hover:bg-orange-50 shadow-orange-default focus-within:border-orange-1000';
+      ' bg-orange-100 hover:bg-orange-50 shadow-orange-default focus-within:border-orange-800';
   } else {
     containerStyles +=
       ' bg-gray-100 text-gray-600 hover:bg-white focus-within:border-gray-600';
@@ -52,11 +52,15 @@ export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
           type="checkbox"
           checked={props.checked}
           value={props.value}
-          onChange={props.onChange}
+          onChange={() => {
+            if (props.onToggle) {
+              props.onToggle(!props.checked);
+            }
+          }}
           class="absolute opacity-0 w-0 h-0 pointer-events-none"
         />
         {icon}
-        <span class="pointer-events-none">{props.label}</span>
+        <span class="pointer-events-none select-none">{props.label}</span>
       </label>
     </div>
   );

@@ -25,9 +25,17 @@ const linkLabels: Array<[string, string]> = [
   ['kanjipedia', 'Kanjipedia'],
 ];
 
-interface Props {}
+interface Props {
+  enabledReferences?: Array<string>;
+  enabledLinks?: Array<string>;
+  onToggleReference?: (ref: string, state: boolean) => void;
+  onToggleLink?: (ref: string, state: boolean) => void;
+}
 
 export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
+  const enabledReferences = new Set(props.enabledReferences || []);
+  const enabledLinks = new Set(props.enabledLinks || []);
+
   return (
     <div class="-mb-4">
       <div class="flex">
@@ -42,7 +50,16 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
         </svg>
         <div>
           {referenceLabels.map(([id, label]) => (
-            <TogglePill value={id} label={label} />
+            <TogglePill
+              value={id}
+              label={label}
+              checked={enabledReferences.has(id)}
+              onToggle={(state: boolean) => {
+                if (props.onToggleReference) {
+                  props.onToggleReference(id, state);
+                }
+              }}
+            />
           ))}
         </div>
       </div>
@@ -58,7 +75,16 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
         </svg>
         <div>
           {linkLabels.map(([id, label]) => (
-            <TogglePill value={id} label={label} />
+            <TogglePill
+              value={id}
+              label={label}
+              checked={enabledLinks.has(id)}
+              onToggle={(state: boolean) => {
+                if (props.onToggleLink) {
+                  props.onToggleLink(id, state);
+                }
+              }}
+            />
           ))}
         </div>
       </div>

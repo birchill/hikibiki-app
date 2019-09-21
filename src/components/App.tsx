@@ -17,12 +17,16 @@ type Props = {
   updateState: CloneableUpdateState;
   entries: Array<KanjiResult>;
   kanjiPanelState: PanelState;
+  enabledReferences?: Array<string>;
+  enabledLinks?: Array<string>;
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
   onSetLang?: (lang: string) => void;
   onToggleActive?: () => void;
   onToggleSettings?: () => void;
+  onToggleReference?: (ref: string, state: boolean) => void;
+  onToggleLink?: (ref: string, state: boolean) => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
@@ -33,11 +37,15 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         databaseVersions={props.databaseVersions}
         updateState={props.updateState}
         panelState={props.kanjiPanelState}
+        enabledReferences={props.enabledReferences}
+        enabledLinks={props.enabledLinks}
         onUpdate={props.onUpdateDb}
         onCancel={props.onCancelDbUpdate}
         onDestroy={props.onDestroyDb}
         onToggleActive={props.onToggleActive}
         onToggleSettings={props.onToggleSettings}
+        onToggleReference={props.onToggleReference}
+        onToggleLink={props.onToggleLink}
       />
       <KanjiList entries={props.entries} />
       <LanguageSelector
