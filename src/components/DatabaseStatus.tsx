@@ -6,6 +6,7 @@ import { CloneableUpdateState } from '../update-state';
 
 import { Checkbox } from './Checkbox';
 import { ProgressWithLabel } from './ProgressWithLabel';
+import { ReferencesConfig } from './ReferencesConfig';
 
 export const enum PanelState {
   Disabled,
@@ -120,7 +121,7 @@ function renderBody(props: Props) {
       return (
         <div>
           {renderDatabaseSummary(props)}
-          <div class="flex items-end">
+          <div class="flex items-end mb-10">
             <div class="flex-grow mr-8 italic">{status}</div>
             <div>
               <button class={buttonStyles} onClick={props.onUpdate}>
@@ -128,6 +129,7 @@ function renderBody(props: Props) {
               </button>
             </div>
           </div>
+          <ReferencesConfig />
         </div>
       );
     }
