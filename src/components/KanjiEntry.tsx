@@ -22,15 +22,15 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         {commonReadings}
       </div>
       <div
-        class="meanings text-lg text-gray-500 text-light mb-6"
+        class="meanings text-lg text-gray-500 text-light mb-8"
         lang={props.m_lang !== 'en' ? props.m_lang : undefined}
       >
         {props.m.join(', ')}
       </div>
-      <div class="stats flex mb-4">
+      <div class="stats flex mb-8">
         <div class="strokes flex-grow flex items-center">
           <svg
-            class="inline-block mr-4 w-10 h-10 text-gray-300"
+            class="inline-block mr-8 w-10 h-10 text-gray-300"
             viewBox="0 0 16 16"
           >
             <title>Stroke count</title>
@@ -43,7 +43,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         </div>
         <div class="popularity flex-grow flex items-center">
           <svg
-            class="inline-block mr-4 w-10 h-10 text-gray-300 fill-current"
+            class="inline-block mr-8 w-10 h-10 text-gray-300 fill-current"
             viewBox="0 0 8 8"
           >
             <title>Popularity</title>
@@ -90,7 +90,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         </div>
         <div class="grade flex-grow flex items-center">
           <svg
-            class="inline-block mr-4 w-10 h-10 text-gray-300"
+            class="inline-block mr-8 w-10 h-10 text-gray-300"
             viewBox="0 0 16 16"
           >
             <title>Grade</title>
@@ -99,19 +99,43 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
           <span>Grade {props.misc.gr || '-'}</span>
         </div>
       </div>
-      <div class="refs">
-        <div class="ref">Henshall: {props.refs.henshall}</div>
-        <div class="ref" lang="ja">
-          漢検: {renderKanKen(props.misc.kk)}
+      <div class="refs flex mb-2">
+        <svg
+          class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+          viewBox="0 0 16 16"
+        >
+          <use width="16" height="16" href="#book" />
+        </svg>
+        <div class="flex-grow">
+          <div class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800">
+            Henshall {props.refs.henshall}
+          </div>
+          <div
+            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800"
+            lang="ja"
+          >
+            漢検 {renderKanKen(props.misc.kk)}
+          </div>
         </div>
       </div>
-      <a
-        href={`https://app.kanjialive.com/${encodeURIComponent(props.c)}`}
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        Kanji alive
-      </a>
+      <div class="links flex -mb-4">
+        <svg
+          class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+          viewBox="0 0 16 16"
+        >
+          <use width="16" height="16" href="#link" />
+        </svg>
+        <div class="flex-grow">
+          <a
+            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
+            href={`https://app.kanjialive.com/${encodeURIComponent(props.c)}`}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Kanji alive
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
