@@ -16,14 +16,16 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         <div class="mr-10 text-superxl leading-none" lang="ja">
           {props.c}
         </div>
-        <div class="components">{props.comp.map(renderComponent)}</div>
+        {renderComponents(props)}
       </div>
-      <div class="readings" lang="ja">
+      <div class="readings text-lg" lang="ja">
         {commonReadings}
       </div>
-      {renderMeanings(props)}
-      <div class="bushu" lang="ja">
-        部首：{renderRadical(props.rad)}
+      <div
+        class="meanings text-lg text-gray-500 text-light mb-4"
+        lang={props.m_lang !== 'en' ? props.m_lang : undefined}
+      >
+        {props.m.join(', ')}
       </div>
       <div class="refs">
         <div class="ref">Henshall: {props.refs.henshall}</div>
@@ -42,61 +44,79 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   );
 };
 
-function renderMeanings(entry: KanjiResult, lang?: string): JSX.Element {
-  return (
-    <div
-      class="meanings"
-      lang={entry.m_lang !== 'en' ? entry.m_lang : undefined}
-    >
-      {entry.m.join(', ')}
-    </div>
-  );
-}
+function renderComponents(props: Props): JSX.Element {
+  const { rad } = props;
 
-function renderRadical(rad: KanjiResult['rad']): JSX.Element {
   let base: JSX.Element | null = null;
-  if (rad.base && (rad.b || rad.k) !== (rad.base.b || rad.base.k)) {
+  if (rad.base) {
     base = (
-      <span lang="ja">
-        {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
+      <span>
+        {' from '}
+        <span lang="ja">
+          {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
+        </span>
       </span>
     );
   }
 
-  return (
-    <span>
-      <span lang="ja">{rad.b || rad.k}</span>（
-      <span lang="ja">{rad.na.join('、')}</span>,{' '}
-      <span lang={rad.m_lang !== 'en' ? rad.m_lang : undefined}>
-        {rad.m.join(', ')}
-      </span>
-      ）
+  const radicalRow = (
+    <tbody>
+      <tr class="component radical" title="Radical for this kanji">
+        <td class="px-8 rounded-l bg-gray-100" lang="ja">
+          {rad.b || rad.k}
+        </td>
+        <td class="px-4 bg-gray-100" lang="ja">
+          {rad.na.join('、')}
+        </td>
+        <td
+          class="px-8 rounded-r bg-gray-100"
+          lang={rad.m_lang !== 'en' ? rad.m_lang : undefined}
+        >
+          {rad.m.join(', ')}
+        </td>
+      </tr>
       {base ? (
-        <span>
-          {' from '}
-          {base}
-        </span>
+        <tr>
+          <td colSpan={3} class="italic text-gray-500 px-8">
+            {base}
+          </td>
+        </tr>
       ) : null}
-    </span>
+    </tbody>
+  );
+
+  return (
+    <table class="components font-light mt-4">
+      {radicalRow}
+      {props.comp.map(comp => renderComponent(comp, props.rad))}
+    </table>
   );
 }
 
-function renderComponent(comp: KanjiResult['comp'][0]): JSX.Element {
+function renderComponent(
+  comp: KanjiResult['comp'][0],
+  radical: KanjiResult['rad']
+): JSX.Element | null {
+  let { c, na, m, m_lang } = comp;
+
+  if (comp.c === radical.b || comp.c === radical.k) {
+    return null;
+  }
+
   return (
-    <div class="component font-light">
-      <span class="char" lang="ja">
-        {comp.c}
-      </span>{' '}
-      <span class="reading text-sm" lang="ja">
-        {comp.na[0] || '-'}
-      </span>
-      <span
-        class="meaning text-sm"
-        lang={comp.m_lang !== 'en' ? comp.m_lang : undefined}
-      >
-        {comp.m[0] || '-'}
-      </span>
-    </div>
+    <tbody>
+      <tr class="component">
+        <td class="px-8" lang="ja">
+          {c}
+        </td>
+        <td class="px-4" lang="ja">
+          {na.length ? na[0] : '-'}
+        </td>
+        <td class="px-8" lang={m_lang !== 'en' ? m_lang : undefined}>
+          {m.length ? m[0] : '-'}
+        </td>
+      </tr>
+    </tbody>
   );
 }
 

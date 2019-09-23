@@ -5,28 +5,3 @@
 
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
-/* purgecss start ignore */
-
-/***********************************************************************
- *
- * Kanji list
- *
- ***********************************************************************/
-
-.kanji-list {
-  margin-bottom: 20px;
-}
-
-.kanji-list > .kanji-entry > .components > .component {
-  display: inline-block;
-  padding: 5px 10px;
-  margin-right: 10px;
-  margin-bottom: 5px;
-  margin-top: 5px;
-  border: 1px #0d76df dashed;
-  border-radius: 5px;
-  line-height: 1;
-}
-
-/* purgecss end ignore */
