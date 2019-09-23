@@ -128,6 +128,7 @@ export function download<EntryLine, DeletionLine>({
 }: DownloadOptions<EntryLine, DeletionLine>): ReadableStream {
   const abortController = new AbortController();
 
+  // Edge does not yet support ReadableStream constructor so this will break
   return new ReadableStream({
     async start(
       controller: ReadableStreamDefaultController<
