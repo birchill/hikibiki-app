@@ -37,7 +37,7 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
   const enabledLinks = new Set(props.enabledLinks || []);
 
   return (
-    <div class="-mb-4">
+    <div class="mt-10 -mb-4">
       <div class="flex">
         <svg
           class="w-10 h-10 flex-shrink-0 fill-current mr-8 mt-3"

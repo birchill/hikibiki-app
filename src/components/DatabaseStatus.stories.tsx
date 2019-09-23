@@ -297,7 +297,24 @@ storiesOf('Components|DatabaseStatus', module)
   .add('out-of-date', () => (
     <DatabaseStatus
       databaseState={DatabaseState.OutOfDate}
-      databaseVersions={{}}
+      databaseVersions={{
+        kanjidb: {
+          major: 1,
+          minor: 0,
+          patch: 0,
+          databaseVersion: '2019-197',
+          dateOfCreation: '2019-07-16',
+          lang: 'en',
+        },
+        bushudb: {
+          major: 1,
+          minor: 0,
+          patch: 0,
+          databaseVersion: '2019-197',
+          dateOfCreation: '2019-07-16',
+          lang: 'en',
+        },
+      }}
       updateState={{ state: 'idle', lastCheck: null }}
       panelState={PanelState.Expanded}
     />

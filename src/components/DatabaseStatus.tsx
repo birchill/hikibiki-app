@@ -93,15 +93,74 @@ function renderSettingsIcon(props: Props) {
 }
 
 function renderBody(props: Props) {
-  const { databaseState, updateState, databaseVersions } = props;
+  const { databaseState } = props;
   if (databaseState === DatabaseState.Initializing) {
     return <div class="text-orange-1000">Initializing&hellip;</div>;
   }
 
+  return (
+    <div>
+      {renderLicenseInfo(props)}
+      {renderDatabaseStatus(props)}
+      {databaseState !== DatabaseState.Empty ? (
+        <ReferencesConfig
+          enabledReferences={props.enabledReferences}
+          enabledLinks={props.enabledLinks}
+          onToggleReference={props.onToggleReference}
+          onToggleLink={props.onToggleLink}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function renderLicenseInfo(props: Props): JSX.Element {
+  const linkStyles = {
+    class: 'text-orange-800 visited:text-orange-800 underline',
+    style: { 'text-decoration-style': 'dotted' },
+  };
+
+  const kanjiDbVersion = props.databaseVersions.kanjidb;
+
+  let versionInformation = '';
+  if (kanjiDbVersion) {
+    versionInformation = ` version ${kanjiDbVersion.databaseVersion} generated on ${kanjiDbVersion.dateOfCreation}`;
+  }
+
+  return (
+    <div class="mb-6">
+      Includes data from{' '}
+      <a
+        href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
+        target="_blank"
+        {...linkStyles}
+      >
+        KANJIDIC
+      </a>
+      {versionInformation}. This data is the property of the{' '}
+      <a href="https://www.edrdg.org/" target="_blank" {...linkStyles}>
+        Electronic Dictionary Research and Development Group
+      </a>
+      , and is used in conformance with the Group's{' '}
+      <a
+        href="https://www.edrdg.org/edrdg/licence.html"
+        target="_blank"
+        {...linkStyles}
+      >
+        licence
+      </a>
+      .
+    </div>
+  );
+}
+
+function renderDatabaseStatus(props: Props): JSX.Element | null {
+  const { databaseState, updateState, databaseVersions } = props;
+
   const buttonStyles =
-    'bg-orange-100 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow-orange-default hover:bg-orange-50';
+    'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-0 shadow-orange-default hover:bg-orange-50';
   const disabledButtonStyles =
-    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 leading-none rounded border-0 shadow cursor-default';
+    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 self-end leading-none rounded border-0 shadow cursor-default';
 
   switch (updateState.state) {
     case 'idle': {
@@ -123,22 +182,13 @@ function renderBody(props: Props) {
       }
 
       return (
-        <div>
-          {renderDatabaseSummary(props)}
-          <div class="flex items-end mb-10">
-            <div class="flex-grow mr-8 italic">{status}</div>
-            <div>
-              <button class={buttonStyles} onClick={props.onUpdate}>
-                Check for updates
-              </button>
-            </div>
+        <div class="flex mb-10">
+          <div class="flex-grow mr-8 italic">{status}</div>
+          <div class="self-end">
+            <button class={buttonStyles} onClick={props.onUpdate}>
+              Check for updates
+            </button>
           </div>
-          <ReferencesConfig
-            enabledReferences={props.enabledReferences}
-            enabledLinks={props.enabledLinks}
-            onToggleReference={props.onToggleReference}
-            onToggleLink={props.onToggleLink}
-          />
         </div>
       );
     }
@@ -146,9 +196,7 @@ function renderBody(props: Props) {
     case 'checking':
       return (
         <div class="flex">
-          <div class="flex-grow mr-8 text-orange-1000">
-            Checking for updates&hellip;
-          </div>
+          <div class="flex-grow mr-8 italic">Checking for updates&hellip;</div>
           <button class={buttonStyles} onClick={props.onCancel}>
             Cancel
           </button>
@@ -165,7 +213,7 @@ function renderBody(props: Props) {
       )}%)`;
       return (
         <div class="flex">
-          <div class="flex-grow mr-8 details">
+          <div class="flex-grow mr-8">
             <ProgressWithLabel
               id="update-progress"
               max={100}
@@ -189,7 +237,7 @@ function renderBody(props: Props) {
       const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
       return (
         <div class="flex">
-          <div class="flex-grow mr-8 details">
+          <div class="flex-grow mr-8">
             <ProgressWithLabel id="update-progress" label={`${label}…`} />
           </div>
           <button class={disabledButtonStyles} disabled>
@@ -201,63 +249,20 @@ function renderBody(props: Props) {
 
     case 'error':
       return (
-        <div>
-          {renderDatabaseSummary(props)}
-          <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
-            <div class="flex-grow mr-8">
-              Update failed: {updateState.error.message}
-            </div>
-            <div>
-              <button class={buttonStyles} onClick={props.onUpdate}>
-                Retry
-              </button>
-            </div>
+        <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
+          <div class="flex-grow mr-8">
+            Update failed: {updateState.error.message}
+          </div>
+          <div>
+            <button class={buttonStyles} onClick={props.onUpdate}>
+              Retry
+            </button>
           </div>
         </div>
       );
   }
 
   return null;
-}
-
-function renderDatabaseSummary(props: Props): JSX.Element | null {
-  if (!props.databaseVersions.kanjidb) {
-    return null;
-  }
-
-  const linkStyles = {
-    class: 'text-orange-800 visited:text-orange-800 underline',
-    style: { 'text-decoration-style': 'dotted' },
-  };
-
-  const kanjiDbVersion = props.databaseVersions.kanjidb;
-
-  return (
-    <div class="mb-6">
-      Includes data from{' '}
-      <a
-        href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
-        target="_blank"
-        {...linkStyles}
-      >
-        KANJIDIC
-      </a>{' '}
-      version {kanjiDbVersion.databaseVersion} generated on{' '}
-      {kanjiDbVersion.dateOfCreation}. This data is the property of the{' '}
-      <a href="https://www.edrdg.org/" target="_blank" {...linkStyles}>
-        Electronic Dictionary Research and Development Group
-      </a>
-      , and is used in conformance with the Group's{' '}
-      <a
-        href="https://www.edrdg.org/edrdg/licence.html"
-        target="_blank"
-        {...linkStyles}
-      >
-        licence
-      </a>
-      .
-    </div>
-  );
 }
 
 // Our special date formatting that is a simplified ISO 8601 in local time
