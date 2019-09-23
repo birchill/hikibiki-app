@@ -101,6 +101,7 @@ function renderSettingsIcon(props: Props) {
   return (
     <button class={containerStyles} onClick={props.onToggleSettings}>
       <svg class="w-10 h-10" viewBox="0 0 16 16">
+        <title>Settings</title>
         <use width="16" height="16" href="#cog" />
       </svg>
     </button>

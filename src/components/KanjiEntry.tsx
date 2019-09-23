@@ -33,6 +33,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
             class="inline-block mr-4 w-10 h-10 text-gray-300"
             viewBox="0 0 16 16"
           >
+            <title>Stroke count</title>
             <use width="16" height="16" href="#brush" />
           </svg>
           <span>
@@ -45,6 +46,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
             class="inline-block mr-4 w-10 h-10 text-gray-300 fill-current"
             viewBox="0 0 8 8"
           >
+            <title>Popularity</title>
             <rect
               x="0"
               y="5"
@@ -91,6 +93,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
             class="inline-block mr-4 w-10 h-10 text-gray-300"
             viewBox="0 0 16 16"
           >
+            <title>Grade</title>
             <use width="16" height="16" href="#user" />
           </svg>
           <span>Grade {props.misc.gr || '-'}</span>
