@@ -77,7 +77,11 @@ async function runInitialDbUpdate() {
     await setPreferredLang(preferredLang);
   }
 
-  window.requestIdleCallback(updateDb, { timeout: 4000 });
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(updateDb, { timeout: 4000 });
+  } else {
+    window.setTimeout(updateDb, 1000);
+  }
 }
 
 dbWorker.onmessageerror = (evt: MessageEvent) => {
