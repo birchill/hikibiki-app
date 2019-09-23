@@ -81,7 +81,7 @@ module.exports = {
       },
       fontSize: {
         ...fontSize,
-        superxl: '6rem',
+        kanjixl: '6rem',
       },
     },
   },

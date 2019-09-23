@@ -11,12 +11,25 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   ].join('、');
 
   return (
-    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-10 py-10 mb-12 max-w-3xl mx-auto leading-normal">
+    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 max-w-3xl mx-auto leading-normal">
       <div class="top-part flex mb-6">
-        <div class="mr-10 text-superxl leading-none" lang="ja">
+        <div
+          class="mr-10 text-kanjixl leading-none flex-grow"
+          lang="ja"
+          style={{ maxWidth: '1.5em' }}
+        >
           {props.c}
         </div>
         {renderComponents(props)}
+        <div class="ml-10 mt-4">
+          <svg
+            class="inline-block ml-8 w-10 h-10 text-gray-300"
+            viewBox="0 0 16 16"
+          >
+            <title>Copy to clipboard</title>
+            <use width="16" height="16" href="#copy" />
+          </svg>
+        </div>
       </div>
       <div class="readings text-lg" lang="ja">
         {commonReadings}
@@ -182,10 +195,12 @@ function renderComponents(props: Props): JSX.Element {
   );
 
   return (
-    <table class="components font-light mt-4">
-      {radicalRow}
-      {props.comp.map(comp => renderComponent(comp, props.rad))}
-    </table>
+    <div class="components font-light mt-4 flex-grow">
+      <table>
+        {radicalRow}
+        {props.comp.map(comp => renderComponent(comp, props.rad))}
+      </table>
+    </div>
   );
 }
 
