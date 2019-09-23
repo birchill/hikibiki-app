@@ -327,6 +327,49 @@ storiesOf('Components|DatabaseStatus', module)
         updateState={{ state: 'idle', lastCheck: null }}
         panelState={PanelState.Collapsed}
       />
+      <DatabaseStatus
+        databaseState={DatabaseState.Empty}
+        databaseVersions={{}}
+        updateState={{ state: 'checking', dbName: 'kanjidb', lastCheck: null }}
+        panelState={PanelState.Collapsed}
+      />
+      <DatabaseStatus
+        databaseState={DatabaseState.Empty}
+        databaseVersions={{}}
+        updateState={{
+          state: 'downloading',
+          progress: 0,
+          dbName: 'kanjidb',
+          downloadVersion: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          lastCheck: null,
+        }}
+        panelState={PanelState.Collapsed}
+      />
+      <DatabaseStatus
+        databaseState={DatabaseState.Empty}
+        databaseVersions={{}}
+        updateState={{
+          state: 'updatingdb',
+          dbName: 'kanjidb',
+          downloadVersion: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          lastCheck: new Date(),
+        }}
+        panelState={PanelState.Collapsed}
+      />
     </div>
   ))
   .add('disabled', () => (

@@ -39,30 +39,49 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   const disabledPanelStyles =
     'database-status bg-white rounded-lg px-10 max-w-3xl mx-auto text-gray-600 overflow-auto';
 
+  const { databaseState, updateState, panelState, onToggleActive } = props;
+
+  // We the database is empty and we're still downloading it, we should let the
+  // user know we're doing something if the panel is collapsed.
+  let heading = 'Kanji';
+  if (
+    panelState === PanelState.Collapsed &&
+    databaseState === DatabaseState.Empty
+  ) {
+    switch (updateState.state) {
+      case 'checking':
+      case 'downloading':
+        heading += ' (downloading…)';
+        break;
+
+      case 'updatingdb':
+        heading += ' (updating…)';
+        break;
+    }
+  }
+
   return (
     <div
       className={
-        props.panelState === PanelState.Disabled
-          ? disabledPanelStyles
-          : panelStyles
+        panelState === PanelState.Disabled ? disabledPanelStyles : panelStyles
       }
     >
       <div className="my-10 flex flex-row items-center">
         <Checkbox
           id="kanjidb-enabled"
-          checked={props.panelState !== PanelState.Disabled}
-          onChange={props.onToggleActive}
-          theme={props.panelState === PanelState.Disabled ? 'gray' : 'orange'}
+          checked={panelState !== PanelState.Disabled}
+          onChange={onToggleActive}
+          theme={panelState === PanelState.Disabled ? 'gray' : 'orange'}
         />
         <h2
           className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
-          onClick={props.onToggleActive}
+          onClick={onToggleActive}
         >
-          Kanji
+          {heading}
         </h2>
         {renderSettingsIcon(props)}
       </div>
-      {props.panelState !== PanelState.Expanded ? null : (
+      {panelState !== PanelState.Expanded ? null : (
         <div className="mb-10">{renderBody(props)}</div>
       )}
     </div>
