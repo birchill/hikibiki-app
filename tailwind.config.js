@@ -1,4 +1,4 @@
-const { boxShadow } = require('tailwindcss/defaultTheme');
+const { boxShadow, fontSize } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
@@ -78,6 +78,10 @@ module.exports = {
           'MS PGothic',
           'sans-serif',
         ],
+      },
+      fontSize: {
+        ...fontSize,
+        superxl: '6rem',
       },
     },
   },
