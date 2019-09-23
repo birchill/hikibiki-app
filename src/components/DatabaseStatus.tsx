@@ -1,4 +1,4 @@
-import { h, FunctionalComponent, JSX } from 'preact';
+import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
@@ -111,11 +111,11 @@ function renderSettingsIcon(props: Props) {
 function renderBody(props: Props) {
   const { databaseState } = props;
   if (databaseState === DatabaseState.Initializing) {
-    return <div class="text-orange-1000">Initializing&hellip;</div>;
+    return 'Initializing…';
   }
 
   return (
-    <div>
+    <Fragment>
       {renderLicenseInfo(props)}
       {renderDatabaseStatus(props)}
       {databaseState !== DatabaseState.Empty ? (
@@ -126,7 +126,7 @@ function renderBody(props: Props) {
           onToggleLink={props.onToggleLink}
         />
       ) : null}
-    </div>
+    </Fragment>
   );
 }
 
@@ -186,14 +186,14 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       } else {
         const { major, minor, patch } = databaseVersions.kanjidb!;
         status = (
-          <div>
+          <Fragment>
             <div>
               Version {major}.{minor}.{patch}.
             </div>
             {updateState.lastCheck ? (
               <div>Last check {formatDate(updateState.lastCheck)}.</div>
             ) : null}
-          </div>
+          </Fragment>
         );
       }
 

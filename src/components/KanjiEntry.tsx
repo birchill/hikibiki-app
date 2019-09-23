@@ -1,4 +1,4 @@
-import { h, FunctionalComponent, JSX } from 'preact';
+import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 
 import { KanjiResult } from '../database';
 
@@ -159,17 +159,17 @@ function renderComponents(props: Props): JSX.Element {
   let base: JSX.Element | null = null;
   if (rad.base) {
     base = (
-      <span>
+      <Fragment>
         {' from '}
         <span lang="ja">
           {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
         </span>
-      </span>
+      </Fragment>
     );
   }
 
   const radicalRow = (
-    <tbody>
+    <Fragment>
       <tr class="component radical" title="Radical for this kanji">
         <td class="px-8 rounded-l bg-gray-100" lang="ja">
           {rad.b || rad.k}
@@ -191,7 +191,7 @@ function renderComponents(props: Props): JSX.Element {
           </td>
         </tr>
       ) : null}
-    </tbody>
+    </Fragment>
   );
 
   return (
@@ -215,19 +215,17 @@ function renderComponent(
   }
 
   return (
-    <tbody>
-      <tr class="component">
-        <td class="px-8" lang="ja">
-          {c}
-        </td>
-        <td class="px-4" lang="ja">
-          {na.length ? na[0] : '-'}
-        </td>
-        <td class="px-8" lang={m_lang !== 'en' ? m_lang : undefined}>
-          {m.length ? m[0] : '-'}
-        </td>
-      </tr>
-    </tbody>
+    <tr class="component">
+      <td class="px-8" lang="ja">
+        {c}
+      </td>
+      <td class="px-4" lang="ja">
+        {na.length ? na[0] : '-'}
+      </td>
+      <td class="px-8" lang={m_lang !== 'en' ? m_lang : undefined}>
+        {m.length ? m[0] : '-'}
+      </td>
+    </tr>
   );
 }
 

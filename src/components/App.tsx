@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import { h, Fragment, FunctionalComponent } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
@@ -31,7 +31,7 @@ type Props = {
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div>
+    <Fragment>
       <DatabaseStatus
         databaseState={props.databaseState}
         databaseVersions={props.databaseVersions}
@@ -52,6 +52,6 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         databaseVersions={props.databaseVersions}
         onSetLang={props.onSetLang}
       />
-    </div>
+    </Fragment>
   );
 };
