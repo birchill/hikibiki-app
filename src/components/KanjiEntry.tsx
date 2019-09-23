@@ -22,10 +22,79 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         {commonReadings}
       </div>
       <div
-        class="meanings text-lg text-gray-500 text-light mb-4"
+        class="meanings text-lg text-gray-500 text-light mb-6"
         lang={props.m_lang !== 'en' ? props.m_lang : undefined}
       >
         {props.m.join(', ')}
+      </div>
+      <div class="stats flex mb-4">
+        <div class="strokes flex-grow flex items-center">
+          <svg
+            class="inline-block mr-4 w-10 h-10 text-gray-300"
+            viewBox="0 0 16 16"
+          >
+            <use width="16" height="16" href="#brush" />
+          </svg>
+          <span>
+            {props.misc.sc}
+            {props.misc.sc === 1 ? ' stroke' : ' strokes'}
+          </span>
+        </div>
+        <div class="popularity flex-grow flex items-center">
+          <svg
+            class="inline-block mr-4 w-10 h-10 text-gray-300 fill-current"
+            viewBox="0 0 8 8"
+          >
+            <rect
+              x="0"
+              y="5"
+              width="2"
+              height="3"
+              rx="0.5"
+              ry="0.5"
+              class={props.misc.freq ? 'text-black' : undefined}
+            />
+            <rect
+              x="3"
+              y="3"
+              width="2"
+              height="5"
+              rx="0.5"
+              ry="0.5"
+              class={
+                props.misc.freq && props.misc.freq < (2500 * 2) / 3
+                  ? 'text-black'
+                  : undefined
+              }
+            />
+            <rect
+              x="6"
+              y="0"
+              width="2"
+              height="8"
+              rx="0.5"
+              ry="0.5"
+              class={
+                props.misc.freq && props.misc.freq < 2500 / 3
+                  ? 'text-black'
+                  : undefined
+              }
+            />
+          </svg>
+          <span>
+            {props.misc.freq || '-'}
+            <span class="text-sm"> / 2,500</span>
+          </span>
+        </div>
+        <div class="grade flex-grow flex items-center">
+          <svg
+            class="inline-block mr-4 w-10 h-10 text-gray-300"
+            viewBox="0 0 16 16"
+          >
+            <use width="16" height="16" href="#user" />
+          </svg>
+          <span>Grade {props.misc.gr || '-'}</span>
+        </div>
       </div>
       <div class="refs">
         <div class="ref">Henshall: {props.refs.henshall}</div>
