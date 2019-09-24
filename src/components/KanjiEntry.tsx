@@ -39,6 +39,15 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
     }
   };
 
+  let grade;
+  if (props.misc.gr === 8) {
+    grade = 'General use';
+  } else if (props.misc.gr === 9) {
+    grade = 'Name use';
+  } else {
+    grade = `Grade ${props.misc.gr || '-'}`;
+  }
+
   return (
     <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 leading-normal">
       <div class="top-part flex mb-6">
@@ -146,7 +155,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
             <title>Grade</title>
             <use width="16" height="16" href="#user" />
           </svg>
-          <span>Grade {props.misc.gr || '-'}</span>
+          <span>{grade}</span>
         </div>
       </div>
       <div class="refs flex mb-2">
