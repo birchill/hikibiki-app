@@ -76,6 +76,12 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
       <div class="readings text-lg" lang="ja">
         {commonReadings}
       </div>
+      <div
+        class="meanings text-lg text-gray-500 text-light mb-8"
+        lang={props.m_lang !== 'en' ? props.m_lang : undefined}
+      >
+        {props.m.join(', ')}
+      </div>
       {renderMisc(props)}
       {renderReferences(props)}
       {renderLinks(props)}
@@ -247,6 +253,10 @@ function renderMisc(props: Props) {
 
 function renderReferences(props: Props) {
   const enabledReferences = new Set(props.enabledReferences);
+  if (!enabledReferences.size) {
+    return null;
+  }
+
   const referenceData = ReferenceLabels.filter(
     ([id]) => id !== 'kanken' && enabledReferences.has(id)
   ).map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
@@ -281,6 +291,10 @@ function renderReferences(props: Props) {
 
 function renderLinks(props: Props) {
   const enabledLinks = new Set(props.enabledLinks);
+  if (!enabledLinks.size) {
+    return null;
+  }
+
   const linkData = LinkLabels.filter(([id]) => enabledLinks.has(id)).map(
     ([id, label]) => {
       switch (id) {
