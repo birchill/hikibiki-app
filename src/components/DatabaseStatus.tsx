@@ -37,7 +37,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   const panelStyles =
     'bg-orange-200 rounded-lg px-10 max-w-3xl mx-auto mb-12 text-orange-1000 overflow-auto';
   const disabledPanelStyles =
-    'bg-white rounded-lg px-10 max-w-3xl mx-auto text-gray-600 overflow-auto';
+    'bg-white rounded-lg px-10 max-w-3xl mx-auto mb-12 text-gray-600 overflow-auto';
 
   const { databaseState, updateState, panelState, onToggleActive } = props;
 
@@ -92,7 +92,7 @@ function renderSettingsIcon(props: Props) {
   let containerStyles =
     props.panelState === PanelState.Collapsed ? 'text-orange-400' : undefined;
   containerStyles +=
-    ' border-0 bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border border-transparent border-dotted focus:outline-none focus:border-orange-600';
+    ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400';
 
   if (props.panelState === PanelState.Disabled) {
     containerStyles += ' invisible pointer-events-none';

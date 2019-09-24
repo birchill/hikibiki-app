@@ -52,6 +52,12 @@ module.exports = {
         '56': '112px',
         '64': '128px',
       },
+      inset: {
+        '32': '64px',
+        '64': '128px',
+        '-32': '-64px',
+        '-64': '-128px',
+      },
       borderRadius: {
         none: '0',
         sm: '4px',

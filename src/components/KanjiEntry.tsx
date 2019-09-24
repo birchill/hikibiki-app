@@ -1,4 +1,5 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { useRef } from 'preact/hooks';
 
 import { KanjiResult } from '../database';
 
@@ -9,6 +10,31 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
     ...(props.r.on ? props.r.on : []),
     ...(props.r.kun ? props.r.kun : []),
   ].join('、');
+
+  const clipboardCopiedLabel = useRef<HTMLElement | null>(null);
+
+  const copyToClipboard = async () => {
+    let clipboardText = `${props.c}`;
+    clipboardText += `\n${commonReadings}`;
+    clipboardText += `\n${props.m.join(', ')}`;
+    clipboardText += `\n部首：${props.rad.b ||
+      props.rad.k}（${props.rad.na.join('、')}）`;
+    if (props.rad.base) {
+      clipboardText += ` from ${props.rad.base.b ||
+        props.rad.base.k}（${props.rad.base.na.join('、')}）`;
+    }
+    await navigator.clipboard.writeText(clipboardText);
+    if (clipboardCopiedLabel.current) {
+      const label = clipboardCopiedLabel.current;
+      label.style.transitionProperty = 'none';
+      label.style.opacity = '1';
+      requestAnimationFrame(() => {
+        getComputedStyle(label).opacity;
+        label.style.transition = 'opacity 0.5s 0.5s';
+        label.style.opacity = '0';
+      });
+    }
+  };
 
   return (
     <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 max-w-3xl mx-auto leading-normal">
@@ -21,14 +47,22 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
           {props.c}
         </div>
         {renderComponents(props)}
-        <div class="ml-10 mt-4">
-          <svg
-            class="inline-block ml-8 w-10 h-10 text-gray-300"
-            viewBox="0 0 16 16"
+        <div class="relative ml-10 mt-4">
+          <button
+            class="text-gray-300 bg-transparent rounded-full p-6 -m-6 hover:bg-gray-200 hover:text-gray-500 border-2 border-transparent border-dotted focus:outline-none focus:border-gray-400 focus:text-gray-400"
+            onClick={copyToClipboard}
           >
-            <title>Copy to clipboard</title>
-            <use width="16" height="16" href="#copy" />
-          </svg>
+            <svg class="w-10 h-10" viewBox="0 0 16 16">
+              <title>Copy to clipboard</title>
+              <use width="16" height="16" href="#copy" />
+            </svg>
+          </button>
+          <div
+            class="absolute w-64 -left-32 pl-12 pt-8 text-center text-gray-300 text-sm opacity-0"
+            ref={clipboardCopiedLabel}
+          >
+            Copied!
+          </div>
         </div>
       </div>
       <div class="readings text-lg" lang="ja">
