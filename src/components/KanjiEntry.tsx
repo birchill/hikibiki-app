@@ -40,7 +40,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   };
 
   return (
-    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 max-w-3xl mx-auto leading-normal">
+    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 leading-normal">
       <div class="top-part flex mb-6">
         <div
           class="mr-10 text-kanjixl leading-none flex-grow"

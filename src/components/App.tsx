@@ -31,7 +31,7 @@ type Props = {
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <Fragment>
+    <div class="container mx-auto max-w-3xl">
       <DatabaseStatus
         databaseState={props.databaseState}
         databaseVersions={props.databaseVersions}
@@ -52,6 +52,6 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         databaseVersions={props.databaseVersions}
         onSetLang={props.onSetLang}
       />
-    </Fragment>
+    </div>
   );
 };
