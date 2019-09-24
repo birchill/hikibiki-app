@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent } from 'preact';
+import { h, FunctionalComponent } from 'preact';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
@@ -47,7 +47,11 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         onToggleReference={props.onToggleReference}
         onToggleLink={props.onToggleLink}
       />
-      <KanjiList entries={props.entries} />
+      <KanjiList
+        entries={props.entries}
+        enabledReferences={props.enabledReferences}
+        enabledLinks={props.enabledLinks}
+      />
       <LanguageSelector
         databaseVersions={props.databaseVersions}
         onSetLang={props.onSetLang}

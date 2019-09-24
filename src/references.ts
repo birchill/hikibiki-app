@@ -1,0 +1,16 @@
+export const ReferenceLabels: Array<[string, string]> = [
+  ['kanken', '漢検'],
+  ['conning', 'Conning'],
+  ['nelson_c', 'Classic Nelson'],
+  ['halpern_njecd', 'Halpbern'],
+  ['heisig6', 'Heisig (6th ed.)'],
+  ['henshall', 'Henshall'],
+  ['busy_people', 'Japanese for Busy People'],
+  ['kanji_in_context', 'Kanji in Context'],
+  ['sh_desc', 'The Kanji Dictionary'],
+  ['halpern_kkld_2ed', "Kanji Learner's Dictionary (2nd ed.)"],
+  ['kodansha_compact', 'Kodansha Compact Kanji Guide'],
+  ['nelson_n', 'New Nelson'],
+  ['skip', 'SKIP'],
+  ['sh_kk2', 'Tuttle Kanji & Kana (2011)'],
+];

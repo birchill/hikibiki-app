@@ -2,8 +2,13 @@ import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 
 import { KanjiResult } from '../database';
+import { ReferenceLabels } from '../references';
+import { LinkLabels } from '../links';
 
-interface Props extends KanjiResult {}
+interface Props extends KanjiResult {
+  enabledReferences?: Array<string>;
+  enabledLinks?: Array<string>;
+}
 
 export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   const commonReadings = [
@@ -72,43 +77,8 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         {commonReadings}
       </div>
       {renderMisc(props)}
-      <div class="refs flex mb-2">
-        <svg
-          class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
-          viewBox="0 0 16 16"
-        >
-          <use width="16" height="16" href="#book" />
-        </svg>
-        <div class="flex-grow">
-          <div class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800">
-            Henshall {props.refs.henshall}
-          </div>
-          <div
-            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800"
-            lang="ja"
-          >
-            漢検 {renderKanKen(props.misc.kk)}
-          </div>
-        </div>
-      </div>
-      <div class="links flex -mb-4">
-        <svg
-          class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
-          viewBox="0 0 16 16"
-        >
-          <use width="16" height="16" href="#link" />
-        </svg>
-        <div class="flex-grow">
-          <a
-            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
-            href={`https://app.kanjialive.com/${encodeURIComponent(props.c)}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            Kanji alive
-          </a>
-        </div>
-      </div>
+      {renderReferences(props)}
+      {renderLinks(props)}
     </div>
   );
 };
@@ -270,6 +240,88 @@ function renderMisc(props: Props) {
           <use width="16" height="16" href="#user" />
         </svg>
         <span>{grade}</span>
+      </div>
+    </div>
+  );
+}
+
+function renderReferences(props: Props) {
+  const enabledReferences = new Set(props.enabledReferences);
+  const referenceData = ReferenceLabels.filter(
+    ([id]) => id !== 'kanken' && enabledReferences.has(id)
+  ).map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
+
+  // Handle 漢検 separately because it is in the misc section
+  if (enabledReferences.has('kanken')) {
+    const label = ReferenceLabels.find(([id]) => id === 'kanken')![1];
+    referenceData.unshift(`${label} ${renderKanKen(props.misc.kk)}`);
+  }
+
+  return (
+    <div class="refs flex mb-2">
+      <svg
+        class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+        viewBox="0 0 16 16"
+      >
+        <use width="16" height="16" href="#book" />
+      </svg>
+      <div class="flex-grow">
+        {referenceData.map(data => (
+          <div
+            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800"
+            lang={data.startsWith('漢検') ? 'ja' : undefined}
+          >
+            {data}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function renderLinks(props: Props) {
+  const enabledLinks = new Set(props.enabledLinks);
+  const linkData = LinkLabels.filter(([id]) => enabledLinks.has(id)).map(
+    ([id, label]) => {
+      switch (id) {
+        case 'kanjialive':
+          return {
+            label,
+            href: `https://app.kanjialive.com/${encodeURIComponent(props.c)}`,
+          };
+
+        case 'wiktionary':
+          return {
+            label,
+            href: `https://ja.wiktionary.org/wiki/${encodeURIComponent(
+              props.c
+            )}`,
+          };
+      }
+
+      throw new Error(`Unrecognized link type: ${id} (${label})`);
+    }
+  );
+
+  return (
+    <div class="links flex -mb-4">
+      <svg
+        class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+        viewBox="0 0 16 16"
+      >
+        <use width="16" height="16" href="#link" />
+      </svg>
+      <div class="flex-grow">
+        {linkData.map(({ label, href }) => (
+          <a
+            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
+            href={href}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {label}
+          </a>
+        ))}
       </div>
     </div>
   );
