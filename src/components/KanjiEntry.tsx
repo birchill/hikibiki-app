@@ -39,15 +39,6 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
     }
   };
 
-  let grade;
-  if (props.misc.gr === 8) {
-    grade = 'General use';
-  } else if (props.misc.gr === 9) {
-    grade = 'Name use';
-  } else {
-    grade = `Grade ${props.misc.gr || '-'}`;
-  }
-
   return (
     <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 leading-normal">
       <div class="top-part flex mb-6">
@@ -80,84 +71,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
       <div class="readings text-lg" lang="ja">
         {commonReadings}
       </div>
-      <div
-        class="meanings text-lg text-gray-500 text-light mb-8"
-        lang={props.m_lang !== 'en' ? props.m_lang : undefined}
-      >
-        {props.m.join(', ')}
-      </div>
-      <div class="stats flex mb-8">
-        <div class="strokes flex-grow flex items-center">
-          <svg
-            class="inline-block mr-8 w-10 h-10 text-gray-300"
-            viewBox="0 0 16 16"
-          >
-            <title>Stroke count</title>
-            <use width="16" height="16" href="#brush" />
-          </svg>
-          <span>
-            {props.misc.sc}
-            {props.misc.sc === 1 ? ' stroke' : ' strokes'}
-          </span>
-        </div>
-        <div class="popularity flex-grow flex items-center">
-          <svg
-            class="inline-block mr-8 w-10 h-10 text-gray-300 fill-current"
-            viewBox="0 0 8 8"
-          >
-            <title>Popularity</title>
-            <rect
-              x="0"
-              y="5"
-              width="2"
-              height="3"
-              rx="0.5"
-              ry="0.5"
-              class={props.misc.freq ? 'text-black' : undefined}
-            />
-            <rect
-              x="3"
-              y="3"
-              width="2"
-              height="5"
-              rx="0.5"
-              ry="0.5"
-              class={
-                props.misc.freq && props.misc.freq < (2500 * 2) / 3
-                  ? 'text-black'
-                  : undefined
-              }
-            />
-            <rect
-              x="6"
-              y="0"
-              width="2"
-              height="8"
-              rx="0.5"
-              ry="0.5"
-              class={
-                props.misc.freq && props.misc.freq < 2500 / 3
-                  ? 'text-black'
-                  : undefined
-              }
-            />
-          </svg>
-          <span>
-            {props.misc.freq || '-'}
-            <span class="text-sm"> / 2,500</span>
-          </span>
-        </div>
-        <div class="grade flex-grow flex items-center">
-          <svg
-            class="inline-block mr-8 w-10 h-10 text-gray-300"
-            viewBox="0 0 16 16"
-          >
-            <title>Grade</title>
-            <use width="16" height="16" href="#user" />
-          </svg>
-          <span>{grade}</span>
-        </div>
-      </div>
+      {renderMisc(props)}
       <div class="refs flex mb-2">
         <svg
           class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
@@ -272,6 +186,92 @@ function renderComponent(
         {m.length ? m[0] : '-'}
       </td>
     </tr>
+  );
+}
+
+function renderMisc(props: Props) {
+  let grade;
+  if (props.misc.gr === 8) {
+    grade = 'General use';
+  } else if (props.misc.gr === 9) {
+    grade = 'Name use';
+  } else {
+    grade = `Grade ${props.misc.gr || '-'}`;
+  }
+
+  return (
+    <div class="misc flex mb-8">
+      <div class="strokes flex-grow flex items-center">
+        <svg
+          class="inline-block mr-8 w-10 h-10 text-gray-300"
+          viewBox="0 0 16 16"
+        >
+          <title>Stroke count</title>
+          <use width="16" height="16" href="#brush" />
+        </svg>
+        <span>
+          {props.misc.sc}
+          {props.misc.sc === 1 ? ' stroke' : ' strokes'}
+        </span>
+      </div>
+      <div class="popularity flex-grow flex items-center">
+        <svg
+          class="inline-block mr-8 w-10 h-10 text-gray-300 fill-current"
+          viewBox="0 0 8 8"
+        >
+          <title>Popularity</title>
+          <rect
+            x="0"
+            y="5"
+            width="2"
+            height="3"
+            rx="0.5"
+            ry="0.5"
+            class={props.misc.freq ? 'text-black' : undefined}
+          />
+          <rect
+            x="3"
+            y="3"
+            width="2"
+            height="5"
+            rx="0.5"
+            ry="0.5"
+            class={
+              props.misc.freq && props.misc.freq < (2500 * 2) / 3
+                ? 'text-black'
+                : undefined
+            }
+          />
+          <rect
+            x="6"
+            y="0"
+            width="2"
+            height="8"
+            rx="0.5"
+            ry="0.5"
+            class={
+              props.misc.freq && props.misc.freq < 2500 / 3
+                ? 'text-black'
+                : undefined
+            }
+          />
+        </svg>
+        <span>
+          {props.misc.freq || '-'}
+          <span class="text-sm"> / 2,500</span>
+        </span>
+      </div>
+      <div class="grade flex-grow flex items-center">
+        <svg
+          class="inline-block mr-8 w-10 h-10 text-gray-300"
+          viewBox="0 0 16 16"
+        >
+          <title>Grade</title>
+          <use width="16" height="16" href="#user" />
+        </svg>
+        <span>{grade}</span>
+      </div>
+    </div>
   );
 }
 
