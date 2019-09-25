@@ -199,13 +199,21 @@ function onUpdateSearch(search: string) {
   // Update the location
   const url = new URL(document.location.href);
   const params = url.searchParams;
-  params.set('q', search);
-  history.pushState({}, '', url.href);
-
-  // TODO: Update the document title
+  if (q) {
+    params.set('q', search);
+  } else {
+    params.delete('q');
+  }
+  history.replaceState({}, '', url.href);
 }
 
 function update() {
+  if (q) {
+    document.title = `${q} - Kanjichamp`;
+  } else {
+    document.title = 'Kanjichamp';
+  }
+
   render(
     <App
       databaseState={databaseState}
