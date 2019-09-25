@@ -1,4 +1,4 @@
-const { boxShadow, fontSize } = require('tailwindcss/defaultTheme');
+const { boxShadow, fontSize, margin } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
@@ -88,6 +88,12 @@ module.exports = {
       fontSize: {
         ...fontSize,
         kanjixl: '6rem',
+      },
+      margin: {
+        ...margin,
+        '-half-input-text-3xl-py-6': `calc(-1 * (1.5 * 0.5 * ${
+          fontSize['3xl']
+        } + 12px))`,
       },
     },
   },
