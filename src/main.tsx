@@ -179,12 +179,30 @@ const onToggleLink = toggleSetValue.bind(null, enabledLinks, 'kanji-links');
 let kanjiPanelState: PanelState = PanelState.Collapsed;
 
 const params = new URL(document.location.href).searchParams;
-const kanji = params.get('kanji');
+let q = params.get('q');
 
 function runQuery() {
-  if (kanji) {
-    dbWorker.postMessage(messages.query({ kanji: [...kanji] }));
+  if (q) {
+    dbWorker.postMessage(messages.query({ kanji: [...q] }));
   }
+}
+
+function onUpdateSearch(search: string) {
+  q = search;
+  if (q) {
+    dbWorker.postMessage(messages.query({ kanji: [...q] }));
+  } else {
+    entries = [];
+  }
+  update();
+
+  // Update the location
+  const url = new URL(document.location.href);
+  const params = url.searchParams;
+  params.set('q', search);
+  history.pushState({}, '', url.href);
+
+  // TODO: Update the document title
 }
 
 function update() {
@@ -195,8 +213,10 @@ function update() {
       updateState={updateState}
       entries={entries}
       kanjiPanelState={kanjiPanelState}
+      search={q || undefined}
       enabledReferences={Array.from(enabledReferences.values())}
       enabledLinks={Array.from(enabledLinks.values())}
+      onUpdateSearch={onUpdateSearch}
       onUpdateDb={updateDb}
       onCancelDbUpdate={cancelDbUpdate}
       onDestroyDb={destroyDb}
