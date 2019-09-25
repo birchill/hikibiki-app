@@ -35,9 +35,9 @@ type Props = {
 
 export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   const panelStyles =
-    'bg-orange-200 rounded-lg px-10 sm:px-20 mb-12 text-orange-1000 overflow-auto';
+    'bg-orange-200 rounded-lg px-10 sm:px-20 mb-12 text-orange-1000 border-transparent border';
   const disabledPanelStyles =
-    'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 overflow-auto';
+    'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 border-transparent border';
 
   const { databaseState, updateState, panelState, onToggleActive } = props;
 
