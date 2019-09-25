@@ -75,6 +75,7 @@ module.exports = {
         sans: [
           'Roboto',
           'Noto Sans Japanese',
+          'Segoe UI',
           'ヒラギノ角ゴ Pro W3',
           'Hiragino Kaku Gothic Pro',
           'メイリオ',

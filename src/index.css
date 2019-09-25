@@ -1,5 +1,6 @@
 @import 'tailwindcss/base';
 
+@import 'scrollbar.css';
 @import 'components/Checkbox.css';
 @import 'components/ProgressWithLabel.css';
 

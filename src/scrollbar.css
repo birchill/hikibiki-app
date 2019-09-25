@@ -1,0 +1,9 @@
+html {
+  /*
+   * Having the scrollbar appear and disappear all the time is distracting so
+   * make it always appear and make it fit in a little better.
+   */
+  overflow-y: scroll;
+  scrollbar-color: theme('colors.gray.200') theme('colors.gray.100');
+  scrollbar-width: thin;
+}
