@@ -35,11 +35,11 @@ type Props = {
 export const App: FunctionalComponent<Props> = (props: Props) => {
   return (
     <Fragment>
-      <header class="bg-white pt-8 pb-20 border-b-2 border-gray-500">
-        <h1 class="text-center text-5xl font-bold">Jisho Champ</h1>
+      <header class="bg-white pt-8 pb-24 sm:pb-20">
+        <h1 class="text-center text-4xl sm:text-5xl font-bold">Jisho Champ</h1>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
-      <div class="container mx-auto max-w-3xl">
+      <div class="container mx-auto max-w-3xl px-8 pb-8">
         <DatabaseStatus
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}

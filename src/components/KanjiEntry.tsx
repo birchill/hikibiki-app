@@ -45,7 +45,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   };
 
   return (
-    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-20 py-10 mb-12 leading-normal">
+    <div class="kanji-entry bg-white rounded-lg border-gray-200 border px-10 sm:px-20 py-10 mb-12 leading-normal">
       <div class="top-part flex mb-6">
         <div
           class="mr-10 text-kanjixl leading-none flex-grow"
@@ -55,7 +55,10 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
           {props.c}
         </div>
         {renderComponents(props)}
-        <div class="relative ml-10 mt-4" hidden={!clipboardEnabled}>
+        <div
+          class="hidden sm:block relative ml-10 mt-4"
+          hidden={!clipboardEnabled}
+        >
           <button
             class="text-gray-300 bg-transparent rounded-full p-6 -m-6 hover:bg-gray-200 hover:text-gray-500 border-2 border-transparent border-dotted focus:outline-none focus:border-gray-400 focus:text-gray-400"
             onClick={copyToClipboard}

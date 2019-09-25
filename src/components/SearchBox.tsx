@@ -7,9 +7,9 @@ type Props = {
 
 export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <nav class="container mx-auto max-w-3xl -mt-half-input-text-3xl-py-6 mb-20 px-12">
+    <nav class="container mx-auto max-w-3xl -mt-half-input-text-3xl-py-6 mb-12 sm:mb-20 px-12">
       <input
-        class="rounded-full w-full pl-40 pr-12 py-6 bg-gray-200 text-gray-700 placeholder-gray-700 font-medium text-3xl tracking-wide bg-no-repeat"
+        class="rounded-full w-full pl-32 sm:pl-40 pr-12 py-6 bg-gray-200 text-gray-700 placeholder-gray-700 font-medium text-3xl tracking-wide bg-no-repeat"
         type="search"
         name="q"
         placeholder="Search"

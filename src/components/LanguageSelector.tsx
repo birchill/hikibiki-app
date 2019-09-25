@@ -27,7 +27,7 @@ export const LanguageSelector: FunctionalComponent<Props> = (props: Props) => {
       <select
         id="lang"
         name="lang"
-        class="bg-transparent text-gray-800 text-lg cursor-pointer px-6 py-2 border border-gray-600 rounded-lg"
+        class="bg-white text-gray-800 text-lg cursor-pointer px-6 py-2 border border-gray-600 rounded-lg"
         onChange={evt => {
           if (evt && evt.target && props.onSetLang) {
             props.onSetLang((evt.target as HTMLSelectElement).value);
