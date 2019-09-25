@@ -92,8 +92,8 @@ module.exports = {
       },
       margin: {
         ...margin,
-        '-half-input-text-3xl-py-6': `calc(-1 * (1.5 * 0.5 * ${
-          fontSize['3xl']
+        '-half-input-text-2xl-py-6': `calc(-1 * (1.5 * 0.5 * ${
+          fontSize['2xl']
         } + 12px))`,
       },
     },
