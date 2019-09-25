@@ -331,12 +331,19 @@ function renderLinks(props: Props) {
       <div class="flex-grow">
         {linkData.map(({ label, href }) => (
           <a
-            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
+            class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
             href={href}
             target="_blank"
             rel="noreferrer noopener"
           >
-            {label}
+            <span>{label}</span>
+            <svg
+              class="inline-block w-6 h-6 ml-4 text-green-700"
+              viewBox="0 0 16 16"
+            >
+              <title>Opens in new window</title>
+              <use width="16" height="16" href="#external" />
+            </svg>
           </a>
         ))}
       </div>
