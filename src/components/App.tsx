@@ -33,6 +33,11 @@ type Props = {
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
+  let lang: string | undefined;
+  if (props.databaseVersions.kanjidb) {
+    lang = props.databaseVersions.kanjidb.lang;
+  }
+
   return (
     <Fragment>
       <header class="bg-white pt-16 pb-32 sm:pb-32">
@@ -57,6 +62,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         />
         <KanjiList
           entries={props.entries}
+          lang={lang}
           enabledReferences={props.enabledReferences}
           enabledLinks={props.enabledLinks}
         />

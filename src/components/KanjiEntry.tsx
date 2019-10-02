@@ -6,6 +6,7 @@ import { getReferenceLabels } from '../references';
 import { LinkLabels } from '../links';
 
 interface Props extends KanjiResult {
+  lang?: string;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
 }
@@ -260,7 +261,7 @@ function renderReferences(props: Props) {
     return null;
   }
 
-  const referenceLabels = getReferenceLabels({ lang: props.m_lang });
+  const referenceLabels = getReferenceLabels({ lang: props.lang });
   const referenceData = referenceLabels
     .filter(([id]) => id !== 'kanken' && enabledReferences.has(id))
     .map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
