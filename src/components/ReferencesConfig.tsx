@@ -1,10 +1,11 @@
 import { h, FunctionalComponent } from 'preact';
 
 import { TogglePill } from './TogglePill';
-import { ReferenceLabels } from '../references';
+import { getReferenceLabels } from '../references';
 import { LinkLabels } from '../links';
 
 interface Props {
+  lang?: string;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
   onToggleReference?: (ref: string, state: boolean) => void;
@@ -14,6 +15,7 @@ interface Props {
 export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
   const enabledReferences = new Set(props.enabledReferences || []);
   const enabledLinks = new Set(props.enabledLinks || []);
+  const referenceLabels = getReferenceLabels({ lang: props.lang });
 
   return (
     <div class="mt-10 -mb-4">
@@ -25,7 +27,7 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
           <use width="16" height="16" href="#book" />
         </svg>
         <div>
-          {ReferenceLabels.map(([id, label]) => (
+          {referenceLabels.map(([id, label]) => (
             <TogglePill
               value={id}
               label={label}

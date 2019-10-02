@@ -114,12 +114,17 @@ function renderBody(props: Props) {
     return 'Initializing…';
   }
 
+  const lang = props.databaseVersions.kanjidb
+    ? props.databaseVersions.kanjidb.lang
+    : undefined;
+
   return (
     <Fragment>
       {renderLicenseInfo(props)}
       {renderDatabaseStatus(props)}
       {databaseState !== DatabaseState.Empty ? (
         <ReferencesConfig
+          lang={lang}
           enabledReferences={props.enabledReferences}
           enabledLinks={props.enabledLinks}
           onToggleReference={props.onToggleReference}

@@ -2,7 +2,7 @@ import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 
 import { KanjiResult } from '../database';
-import { ReferenceLabels } from '../references';
+import { getReferenceLabels } from '../references';
 import { LinkLabels } from '../links';
 
 interface Props extends KanjiResult {
@@ -260,13 +260,14 @@ function renderReferences(props: Props) {
     return null;
   }
 
-  const referenceData = ReferenceLabels.filter(
-    ([id]) => id !== 'kanken' && enabledReferences.has(id)
-  ).map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
+  const referenceLabels = getReferenceLabels({ lang: props.m_lang });
+  const referenceData = referenceLabels
+    .filter(([id]) => id !== 'kanken' && enabledReferences.has(id))
+    .map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
 
   // Handle 漢検 separately because it is in the misc section
   if (enabledReferences.has('kanken')) {
-    const label = ReferenceLabels.find(([id]) => id === 'kanken')![1];
+    const label = referenceLabels.find(([id]) => id === 'kanken')![1];
     referenceData.unshift(`${label} ${renderKanKen(props.misc.kk)}`);
   }
 
