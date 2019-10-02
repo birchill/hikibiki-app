@@ -60,12 +60,14 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           onToggleReference={props.onToggleReference}
           onToggleLink={props.onToggleLink}
         />
-        <KanjiList
-          entries={props.entries}
-          lang={lang}
-          enabledReferences={props.enabledReferences}
-          enabledLinks={props.enabledLinks}
-        />
+        {props.kanjiPanelState !== PanelState.Disabled ? (
+          <KanjiList
+            entries={props.entries}
+            lang={lang}
+            enabledReferences={props.enabledReferences}
+            enabledLinks={props.enabledLinks}
+          />
+        ) : null}
         <LanguageSelector
           databaseVersions={props.databaseVersions}
           onSetLang={props.onSetLang}
