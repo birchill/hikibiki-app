@@ -44,7 +44,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         <h1 class="text-center text-4xl sm:text-5xl font-bold">Jisho Champ</h1>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
-      <div class="container mx-auto max-w-3xl px-8 pb-8">
+      <div class="container mx-auto max-w-3xl px-8">
         <DatabaseStatus
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}
@@ -68,11 +68,13 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
             enabledLinks={props.enabledLinks}
           />
         ) : null}
+      </div>
+      <nav class="mt-12 sm:mt-20">
         <LanguageSelector
           databaseVersions={props.databaseVersions}
           onSetLang={props.onSetLang}
         />
-      </div>
+      </nav>
     </Fragment>
   );
 };
