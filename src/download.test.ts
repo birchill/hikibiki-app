@@ -42,6 +42,7 @@ type KanjiDownloadOptions = Omit<
 const kanjiDownload = (options: KanjiDownloadOptions = {}) => {
   return download({
     lang: 'en',
+    forceFetch: true,
     ...options,
     dbName: 'kanjidb',
     isEntryLine: isKanjiEntryLine,
