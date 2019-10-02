@@ -56,6 +56,7 @@ export type DownloadOptions<EntryLine, DeletionLine> = {
   };
   lang: string;
   maxProgressResolution?: number;
+  forceFetch?: boolean;
   isEntryLine: (a: any) => a is EntryLine;
   isDeletionLine: (a: any) => a is DeletionLine;
 };
@@ -123,6 +124,7 @@ export function download<EntryLine, DeletionLine>({
   currentVersion,
   lang,
   maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
+  forceFetch = false,
   isEntryLine,
   isDeletionLine,
 }: DownloadOptions<EntryLine, DeletionLine>): ReadableStream {
@@ -143,6 +145,7 @@ export function download<EntryLine, DeletionLine>({
           baseUrl,
           lang,
           signal: abortController.signal,
+          forceFetch,
         });
       } catch (e) {
         controller.error(e);
@@ -305,41 +308,55 @@ function compareVersions(a: Version, b: Version): number {
   return 0;
 }
 
+let cachedVersionFile:
+  | {
+      contents: any;
+      lang: string;
+    }
+  | undefined;
+
 async function getVersionInfo({
   baseUrl,
   dbName,
   lang,
   signal,
+  forceFetch = false,
 }: {
   baseUrl: string;
   dbName: string;
   lang: string;
   signal: AbortSignal;
+  forceFetch?: boolean;
 }): Promise<VersionInfo> {
-  // Get the file
-  const response = await fetch(`${baseUrl}jpdict-rc-${lang}-version.json`, {
-    signal,
-  });
-  if (!response.ok) {
-    const code =
-      response.status === 404
-        ? DownloadErrorCode.VersionFileNotFound
-        : DownloadErrorCode.VersionFileNotAccessible;
-    throw new DownloadError(
-      code,
-      `Version file not accessible (status: ${response.status}`
-    );
-  }
-
-  // Try to parse it
   let versionInfo;
-  try {
-    versionInfo = await response.json();
-  } catch (e) {
-    throw new DownloadError(
-      DownloadErrorCode.VersionFileInvalid,
-      `Invalid version object: ${e.message}`
-    );
+
+  // Get the file if needed
+  if (forceFetch || !cachedVersionFile || cachedVersionFile.lang !== lang) {
+    const response = await fetch(`${baseUrl}jpdict-rc-${lang}-version.json`, {
+      signal,
+    });
+    if (!response.ok) {
+      const code =
+        response.status === 404
+          ? DownloadErrorCode.VersionFileNotFound
+          : DownloadErrorCode.VersionFileNotAccessible;
+      throw new DownloadError(
+        code,
+        `Version file not accessible (status: ${response.status}`
+      );
+    }
+
+    // Try to parse it
+    try {
+      versionInfo = await response.json();
+    } catch (e) {
+      throw new DownloadError(
+        DownloadErrorCode.VersionFileInvalid,
+        `Invalid version object: ${e.message}`
+      );
+    }
+  } else {
+    versionInfo = cachedVersionFile.contents;
   }
 
   // Inspect and extract the database version information
@@ -350,6 +367,12 @@ async function getVersionInfo({
       `Invalid version object: ${JSON.stringify(versionInfo)}`
     );
   }
+
+  // Cache the file contents
+  cachedVersionFile = {
+    contents: versionInfo,
+    lang,
+  };
 
   return dbVersionInfo;
 }

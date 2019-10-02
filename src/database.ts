@@ -164,6 +164,7 @@ export class KanjiDatabase {
       await this.doUpdate({
         dbName: 'kanjidb',
         lang,
+        forceFetch: true,
         isEntryLine: isKanjiEntryLine,
         isDeletionLine: isKanjiDeletionLine,
         update: updateKanji,
@@ -189,12 +190,14 @@ export class KanjiDatabase {
   private async doUpdate<EntryLine, DeletionLine>({
     dbName,
     lang,
+    forceFetch = false,
     isEntryLine,
     isDeletionLine,
     update,
   }: {
     dbName: 'bushudb' | 'kanjidb';
     lang: string;
+    forceFetch?: boolean;
     isEntryLine: (a: any) => a is EntryLine;
     isDeletionLine: (a: any) => a is DeletionLine;
     update: (options: UpdateOptions<EntryLine, DeletionLine>) => Promise<void>;
@@ -228,6 +231,7 @@ export class KanjiDatabase {
         lang,
         maxSupportedMajorVersion: 1,
         currentVersion: this.dbVersions[dbName] || undefined,
+        forceFetch,
         isEntryLine,
         isDeletionLine,
       });
