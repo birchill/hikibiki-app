@@ -3,7 +3,7 @@
 @import 'font-size.css';
 @import 'scrollbar.css';
 @import 'components/Checkbox.css';
-@import 'components/ProgressWithLabel.css';
+@import 'components/ProgressBar.css';
 
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';

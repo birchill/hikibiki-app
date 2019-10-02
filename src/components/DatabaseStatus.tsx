@@ -5,7 +5,7 @@ import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
 import { Checkbox } from './Checkbox';
-import { ProgressWithLabel } from './ProgressWithLabel';
+import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
 
 export const enum PanelState {
@@ -230,7 +230,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       return (
         <div class="flex">
           <div class="flex-grow mr-8">
-            <ProgressWithLabel
+            <ProgressBar
               id="update-progress"
               max={100}
               value={progress * 100}
@@ -254,7 +254,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       return (
         <div class="flex">
           <div class="flex-grow mr-8">
-            <ProgressWithLabel id="update-progress" label={`${label}…`} />
+            <ProgressBar id="update-progress" label={`${label}…`} />
           </div>
           <button class={disabledButtonStyles} disabled>
             Cancel
