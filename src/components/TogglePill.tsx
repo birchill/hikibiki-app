@@ -1,4 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
+import { useCallback } from 'preact/hooks';
 
 type Props = {
   label: string;
@@ -42,6 +43,12 @@ export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
     </svg>
   );
 
+  const onChange = useCallback(() => {
+    if (props.onToggle) {
+      props.onToggle(!props.checked);
+    }
+  }, [props.onToggle, props.checked]);
+
   return (
     <div
       class={containerStyles}
@@ -52,11 +59,7 @@ export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
           type="checkbox"
           checked={props.checked}
           value={props.value}
-          onChange={() => {
-            if (props.onToggle) {
-              props.onToggle(!props.checked);
-            }
-          }}
+          onChange={onChange}
           class="absolute opacity-0 w-0 h-0 pointer-events-none"
         />
         {icon}
