@@ -69,7 +69,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           />
         ) : null}
       </div>
-      <nav class="mt-12 sm:mt-20">
+      <nav class="mt-12 sm:mt-20 mb-12">
         <LanguageSelector
           databaseVersions={props.databaseVersions}
           onSetLang={props.onSetLang}
