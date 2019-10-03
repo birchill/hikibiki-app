@@ -130,51 +130,6 @@ async function onSetLang(lang: string) {
   updateDb();
 }
 
-let enabledReferences = new Set<string>(['kanken']);
-let enabledLinks = new Set<string>(['kanjialive', 'wiktionary']);
-
-// See if we have any stored settings
-//
-// You've heard how bad localStorage is. Trust me, it's fine for this particular
-// usage. Once we have more than two prefs, we should switch to an async
-// approach local IDB, but for now it's not worth it.
-const storedReferences = localStorage.getItem('kanji-references');
-if (storedReferences !== null) {
-  // Drop any empty items since ''.split(',') will give [''] but we want
-  // an empty array in that case.
-  const asArray = storedReferences.split(',').filter(item => item.length);
-  enabledReferences = new Set<string>(asArray);
-}
-const storedLinks = localStorage.getItem('kanji-links');
-if (storedLinks !== null) {
-  const asArray = storedLinks.split(',').filter(item => item.length);
-  enabledLinks = new Set<string>(asArray);
-}
-
-function toggleSetValue(
-  set: Set<string>,
-  storageKey: string,
-  key: string,
-  state: boolean
-) {
-  if (state) {
-    set.add(key);
-  } else {
-    set.delete(key);
-  }
-  update();
-
-  // Update our local storage
-  localStorage.setItem(storageKey, Array.from(set.values()).join(','));
-}
-
-const onToggleReference = toggleSetValue.bind(
-  null,
-  enabledReferences,
-  'kanji-references'
-);
-const onToggleLink = toggleSetValue.bind(null, enabledLinks, 'kanji-links');
-
 const params = new URL(document.location.href).searchParams;
 let q = params.get('q');
 
@@ -212,15 +167,11 @@ function update() {
       updateState={updateState}
       entries={entries}
       search={q || undefined}
-      enabledReferences={Array.from(enabledReferences.values())}
-      enabledLinks={Array.from(enabledLinks.values())}
       onUpdateSearch={onUpdateSearch}
       onUpdateDb={updateDb}
       onCancelDbUpdate={cancelDbUpdate}
       onDestroyDb={destroyDb}
       onSetLang={onSetLang}
-      onToggleReference={onToggleReference}
-      onToggleLink={onToggleLink}
     />,
     document.body
   );

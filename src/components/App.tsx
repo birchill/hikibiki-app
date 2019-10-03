@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'preact/hooks';
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
 import { CloneableUpdateState } from '../update-state';
+import { useStoredToggleList } from '../hooks/useStoredToggleList';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
@@ -19,15 +20,11 @@ type Props = {
   updateState: CloneableUpdateState;
   entries: Array<KanjiResult>;
   search?: string;
-  enabledReferences?: Array<string>;
-  enabledLinks?: Array<string>;
   onUpdateSearch?: (search: string) => void;
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
   onSetLang?: (lang: string) => void;
-  onToggleReference?: (ref: string, state: boolean) => void;
-  onToggleLink?: (ref: string, state: boolean) => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
@@ -51,6 +48,22 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     }
   }, [props.search]);
 
+  // References and links
+  const {
+    enabledItems: enabledReferences,
+    toggleItem: onToggleReference,
+  } = useStoredToggleList({
+    key: 'kanji-references',
+    initialValues: ['kanken'],
+  });
+  const {
+    enabledItems: enabledLinks,
+    toggleItem: onToggleLink,
+  } = useStoredToggleList({
+    key: 'kanji-links',
+    initialValues: ['kanjialive', 'wiktionary'],
+  });
+
   return (
     <Fragment>
       <header class="bg-white pt-16 pb-32 sm:pb-32">
@@ -63,21 +76,21 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           databaseVersions={props.databaseVersions}
           updateState={props.updateState}
           disabled={!kanjiEnabled}
-          enabledReferences={props.enabledReferences}
-          enabledLinks={props.enabledLinks}
+          enabledReferences={Array.from(enabledReferences.values())}
+          enabledLinks={Array.from(enabledLinks.values())}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onDestroy={props.onDestroyDb}
           onToggleActive={toggleKanjiEnabled}
-          onToggleReference={props.onToggleReference}
-          onToggleLink={props.onToggleLink}
+          onToggleReference={onToggleReference}
+          onToggleLink={onToggleLink}
         />
         {kanjiEnabled ? (
           <KanjiList
             entries={props.entries}
             lang={lang}
-            enabledReferences={props.enabledReferences}
-            enabledLinks={props.enabledLinks}
+            enabledReferences={Array.from(enabledReferences.values())}
+            enabledLinks={Array.from(enabledLinks.values())}
           />
         ) : null}
       </div>
