@@ -27,7 +27,6 @@ type Props = {
   onDestroyDb?: () => void;
   onSetLang?: (lang: string) => void;
   onToggleActive?: () => void;
-  onToggleSettings?: () => void;
   onToggleReference?: (ref: string, state: boolean) => void;
   onToggleLink?: (ref: string, state: boolean) => void;
 };
