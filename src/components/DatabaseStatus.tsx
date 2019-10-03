@@ -75,7 +75,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
           theme={disabled ? 'gray' : 'orange'}
         />
         <h2
-          className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
+          className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer select-none"
           onClick={onToggleActive}
         >
           {heading}
