@@ -12,7 +12,7 @@ chai.use(chaiDateTime);
 
 const VERSION_1_0_0 = {
   kanjidb: {
-    latest: {
+    '1': {
       major: 1,
       minor: 0,
       patch: 0,
@@ -22,7 +22,7 @@ const VERSION_1_0_0 = {
     },
   },
   bushudb: {
-    latest: {
+    '1': {
       major: 1,
       minor: 0,
       patch: 0,
@@ -78,7 +78,7 @@ describe('database', function() {
 
     assert.deepEqual(
       stripFields(db.dbVersions.kanjidb!, ['lang']),
-      stripFields(VERSION_1_0_0.kanjidb.latest, ['snapshot'])
+      stripFields(VERSION_1_0_0.kanjidb['1'], ['snapshot'])
     );
     assert.equal(db.state, DatabaseState.Ok);
   });
@@ -198,8 +198,8 @@ describe('database', function() {
   it('should allow canceling the update mid-stream', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 1,
         },
       },
@@ -234,8 +234,8 @@ describe('database', function() {
   it('should update the last check time if we wrote something', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 1,
         },
       },

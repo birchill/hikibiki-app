@@ -48,7 +48,7 @@ interface VersionInfo {
 export type DownloadOptions<EntryLine, DeletionLine> = {
   baseUrl?: string;
   dbName: string;
-  maxSupportedMajorVersion?: number;
+  majorVersion: number;
   currentVersion?: {
     major: number;
     minor: number;
@@ -65,6 +65,7 @@ export const enum DownloadErrorCode {
   VersionFileNotFound,
   VersionFileNotAccessible,
   VersionFileInvalid,
+  MajorVersionNotFound,
   DatabaseFileNotFound,
   DatabaseFileNotAccessible,
   DatabaseFileHeaderMissing,
@@ -74,7 +75,6 @@ export const enum DownloadErrorCode {
   DatabaseFileInvalidRecord,
   DatabaseFileDeletionInSnapshot,
   DatabaseTooOld,
-  UnsupportedDatabaseVersion,
 }
 
 export class DownloadError extends Error {
@@ -96,10 +96,12 @@ export class DownloadError extends Error {
 export async function hasLanguage({
   baseUrl = DEFAULT_BASE_URL,
   dbName,
+  majorVersion,
   lang,
 }: {
   baseUrl?: string;
   dbName: string;
+  majorVersion: number;
   lang: string;
 }): Promise<boolean> {
   const abortController = new AbortController();
@@ -108,6 +110,7 @@ export async function hasLanguage({
     await getVersionInfo({
       baseUrl,
       dbName,
+      majorVersion,
       lang,
       signal: abortController.signal,
     });
@@ -120,7 +123,7 @@ export async function hasLanguage({
 export function download<EntryLine, DeletionLine>({
   baseUrl = DEFAULT_BASE_URL,
   dbName,
-  maxSupportedMajorVersion,
+  majorVersion,
   currentVersion,
   lang,
   maxProgressResolution = DEFAULT_MAX_PROGRESS_RESOLUTION,
@@ -137,11 +140,12 @@ export function download<EntryLine, DeletionLine>({
         DownloadEvent<EntryLine, DeletionLine>
       >
     ) {
-      // Get the latest version info
+      // Get the current version info
       let versionInfo: VersionInfo;
       try {
         versionInfo = await getVersionInfo({
           dbName,
+          majorVersion,
           baseUrl,
           lang,
           signal: abortController.signal,
@@ -154,6 +158,11 @@ export function download<EntryLine, DeletionLine>({
       }
 
       // Check the local database is not ahead of what we're about to download
+      //
+      // This can happen when the version file gets cached because we can
+      // download a more recent version (e.g. we have DevTools open with "skip
+      // cache" ticked) and then try again to fetch the file but get the older
+      // version.
       if (currentVersion && compareVersions(currentVersion, versionInfo) > 0) {
         const versionToString = ({ major, minor, patch }: Version) =>
           `${major}.${minor}.${patch}`;
@@ -163,25 +172,6 @@ export function download<EntryLine, DeletionLine>({
             `Database version (${versionToString(
               versionInfo
             )}) older than current version (${versionToString(currentVersion)})`
-          )
-        );
-        controller.close();
-        return;
-      }
-
-      // Check the version we're about to download is supported
-      if (
-        typeof maxSupportedMajorVersion === 'number' &&
-        maxSupportedMajorVersion < versionInfo.major
-      ) {
-        const versionToString = ({ major, minor, patch }: Version) =>
-          `${major}.${minor}.${patch}`;
-        controller.error(
-          new DownloadError(
-            DownloadErrorCode.UnsupportedDatabaseVersion,
-            `Database version (${versionToString(
-              versionInfo
-            )}) is not supported (supported version: ${maxSupportedMajorVersion})`
           )
         );
         controller.close();
@@ -317,12 +307,14 @@ let cachedVersionFile:
 
 async function getVersionInfo({
   baseUrl,
+  majorVersion,
   dbName,
   lang,
   signal,
   forceFetch = false,
 }: {
   baseUrl: string;
+  majorVersion: number;
   dbName: string;
   lang: string;
   signal: AbortSignal;
@@ -360,7 +352,11 @@ async function getVersionInfo({
   }
 
   // Inspect and extract the database version information
-  const dbVersionInfo = getLatestDbVersionInfo(versionInfo, dbName);
+  const dbVersionInfo = getCurrentDbVersionInfo(
+    versionInfo,
+    dbName,
+    majorVersion
+  );
   if (!dbVersionInfo) {
     throw new DownloadError(
       DownloadErrorCode.VersionFileInvalid,
@@ -377,28 +373,42 @@ async function getVersionInfo({
   return dbVersionInfo;
 }
 
-function getLatestDbVersionInfo(a: any, dbName: string): VersionInfo | null {
+function getCurrentDbVersionInfo(
+  a: any,
+  dbName: string,
+  majorVersion: number
+): VersionInfo | null {
   if (!a || typeof a !== 'object') {
     return null;
   }
 
+  if (typeof a[dbName] !== 'object' || a[dbName] === null) {
+    return null;
+  }
+
   if (
-    typeof a[dbName] !== 'object' ||
-    a[dbName] === null ||
-    typeof a[dbName].latest !== 'object' ||
-    a[dbName].latest === null ||
-    typeof a[dbName].latest.major !== 'number' ||
-    typeof a[dbName].latest.minor !== 'number' ||
-    typeof a[dbName].latest.patch !== 'number' ||
-    typeof a[dbName].latest.snapshot !== 'number' ||
-    (typeof a[dbName].latest.databaseVersion !== 'string' &&
-      typeof a[dbName].latest.databaseVersion !== 'undefined') ||
-    typeof a[dbName].latest.dateOfCreation !== 'string'
+    typeof a[dbName][majorVersion] !== 'object' ||
+    a[dbName][majorVersion] === null
+  ) {
+    throw new DownloadError(
+      DownloadErrorCode.MajorVersionNotFound,
+      `No ${majorVersion}.x version information for ${dbName} database`
+    );
+  }
+
+  if (
+    typeof a[dbName][majorVersion].major !== 'number' ||
+    typeof a[dbName][majorVersion].minor !== 'number' ||
+    typeof a[dbName][majorVersion].patch !== 'number' ||
+    typeof a[dbName][majorVersion].snapshot !== 'number' ||
+    (typeof a[dbName][majorVersion].databaseVersion !== 'string' &&
+      typeof a[dbName][majorVersion].databaseVersion !== 'undefined') ||
+    typeof a[dbName][majorVersion].dateOfCreation !== 'string'
   ) {
     return null;
   }
 
-  const versionInfo = a[dbName].latest as VersionInfo;
+  const versionInfo = a[dbName][majorVersion] as VersionInfo;
 
   if (
     versionInfo.major < 1 ||

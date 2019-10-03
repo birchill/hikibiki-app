@@ -20,6 +20,9 @@ import {
 } from './update';
 import { stripFields } from './utils';
 
+const KANJIDB_MAJOR_VERSION = 1;
+const BUSHUDB_MAJOR_VERSION = 1;
+
 export const enum DatabaseState {
   // We don't know yet if we have a database or not
   Initializing,
@@ -229,7 +232,8 @@ export class KanjiDatabase {
       const downloadStream = await download({
         dbName,
         lang,
-        maxSupportedMajorVersion: 1,
+        majorVersion:
+          dbName === 'kanjidb' ? KANJIDB_MAJOR_VERSION : BUSHUDB_MAJOR_VERSION,
         currentVersion: this.dbVersions[dbName] || undefined,
         forceFetch,
         isEntryLine,
@@ -303,14 +307,19 @@ export class KanjiDatabase {
     }
 
     // Make sure the language exists before we clobber the database
-    //
-    // TODO: Calling hasLanguage twice below will mean two requests to the
-    // server. We should do it in one.
     if (
       this.state !== DatabaseState.Empty &&
       lang &&
-      (!(await hasLanguage({ dbName: 'kanjidb', lang })) ||
-        !(await hasLanguage({ dbName: 'bushudb', lang })))
+      (!(await hasLanguage({
+        dbName: 'kanjidb',
+        lang,
+        majorVersion: KANJIDB_MAJOR_VERSION,
+      })) ||
+        !(await hasLanguage({
+          dbName: 'bushudb',
+          lang,
+          majorVersion: BUSHUDB_MAJOR_VERSION,
+        })))
     ) {
       throw new Error(`Version information for language "${lang}" not found`);
     }

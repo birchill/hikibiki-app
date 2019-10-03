@@ -21,7 +21,7 @@ mocha.setup('bdd');
 
 const VERSION_1_0_0 = {
   kanjidb: {
-    latest: {
+    '1': {
       major: 1,
       minor: 0,
       patch: 0,
@@ -36,13 +36,14 @@ type KanjiDownloadEvent = DownloadEvent<KanjiEntryLine, KanjiDeletionLine>;
 
 type KanjiDownloadOptions = Omit<
   DownloadOptions<KanjiEntryLine, KanjiDeletionLine>,
-  'dbName' | 'isEntryLine' | 'isDeletionLine' | 'lang'
-> & { lang?: string };
+  'lang' | 'majorVersion' | 'dbName' | 'isEntryLine' | 'isDeletionLine'
+> & { lang?: string; majorVersion?: number };
 
 const kanjiDownload = (options: KanjiDownloadOptions = {}) => {
   return download({
     lang: 'en',
     forceFetch: true,
+    majorVersion: 1,
     ...options,
     dbName: 'kanjidb',
     isEntryLine: isKanjiEntryLine,
@@ -131,7 +132,7 @@ describe('download', () => {
   it('should fail if the version file is missing required fields', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
+        '1': {
           major: 1,
           patch: 0,
           snapshot: 0,
@@ -157,7 +158,7 @@ describe('download', () => {
 
   it('should fail if the version file has invalid fields', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, major: 0 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], major: 0 } },
     });
 
     const reader = kanjiDownload().getReader();
@@ -171,6 +172,37 @@ describe('download', () => {
         DownloadErrorCode.VersionFileInvalid
       );
       assert.strictEqual(events.length, 0);
+    }
+  });
+
+  it('should fail if the requested major version is not available', async () => {
+    fetchMock.mock('end:jpdict-rc-en-version.json', {
+      kanjidb: {
+        '3': {
+          ...VERSION_1_0_0.kanjidb['1'],
+          major: 3,
+          minor: 0,
+          patch: 11,
+          snapshot: 10,
+        },
+      },
+    });
+    mockAllDataFilesWithEmpty();
+
+    const reader = kanjiDownload({
+      majorVersion: 2,
+      currentVersion: { major: 2, minor: 0, patch: 1 },
+    }).getReader();
+
+    try {
+      await drainEvents(reader);
+      assert.fail('Should have thrown an exception');
+    } catch (e) {
+      const [downloadError] = parseDrainError(e);
+      assert.strictEqual(
+        downloadError.code,
+        DownloadErrorCode.MajorVersionNotFound
+      );
     }
   });
 
@@ -408,7 +440,7 @@ ${entry}
   it('should still return entries prior to invalid ones', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
+        '1': {
           major: 1,
           minor: 0,
           patch: 0,
@@ -446,8 +478,8 @@ ${entry}
   it('should fetch subsequent patches', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 2,
         },
       },
@@ -473,8 +505,8 @@ ${entry}
   it('should fetch appropriate patches when a current version is supplied', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 2,
         },
       },
@@ -504,8 +536,8 @@ ${entry}
   it('sets the partial field appropriately for patches', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 2,
         },
       },
@@ -538,8 +570,8 @@ ${entry}
   it('reports deletion events', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 2,
         },
       },
@@ -586,9 +618,9 @@ ${entry}
     }
   });
 
-  it('should fail if one of the patch is missing', async () => {
+  it('should fail if one of the patches is missing', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], patch: 1 } },
     });
     fetchMock.mock(
       'end:kanjidb-rc-en-1.0.0-full.ljson',
@@ -613,7 +645,7 @@ ${entry}
 
   it('should fail if one of the patches is corrupt', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], patch: 1 } },
     });
     fetchMock.mock(
       'end:kanjidb-rc-en-1.0.0-full.ljson',
@@ -638,7 +670,7 @@ ${entry}
 
   it('should fail if one of the patches has a mismatched header', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], patch: 1 } },
     });
     fetchMock.mock(
       'end:kanjidb-rc-en-1.0.0-full.ljson',
@@ -668,8 +700,8 @@ ${entry}
   it('should download from the closest snapshot when no current version is supplied', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           patch: 7,
           snapshot: 5,
         },
@@ -703,7 +735,7 @@ ${entry}
 
   it('should fail when the latest version is less than the current version', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], patch: 1 } },
     });
 
     const reader = kanjiDownload({
@@ -720,7 +752,7 @@ ${entry}
 
   it('should do nothing when the latest version equals the current version', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: { latest: { ...VERSION_1_0_0.kanjidb.latest, patch: 1 } },
+      kanjidb: { '1': { ...VERSION_1_0_0.kanjidb['1'], patch: 1 } },
     });
 
     const reader = kanjiDownload({
@@ -734,8 +766,8 @@ ${entry}
   it('should re-download from the latest snapshot when there is a new minor version', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '1': {
+          ...VERSION_1_0_0.kanjidb['1'],
           minor: 2,
           patch: 11,
           snapshot: 10,
@@ -762,8 +794,8 @@ ${entry}
   it('should re-download from the latest snapshot when there is a new major version we support', async () => {
     fetchMock.mock('end:jpdict-rc-en-version.json', {
       kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
+        '3': {
+          ...VERSION_1_0_0.kanjidb['1'],
           major: 3,
           minor: 0,
           patch: 11,
@@ -774,7 +806,7 @@ ${entry}
     mockAllDataFilesWithEmpty();
 
     const reader = kanjiDownload({
-      maxSupportedMajorVersion: 3,
+      majorVersion: 3,
       currentVersion: { major: 1, minor: 0, patch: 2 },
     }).getReader();
     await drainEvents(reader);
@@ -787,36 +819,6 @@ ${entry}
       fetchMock.called('end:kanjidb-rc-en-3.0.11-patch.ljson'),
       'Should get first patch'
     );
-  });
-
-  it("should fail when there is a new major version we don't support", async () => {
-    fetchMock.mock('end:jpdict-rc-en-version.json', {
-      kanjidb: {
-        latest: {
-          ...VERSION_1_0_0.kanjidb.latest,
-          major: 3,
-          minor: 0,
-          patch: 11,
-          snapshot: 10,
-        },
-      },
-    });
-    mockAllDataFilesWithEmpty();
-
-    const reader = kanjiDownload({
-      maxSupportedMajorVersion: 2,
-      currentVersion: { major: 1, minor: 0, patch: 2 },
-    }).getReader();
-    try {
-      await drainEvents(reader);
-      assert.fail('Should have thrown an exception');
-    } catch (e) {
-      const [downloadError] = parseDrainError(e);
-      assert.strictEqual(
-        downloadError.code,
-        DownloadErrorCode.UnsupportedDatabaseVersion
-      );
-    }
   });
 
   it('should request the appropriate language', async () => {
