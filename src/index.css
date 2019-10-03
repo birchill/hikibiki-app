@@ -2,7 +2,8 @@
 
 @import 'font-size.css';
 @import 'scrollbar.css';
-@import 'components/Checkbox.css';
+
+@import 'components/FancyCheckbox.css';
 @import 'components/ProgressBar.css';
 
 @import 'tailwindcss/components';

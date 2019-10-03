@@ -1,0 +1,43 @@
+/***********************************************************************
+ *
+ * Fancy checkbox
+ *
+ ***********************************************************************/
+
+.fancy-checkbox > label::before {
+  content: '';
+  @apply inline-block absolute left-0 h-12 w-12 rounded-sm cursor-pointer;
+}
+
+.fancy-checkbox.-orange > label::before {
+  @apply bg-orange-100 shadow-orange-default;
+}
+
+.fancy-checkbox.-gray > label::before {
+  @apply bg-gray-200 shadow;
+}
+
+.fancy-checkbox.-orange > label:hover::before {
+  @apply bg-orange-50;
+}
+
+.fancy-checkbox.-gray > label:hover::before {
+  @apply bg-gray-100;
+}
+
+.fancy-checkbox input[type='checkbox'] ~ .tick {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.fancy-checkbox input[type='checkbox']:checked ~ .tick {
+  opacity: 1;
+}
+
+.fancy-checkbox.-orange input[type='checkbox']:focus-visible + label::before {
+  outline: theme('colors.orange.1000') dotted 1px;
+}
+
+.fancy-checkbox.-gray input[type='checkbox']:focus-visible + label::before {
+  outline: theme('colors.gray.900') dotted 1px;
+}

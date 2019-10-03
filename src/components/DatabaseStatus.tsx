@@ -4,7 +4,7 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
-import { Checkbox } from './Checkbox';
+import { FancyCheckbox } from './FancyCheckbox';
 import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
 
@@ -67,7 +67,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
       }
     >
       <div className="my-10 flex flex-row items-center">
-        <Checkbox
+        <FancyCheckbox
           id="kanjidb-enabled"
           checked={panelState !== PanelState.Disabled}
           onChange={onToggleActive}
