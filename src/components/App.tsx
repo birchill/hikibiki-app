@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from 'preact/hooks';
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
 import { CloneableUpdateState } from '../update-state';
-import { useStoredToggleList } from '../hooks/useStoredToggleList';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
 import { LanguageSelector } from './LanguageSelector';
 import { SearchBox } from './SearchBox';
+import { useStoredToggleList } from './hooks/useStoredToggleList';
 
 type Props = {
   databaseState: DatabaseState;
