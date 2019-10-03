@@ -1,5 +1,5 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
-import { useState, useCallback } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
@@ -36,10 +36,20 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     lang = props.databaseVersions.kanjidb.lang;
   }
 
+  // Toggling the database on/off
   const [kanjiEnabled, setKanjiEnabled] = useState(true);
   const toggleKanjiEnabled = useCallback(() => setKanjiEnabled(!kanjiEnabled), [
     kanjiEnabled,
   ]);
+
+  // Document title
+  useEffect(() => {
+    if (props.search) {
+      document.title = `${props.search} - Kanjichamp`;
+    } else {
+      document.title = 'Kanjichamp';
+    }
+  }, [props.search]);
 
   return (
     <Fragment>

@@ -205,12 +205,6 @@ function onUpdateSearch(search: string) {
 }
 
 function update() {
-  if (q) {
-    document.title = `${q} - Kanjichamp`;
-  } else {
-    document.title = 'Kanjichamp';
-  }
-
   render(
     <App
       databaseState={databaseState}
