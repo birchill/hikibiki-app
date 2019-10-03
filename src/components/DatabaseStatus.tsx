@@ -1,4 +1,5 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { useState, useCallback } from 'preact/hooks';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
@@ -8,12 +9,6 @@ import { FancyCheckbox } from './FancyCheckbox';
 import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
 
-export const enum PanelState {
-  Disabled,
-  Collapsed,
-  Expanded,
-}
-
 type Props = {
   databaseState: DatabaseState;
   databaseVersions: {
@@ -21,14 +16,14 @@ type Props = {
     bushudb?: DatabaseVersion;
   };
   updateState: CloneableUpdateState;
-  panelState: PanelState;
+  disabled?: boolean;
+  initiallyExpanded?: boolean;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
   onUpdate?: () => void;
   onCancel?: () => void;
   onDestroy?: () => void;
   onToggleActive?: () => void;
-  onToggleSettings?: () => void;
   onToggleReference?: (ref: string, state: boolean) => void;
   onToggleLink?: (ref: string, state: boolean) => void;
 };
@@ -39,15 +34,21 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   const disabledPanelStyles =
     'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 border-transparent border';
 
-  const { databaseState, updateState, panelState, onToggleActive } = props;
+  const {
+    databaseState,
+    updateState,
+    initiallyExpanded,
+    onToggleActive,
+  } = props;
+  const disabled = !!props.disabled;
+
+  const [expanded, setExpanded] = useState(!!initiallyExpanded);
+  const toggleExpanded = useCallback(() => setExpanded(!expanded), [expanded]);
 
   // We the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
   let heading = 'Kanji';
-  if (
-    panelState === PanelState.Collapsed &&
-    databaseState === DatabaseState.Empty
-  ) {
+  if (!expanded && databaseState === DatabaseState.Empty) {
     switch (updateState.state) {
       case 'checking':
       case 'downloading':
@@ -57,21 +58,21 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
       case 'updatingdb':
         heading += ' (updating…)';
         break;
+
+      case 'error':
+        heading += ' (💔)';
+        break;
     }
   }
 
   return (
-    <div
-      className={
-        panelState === PanelState.Disabled ? disabledPanelStyles : panelStyles
-      }
-    >
+    <div className={disabled ? disabledPanelStyles : panelStyles}>
       <div className="my-10 flex flex-row items-center">
         <FancyCheckbox
           id="kanjidb-enabled"
-          checked={panelState !== PanelState.Disabled}
+          checked={!disabled}
           onChange={onToggleActive}
-          theme={panelState === PanelState.Disabled ? 'gray' : 'orange'}
+          theme={disabled ? 'gray' : 'orange'}
         />
         <h2
           className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer"
@@ -79,27 +80,31 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         >
           {heading}
         </h2>
-        {renderSettingsIcon(props)}
+        {renderSettingsIcon(props, expanded, toggleExpanded)}
       </div>
-      {panelState !== PanelState.Expanded ? null : (
+      {!disabled && expanded ? (
         <div className="mb-10">{renderBody(props)}</div>
-      )}
+      ) : null}
     </div>
   );
 };
 
-function renderSettingsIcon(props: Props) {
+function renderSettingsIcon(
+  props: Props,
+  expanded: boolean,
+  onToggleSettings: () => void
+) {
   let containerStyles =
-    props.panelState === PanelState.Collapsed ? 'text-orange-400' : undefined;
+    !props.disabled && !expanded ? 'text-orange-400' : undefined;
   containerStyles +=
     ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400';
 
-  if (props.panelState === PanelState.Disabled) {
+  if (!!props.disabled) {
     containerStyles += ' invisible pointer-events-none';
   }
 
   return (
-    <button class={containerStyles} onClick={props.onToggleSettings}>
+    <button class={containerStyles} onClick={onToggleSettings}>
       <svg class="w-10 h-10" viewBox="0 0 16 16">
         <title>Settings</title>
         <use width="16" height="16" href="#cog" />

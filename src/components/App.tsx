@@ -4,7 +4,7 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
-import { DatabaseStatus, PanelState } from './DatabaseStatus';
+import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
 import { LanguageSelector } from './LanguageSelector';
 import { SearchBox } from './SearchBox';
@@ -17,8 +17,8 @@ type Props = {
   };
   updateState: CloneableUpdateState;
   entries: Array<KanjiResult>;
-  kanjiPanelState: PanelState;
   search?: string;
+  kanjiEnabled: boolean;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
   onUpdateSearch?: (search: string) => void;
@@ -49,18 +49,17 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}
           updateState={props.updateState}
-          panelState={props.kanjiPanelState}
+          disabled={!props.kanjiEnabled}
           enabledReferences={props.enabledReferences}
           enabledLinks={props.enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onDestroy={props.onDestroyDb}
           onToggleActive={props.onToggleActive}
-          onToggleSettings={props.onToggleSettings}
           onToggleReference={props.onToggleReference}
           onToggleLink={props.onToggleLink}
         />
-        {props.kanjiPanelState !== PanelState.Disabled ? (
+        {props.kanjiEnabled ? (
           <KanjiList
             entries={props.entries}
             lang={lang}

@@ -8,7 +8,6 @@ import { WorkerMessage } from './worker-messages';
 import * as messages from './worker-messages';
 
 import { App } from './components/App';
-import { PanelState } from './components/DatabaseStatus';
 
 import './index.css';
 
@@ -176,7 +175,7 @@ const onToggleReference = toggleSetValue.bind(
 );
 const onToggleLink = toggleSetValue.bind(null, enabledLinks, 'kanji-links');
 
-let kanjiPanelState: PanelState = PanelState.Collapsed;
+let kanjiEnabled: boolean = true;
 
 const params = new URL(document.location.href).searchParams;
 let q = params.get('q');
@@ -220,7 +219,7 @@ function update() {
       databaseVersions={databaseVersions}
       updateState={updateState}
       entries={entries}
-      kanjiPanelState={kanjiPanelState}
+      kanjiEnabled={kanjiEnabled}
       search={q || undefined}
       enabledReferences={Array.from(enabledReferences.values())}
       enabledLinks={Array.from(enabledLinks.values())}
@@ -230,19 +229,7 @@ function update() {
       onDestroyDb={destroyDb}
       onSetLang={onSetLang}
       onToggleActive={() => {
-        if (kanjiPanelState === PanelState.Disabled) {
-          kanjiPanelState = PanelState.Collapsed;
-        } else {
-          kanjiPanelState = PanelState.Disabled;
-        }
-        update();
-      }}
-      onToggleSettings={() => {
-        if (kanjiPanelState === PanelState.Collapsed) {
-          kanjiPanelState = PanelState.Expanded;
-        } else {
-          kanjiPanelState = PanelState.Collapsed;
-        }
+        kanjiEnabled = !kanjiEnabled;
         update();
       }}
       onToggleReference={onToggleReference}
