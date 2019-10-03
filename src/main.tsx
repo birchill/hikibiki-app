@@ -175,8 +175,6 @@ const onToggleReference = toggleSetValue.bind(
 );
 const onToggleLink = toggleSetValue.bind(null, enabledLinks, 'kanji-links');
 
-let kanjiEnabled: boolean = true;
-
 const params = new URL(document.location.href).searchParams;
 let q = params.get('q');
 
@@ -219,7 +217,6 @@ function update() {
       databaseVersions={databaseVersions}
       updateState={updateState}
       entries={entries}
-      kanjiEnabled={kanjiEnabled}
       search={q || undefined}
       enabledReferences={Array.from(enabledReferences.values())}
       enabledLinks={Array.from(enabledLinks.values())}
@@ -228,10 +225,6 @@ function update() {
       onCancelDbUpdate={cancelDbUpdate}
       onDestroyDb={destroyDb}
       onSetLang={onSetLang}
-      onToggleActive={() => {
-        kanjiEnabled = !kanjiEnabled;
-        update();
-      }}
       onToggleReference={onToggleReference}
       onToggleLink={onToggleLink}
     />,

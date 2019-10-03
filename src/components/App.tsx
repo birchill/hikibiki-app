@@ -1,4 +1,5 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
+import { useState, useCallback } from 'preact/hooks';
 
 import { DatabaseVersion } from '../common';
 import { DatabaseState, KanjiResult } from '../database';
@@ -18,7 +19,6 @@ type Props = {
   updateState: CloneableUpdateState;
   entries: Array<KanjiResult>;
   search?: string;
-  kanjiEnabled: boolean;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
   onUpdateSearch?: (search: string) => void;
@@ -26,7 +26,6 @@ type Props = {
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
   onSetLang?: (lang: string) => void;
-  onToggleActive?: () => void;
   onToggleReference?: (ref: string, state: boolean) => void;
   onToggleLink?: (ref: string, state: boolean) => void;
 };
@@ -36,6 +35,11 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
   if (props.databaseVersions.kanjidb) {
     lang = props.databaseVersions.kanjidb.lang;
   }
+
+  const [kanjiEnabled, setKanjiEnabled] = useState(true);
+  const toggleKanjiEnabled = useCallback(() => setKanjiEnabled(!kanjiEnabled), [
+    kanjiEnabled,
+  ]);
 
   return (
     <Fragment>
@@ -48,17 +52,17 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}
           updateState={props.updateState}
-          disabled={!props.kanjiEnabled}
+          disabled={!kanjiEnabled}
           enabledReferences={props.enabledReferences}
           enabledLinks={props.enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onDestroy={props.onDestroyDb}
-          onToggleActive={props.onToggleActive}
+          onToggleActive={toggleKanjiEnabled}
           onToggleReference={props.onToggleReference}
           onToggleLink={props.onToggleLink}
         />
-        {props.kanjiEnabled ? (
+        {kanjiEnabled ? (
           <KanjiList
             entries={props.entries}
             lang={lang}
