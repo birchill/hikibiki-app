@@ -76,8 +76,8 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           databaseVersions={props.databaseVersions}
           updateState={props.updateState}
           disabled={!kanjiEnabled}
-          enabledReferences={Array.from(enabledReferences.values())}
-          enabledLinks={Array.from(enabledLinks.values())}
+          enabledReferences={enabledReferences}
+          enabledLinks={enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onDestroy={props.onDestroyDb}
@@ -89,8 +89,8 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           <KanjiList
             entries={props.entries}
             lang={lang}
-            enabledReferences={Array.from(enabledReferences.values())}
-            enabledLinks={Array.from(enabledLinks.values())}
+            enabledReferences={enabledReferences}
+            enabledLinks={enabledLinks}
           />
         ) : null}
       </div>

@@ -8,7 +8,7 @@ export function useStoredToggleList({
   initialValues: Array<string>;
 }) {
   const [enabledItems, setEnabledItems] = useState(() => {
-    let initialEnabledItems = new Set<string>(initialValues);
+    let initialEnabledItems = initialValues;
 
     // See if we have any stored settings
     //
@@ -20,7 +20,7 @@ export function useStoredToggleList({
       // Drop any empty items since ''.split(',') will give [''] but we want
       // an empty array in that case.
       const asArray = storedItems.split(',').filter(item => item.length);
-      initialEnabledItems = new Set<string>(asArray);
+      initialEnabledItems = [...new Set(asArray)];
     }
 
     return initialEnabledItems;
@@ -28,19 +28,19 @@ export function useStoredToggleList({
 
   const toggleItem = useCallback(
     (key: string, state: boolean) => {
-      const updatedEnabledItems = new Set(enabledItems.values());
+      const updatedEnabledItems = new Set(enabledItems);
       if (state) {
         updatedEnabledItems.add(key);
       } else {
         updatedEnabledItems.delete(key);
       }
-      setEnabledItems(updatedEnabledItems);
+      setEnabledItems(Array.from(updatedEnabledItems.values()));
     },
     [enabledItems]
   );
 
   useEffect(() => {
-    localStorage.setItem(key, Array.from(enabledItems.values()).join(','));
+    localStorage.setItem(key, enabledItems.join(','));
   }, [enabledItems]);
 
   return { enabledItems, toggleItem };
