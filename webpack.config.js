@@ -10,7 +10,7 @@ const prod = mode === 'production';
 
 module.exports = {
   entry: {
-    kanjichamp: ['./src/main.tsx'],
+    hikibiki: ['./src/main.tsx'],
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -57,7 +57,7 @@ module.exports = {
       template: './src/index.html',
       excludeChunks: ['db-worker'],
     }),
-    new MiniCssExtractPlugin({ filename: 'kanjichamp.[contenthash].css' }),
+    new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
     new WorkerPlugin({ globalObject: 'self' }),
   ],
   mode,

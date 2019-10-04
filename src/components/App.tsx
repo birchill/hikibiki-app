@@ -42,9 +42,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
   // Document title
   useEffect(() => {
     if (props.search) {
-      document.title = `${props.search} - Kanjichamp`;
+      document.title = `${props.search} - Hikibiki`;
     } else {
-      document.title = 'Kanjichamp';
+      document.title = 'Hikibiki';
     }
   }, [props.search]);
 
