@@ -140,6 +140,12 @@ function runQuery() {
 }
 
 function onUpdateSearch(search: string) {
+  // Ignore redundant changes since this might arise due to differences in
+  // browsers handling compositionend events.
+  if (q === search) {
+    return;
+  }
+
   q = search;
   if (q) {
     dbWorker.postMessage(messages.query({ kanji: [...q] }));
