@@ -97,7 +97,7 @@ function renderSettingsIcon(
   let containerStyles =
     !props.disabled && !expanded ? 'text-orange-400' : undefined;
   containerStyles +=
-    ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400';
+    ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400 focus-invisible:border-transparent';
 
   if (!!props.disabled) {
     containerStyles += ' invisible pointer-events-none';
@@ -184,9 +184,9 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
   const { databaseState, updateState, databaseVersions } = props;
 
   const buttonStyles =
-    'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-0 shadow-orange-default hover:bg-orange-50';
+    'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
   const disabledButtonStyles =
-    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 self-end leading-none rounded border-0 shadow cursor-default';
+    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 self-end leading-none rounded focus:outline-none border-2 shadow cursor-default';
 
   switch (updateState.state) {
     case 'idle': {

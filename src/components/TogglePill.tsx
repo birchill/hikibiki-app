@@ -10,7 +10,7 @@ type Props = {
 
 export const TogglePill: FunctionalComponent<Props> = (props: Props) => {
   let containerStyles =
-    'inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 border border-transparent border-dotted cursor-pointer font-medium';
+    'inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 border-2 border-transparent border-dotted cursor-pointer font-medium';
   if (props.checked) {
     containerStyles +=
       ' bg-orange-100 hover:bg-orange-50 shadow-orange-default focus-within:border-orange-800';

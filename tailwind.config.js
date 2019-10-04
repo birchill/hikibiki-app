@@ -100,7 +100,23 @@ module.exports = {
   },
   variants: {
     textColor: ['responsive', 'hover', 'focus', 'visited'],
-    borderColor: ['responsive', 'hover', 'focus', 'focus-within'],
+    borderColor: [
+      'responsive',
+      'hover',
+      'focus',
+      'focus-within',
+      'focus-invisible',
+    ],
   },
-  plugins: [],
+  plugins: [
+    function({ addVariant, e }) {
+      addVariant('focus-invisible', ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `.${e(
+            `focus-invisible${separator}${className}`
+          )}:focus:not(:focus-visible)`;
+        });
+      });
+    },
+  ],
 };

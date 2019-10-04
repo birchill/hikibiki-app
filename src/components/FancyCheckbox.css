@@ -34,10 +34,16 @@
   opacity: 1;
 }
 
-.fancy-checkbox.-orange input[type='checkbox']:focus-visible + label::before {
-  outline: theme('colors.orange.1000') dotted 1px;
+.fancy-checkbox.-orange input[type='checkbox']:focus + label::before {
+  border: theme('colors.orange.1000') dotted 2px;
 }
 
-.fancy-checkbox.-gray input[type='checkbox']:focus-visible + label::before {
-  outline: theme('colors.gray.900') dotted 1px;
+.fancy-checkbox.-gray input[type='checkbox']:focus + label::before {
+  border: theme('colors.gray.900') dotted 2px;
+}
+
+.fancy-checkbox
+  input[type='checkbox']:focus:not(:focus-visible)
+  + label::before {
+  border-color: transparent;
 }

@@ -61,7 +61,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
           hidden={!clipboardEnabled}
         >
           <button
-            class="text-gray-300 bg-transparent rounded-full p-6 -m-6 hover:bg-gray-200 hover:text-gray-500 border-2 border-transparent border-dotted focus:outline-none focus:border-gray-400 focus:text-gray-400"
+            class="text-gray-300 bg-transparent rounded-full p-6 -m-6 hover:bg-gray-200 hover:text-gray-500 border-2 border-transparent border-dotted focus:outline-none focus:border-gray-400 focus-invisible:border-transparent focus:text-gray-400"
             onClick={copyToClipboard}
           >
             <svg class="w-10 h-10" viewBox="0 0 16 16">
@@ -333,7 +333,7 @@ function renderLinks(props: Props) {
       <div class="flex-grow">
         {linkData.map(({ label, href }) => (
           <a
-            class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline"
+            class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline focus:outline-none border-2 border-dotted border-transparent focus:border-green-800 focus-invisible:border-transparent"
             href={href}
             target="_blank"
             rel="noreferrer noopener"
