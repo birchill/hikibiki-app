@@ -67,7 +67,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
   return (
     <Fragment>
       <header class="bg-white pt-16 pb-32 sm:pb-32">
-        <h1 class="text-center text-4xl sm:text-5xl font-bold">Jisho Champ</h1>
+        <h1 class="text-center text-4xl sm:text-5xl font-bold">Hiki Biki</h1>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
       <div class="container mx-auto max-w-3xl px-8">
