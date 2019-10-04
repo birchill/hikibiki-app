@@ -18,7 +18,8 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   ].join('、');
 
   const clipboardCopiedLabel = useRef<HTMLElement | null>(null);
-  const clipboardEnabled = typeof navigator.clipboard.writeText === 'function';
+  const clipboardEnabled =
+    navigator.clipboard && typeof navigator.clipboard.writeText === 'function';
 
   const copyToClipboard = async () => {
     let clipboardText = `${props.c}`;
