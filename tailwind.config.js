@@ -7,8 +7,8 @@ module.exports = {
         // TODO: See if we can use hsl colours here
         black: '#27241D',
         gray: {
-          100: '#FAF9F7',
-          200: '#E8E6E1',
+          100: 'hsl(40, 23.1%, 97.5%)',
+          200: 'hsl(42.9, 13.2%, 89.6%)',
           300: '#D3CEC4',
           400: '#B8B2A7',
           500: '#A39E93',
@@ -69,6 +69,7 @@ module.exports = {
         ...boxShadow,
         'orange-default':
           '0 1px 1px -1px hsl(6, 59%, 75%), 0 2px 4px -1px hsla(6, 59%, 75%, 0.5)',
+        'search-default': '2px 4px 3px hsla(8, 92.2%, 22%, 10%)',
       },
       fontFamily: {
         // TODO: See if we can have a different set for ja vs en

@@ -66,7 +66,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
 
   return (
     <Fragment>
-      <header class="bg-orange-700 text-white pt-16 pb-16 border-b-4 border-orange-900">
+      <header class="bg-orange-700 text-orange-100 pt-16 pb-16 border-b-4 border-orange-900">
         <svg
           class="mx-auto max-w-full"
           width="25em"
