@@ -1,6 +1,7 @@
 const path = require('path');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WorkerPlugin = require('worker-plugin');
@@ -53,6 +54,10 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new CopyWebpackPlugin([
+      { from: 'img/*', flatten: true },
+      { from: 'src/manifest.json', flatten: true },
+    ]),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       excludeChunks: ['db-worker'],

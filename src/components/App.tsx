@@ -42,9 +42,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
   // Document title
   useEffect(() => {
     if (props.search) {
-      document.title = `${props.search} - Hikibiki`;
+      document.title = `${props.search} - hiki Biki`;
     } else {
-      document.title = 'Hikibiki';
+      document.title = 'hiki Biki';
     }
   }, [props.search]);
 
@@ -66,8 +66,16 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
 
   return (
     <Fragment>
-      <header class="bg-white pt-16 pb-32 sm:pb-32">
-        <h1 class="text-center text-4xl sm:text-5xl font-bold">Hiki Biki</h1>
+      <header class="bg-orange-700 text-white pt-16 pb-16 border-b-4 border-orange-900">
+        <svg
+          class="mx-auto max-w-full"
+          width="25em"
+          viewBox="0 0 430 148"
+          role="heading"
+        >
+          <title>hiki Biki</title>
+          <use width="430" height="148" href="#header" />
+        </svg>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
       <div class="container mx-auto max-w-3xl px-8">
