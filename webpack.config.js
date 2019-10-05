@@ -3,6 +3,7 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const PacktrackerPlugin = require('@packtracker/webpack-plugin');
 const WorkerPlugin = require('worker-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -58,6 +59,7 @@ module.exports = {
       excludeChunks: ['db-worker'],
     }),
     new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
+    new PacktrackerPlugin({}),
     new WorkerPlugin({ globalObject: 'self' }),
   ],
   mode,
