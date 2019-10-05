@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 
 type Props = {
   search?: string;
@@ -7,31 +7,6 @@ type Props = {
 };
 
 export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
-  // InputEvent.isComposing has a different value and different time between
-  // Firefox and Chrome. See:
-  //
-  //   https://github.com/w3c/uievents/issues/202
-  //
-  // Furthermore, preact doesn't seem to support composition events:
-  //
-  //   https://github.com/preactjs/preact/issues/1978
-  //
-  // But we don't want to update the search until the input has finished so we
-  // are forced to do a bit of a manual event handling here to detect the end of
-  // a composition (and avoid updating the result during a composition).
-  const input = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    if (!input.current) {
-      return;
-    }
-    input.current.addEventListener('compositionend', () => {
-      if (props.onUpdateSearch) {
-        props.onUpdateSearch(input.current!.value || '');
-      }
-    });
-  }, [input, props.onUpdateSearch]);
-
-  // Handle regular input events too (e.g. backspace, paste etc.).
   const onInput = useCallback(
     (evt: InputEvent) => {
       if (props.onUpdateSearch && !evt.isComposing) {
@@ -41,6 +16,28 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
     [props.onUpdateSearch]
   );
 
+  // InputEvent.isComposing never goes false at the end of a composition in
+  // Chrome. See:
+  //
+  //   https://github.com/w3c/uievents/issues/202
+  //
+  // As a result, we need to also watch for compositionend events.
+  const onCompositionEnd = useCallback(
+    (evt: InputEvent) => {
+      if (props.onUpdateSearch) {
+        props.onUpdateSearch((evt.target as HTMLInputElement).value || '');
+      }
+    },
+    [props.onUpdateSearch]
+  );
+
+  // Preact has this in lower case (but the typings only recognize camelCase):
+  //
+  //   https://github.com/preactjs/preact/issues/1978
+  const specialProps = {
+    oncompositionend: onCompositionEnd,
+  };
+
   return (
     <nav class="container mx-auto max-w-3xl -mt-half-input-text-2xl-py-6 mb-12 sm:mb-20 px-12">
       <input
@@ -49,7 +46,6 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
         name="q"
         placeholder="Search"
         value={props.search}
-        ref={input}
         onInput={onInput}
         style={{
           backgroundImage:
@@ -59,6 +55,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
           backgroundPositionY: 'center',
           backgroundSize: '1em 1em',
         }}
+        {...specialProps}
       />
     </nav>
   );
