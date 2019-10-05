@@ -23,5 +23,5 @@ Chrome you'll want to use something like:
 CHROME_BIN=/mnt/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe npx karma start --browsers Chrome
 ```
 
-That will complain about not being able to write to the temp directory
-but otherwise should be fine.
+That will complain about not being able to write to the temp directory but
+otherwise should be fine.
