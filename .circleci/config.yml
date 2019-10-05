@@ -1,4 +1,8 @@
-version: 2
+version: 2.1
+
+orbs:
+  packtracker: packtracker/report@2.2.0
+
 jobs:
   build:
     docker:
@@ -38,3 +42,10 @@ jobs:
       - run:
           name: Verify storybook setup
           command: yarn run build:storybook
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+      - packtracker/report
