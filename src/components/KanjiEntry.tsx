@@ -65,6 +65,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         >
           <button
             class="text-gray-300 bg-transparent rounded-full p-6 -m-6 hover:bg-gray-200 hover:text-gray-500 border-2 border-transparent border-dotted focus:outline-none focus:border-gray-400 focus-invisible:border-transparent focus:text-gray-400"
+            type="button"
             onClick={copyToClipboard}
           >
             <svg class="w-10 h-10" viewBox="0 0 16 16">
