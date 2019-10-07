@@ -104,7 +104,7 @@ function renderSettingsIcon(
   }
 
   return (
-    <button class={containerStyles} onClick={onToggleSettings}>
+    <button class={containerStyles} type="button" onClick={onToggleSettings}>
       <svg class="w-10 h-10" viewBox="0 0 16 16">
         <title>Settings</title>
         <use width="16" height="16" href="#cog" />
@@ -211,7 +211,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
         <div class="flex mb-10">
           <div class="flex-grow mr-8 italic">{status}</div>
           <div class="self-end">
-            <button class={buttonStyles} onClick={props.onUpdate}>
+            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
               Check for updates
             </button>
           </div>
@@ -223,7 +223,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       return (
         <div class="flex">
           <div class="flex-grow mr-8 italic">Checking for updates&hellip;</div>
-          <button class={buttonStyles} onClick={props.onCancel}>
+          <button class={buttonStyles} type="button" onClick={props.onCancel}>
             Cancel
           </button>
         </div>
@@ -247,7 +247,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
               label={`${label}…`}
             />
           </div>
-          <button class={buttonStyles} onClick={props.onCancel}>
+          <button class={buttonStyles} type="button" onClick={props.onCancel}>
             Cancel
           </button>
         </div>
@@ -266,7 +266,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
           <div class="flex-grow mr-8">
             <ProgressBar id="update-progress" label={`${label}…`} />
           </div>
-          <button class={disabledButtonStyles} disabled>
+          <button class={disabledButtonStyles} type="button" disabled>
             Cancel
           </button>
         </div>
@@ -280,7 +280,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
             Update failed: {updateState.error.message}
           </div>
           <div>
-            <button class={buttonStyles} onClick={props.onUpdate}>
+            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
               Retry
             </button>
           </div>
