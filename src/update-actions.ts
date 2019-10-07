@@ -4,10 +4,6 @@ export type OfflineAction = {
   type: 'offline';
 };
 
-export type OnlineAction = {
-  type: 'online';
-};
-
 export type StartAction = {
   type: 'start';
   dbName: 'kanjidb' | 'bushudb';
@@ -48,7 +44,6 @@ export type ErrorAction = {
 
 export type UpdateAction =
   | OfflineAction
-  | OnlineAction
   | StartAction
   | StartDownloadAction
   | ProgressAction

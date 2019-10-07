@@ -1,13 +1,14 @@
 import { UpdateAction } from './update-actions';
 import { UpdateState } from './update-state';
+import { DownloadError } from './download';
 
 export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
   switch (action.type) {
     case 'offline':
-      return { state: 'offline', lastCheck: state.lastCheck };
-
-    case 'online':
-      return { state: 'idle', lastCheck: state.lastCheck };
+      return {
+        state: 'offline',
+        lastCheck: state.lastCheck,
+      };
 
     case 'start':
       return {
@@ -64,12 +65,33 @@ export function reducer(state: UpdateState, action: UpdateAction): UpdateState {
     case 'abort':
       return { state: 'idle', lastCheck: action.checkDate || state.lastCheck };
 
-    case 'error':
+    case 'error': {
+      const isNetworkError = action.error instanceof DownloadError;
+
+      let retryIntervalMs: number | null = null;
+      let nextRetry: Date | null = null;
+      if (isNetworkError) {
+        if (state.state === 'error' && state.retryIntervalMs) {
+          // Don't let the interval become longer than 12 hours
+          retryIntervalMs = Math.min(
+            state.retryIntervalMs * 2,
+            12 * 60 * 60 * 1000
+          );
+        } else {
+          // Randomize the initial interval to somewhere between 3s ~ 6s.
+          retryIntervalMs = 3000 + Math.random() * 3000;
+        }
+        nextRetry = new Date(Date.now() + retryIntervalMs);
+      }
+
       return {
         state: 'error',
         dbName: action.dbName,
         error: action.error,
         lastCheck: state.lastCheck,
+        nextRetry,
+        retryIntervalMs,
       };
+    }
   }
 }

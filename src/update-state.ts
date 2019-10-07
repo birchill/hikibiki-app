@@ -50,6 +50,9 @@ export type ErrorUpdateState = {
   dbName: 'kanjidb' | 'bushudb';
   error: Error;
   lastCheck: Date | null;
+  // The following are only set if the error was a network-related error.
+  nextRetry: Date | null;
+  retryIntervalMs: number | null;
 };
 
 export type UpdateState =
@@ -72,6 +75,8 @@ export type CloneableErrorUpdateState = {
     code?: number;
   };
   lastCheck: Date | null;
+  nextRetry: Date | null;
+  retryIntervalMs: number | null;
 };
 
 export type CloneableUpdateState =

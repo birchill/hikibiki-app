@@ -96,6 +96,17 @@ storiesOf('Components|DatabaseStatus', module)
             code: DownloadErrorCode.DatabaseFileInvalidJSON,
           },
           lastCheck: null,
+          nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryIntervalMs: null,
+        }}
+        initiallyExpanded
+      />
+      <DatabaseStatus
+        databaseState={DatabaseState.Empty}
+        databaseVersions={{}}
+        updateState={{
+          state: 'offline',
+          lastCheck: null,
         }}
         initiallyExpanded
       />
@@ -289,6 +300,34 @@ storiesOf('Components|DatabaseStatus', module)
             code: DownloadErrorCode.DatabaseFileInvalidJSON,
           },
           lastCheck: new Date(),
+          nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryIntervalMs: null,
+        }}
+        initiallyExpanded
+      />
+      <DatabaseStatus
+        databaseState={DatabaseState.Ok}
+        databaseVersions={{
+          kanjidb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+          bushudb: {
+            major: 1,
+            minor: 0,
+            patch: 0,
+            databaseVersion: '2019-197',
+            dateOfCreation: '2019-07-16',
+            lang: 'en',
+          },
+        }}
+        updateState={{
+          state: 'offline',
+          lastCheck: new Date(),
         }}
         initiallyExpanded
       />
@@ -374,6 +413,8 @@ storiesOf('Components|DatabaseStatus', module)
           dbName: 'kanjidb',
           error: { name: 'Bad error', message: 'Something went wrong' },
           lastCheck: null,
+          nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryIntervalMs: null,
         }}
       />
     </div>

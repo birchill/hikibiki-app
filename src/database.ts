@@ -76,6 +76,7 @@ export class KanjiDatabase {
   private inProgressUpdate: Promise<void> | undefined;
   private radicalsPromise: Promise<Map<string, RadicalRecord>> | undefined;
   private charToRadicalMap: Map<string, string> = new Map();
+  private retrySetTimeoutHandle: number | null = null;
 
   constructor() {
     this.store = new KanjiStore();
@@ -161,6 +162,32 @@ export class KanjiDatabase {
       return this.inProgressUpdate;
     }
 
+    // Clear any pending retry we might have queued up.
+    if (this.retrySetTimeoutHandle) {
+      clearTimeout(this.retrySetTimeoutHandle);
+    }
+
+    // If we are offline, wait until we're online again.
+    if (!navigator.onLine) {
+      if (this.updateState.state === 'offline') {
+        return;
+      }
+      addEventListener(
+        'online',
+        () => {
+          // Check we're still in the offline state, just to be careful.
+          if (this.updateState.state !== 'offline') {
+            return;
+          }
+          this.update();
+        },
+        { once: true }
+      );
+      this.updateState = updateReducer(this.updateState, { type: 'offline' });
+      this.notifyChanged();
+      return;
+    }
+
     this.inProgressUpdate = (async () => {
       const lang = this.preferredLang || (await this.getDbLang()) || 'en';
 
@@ -186,6 +213,22 @@ export class KanjiDatabase {
       await this.inProgressUpdate;
     } finally {
       this.inProgressUpdate = undefined;
+
+      // If we encountered some sort of retry-able error, schedule a retry.
+      if (
+        this.updateState.state === 'error' &&
+        this.updateState.retryIntervalMs
+      ) {
+        this.retrySetTimeoutHandle = (setTimeout(() => {
+          // Check we're still in the error state. Who knows maybe someone
+          // updated us and forgot to clear the setTimeout handle.
+          if (this.updateState.state !== 'error') {
+            return;
+          }
+          this.update();
+        }, this.updateState.retryIntervalMs) as unknown) as number;
+      }
+
       this.notifyChanged();
     }
   }

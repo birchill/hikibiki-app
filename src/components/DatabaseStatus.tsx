@@ -5,6 +5,7 @@ import { DatabaseVersion } from '../common';
 import { DatabaseState } from '../database';
 import { CloneableUpdateState } from '../update-state';
 
+import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
 import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
@@ -277,12 +278,29 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       return (
         <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
           <div class="flex-grow mr-8">
-            Update failed: {updateState.error.message}
+            Update failed: {updateState.error.message}.
+            {updateState.nextRetry ? (
+              <Fragment>
+                <br />
+                Retrying <CountDown deadline={updateState.nextRetry} />.
+              </Fragment>
+            ) : null}
           </div>
           <div>
             <button class={buttonStyles} type="button" onClick={props.onUpdate}>
               Retry
             </button>
+          </div>
+        </div>
+      );
+
+    case 'offline':
+      return (
+        <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
+          <div class="flex-grow mr-8">
+            Could not check for updates because this device is currently
+            offline. An update will be performed once the device is online
+            again.
           </div>
         </div>
       );
