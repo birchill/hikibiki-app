@@ -56,7 +56,8 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       { from: 'img/*', flatten: true },
-      { from: 'src/manifest.json', flatten: true },
+      { from: 'src/manifest.webmanifest', flatten: true },
+      { from: '_headers' },
     ]),
     new HtmlWebpackPlugin({
       template: './src/index.html',

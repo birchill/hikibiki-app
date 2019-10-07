@@ -1,0 +1,6 @@
+/*
+  Referrer-Policy: no-referrer
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+/*.webmanifest
+  Content-Type: application/manifest+json; charset=utf-8
