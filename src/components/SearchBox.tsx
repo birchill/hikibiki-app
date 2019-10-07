@@ -44,6 +44,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
         class="rounded-full w-full pl-32 sm:pl-40 pr-12 py-6 bg-white text-gray-700 placeholder-gray-700 font-medium text-2xl tracking-wide bg-no-repeat outline-none shadow-search-default"
         type="search"
         name="q"
+        autofocus={!props.search}
         placeholder="Search"
         value={props.search}
         onInput={onInput}
