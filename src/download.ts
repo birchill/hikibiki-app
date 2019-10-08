@@ -324,9 +324,19 @@ async function getVersionInfo({
 
   // Get the file if needed
   if (forceFetch || !cachedVersionFile || cachedVersionFile.lang !== lang) {
-    const response = await fetch(`${baseUrl}jpdict-rc-${lang}-version.json`, {
-      signal,
-    });
+    // Fetch rejects the promise for network errors, but not for HTTP errors :(
+    let response;
+    try {
+      response = await fetch(`${baseUrl}jpdict-rc-${lang}-version.json`, {
+        signal,
+      });
+    } catch (e) {
+      throw new DownloadError(
+        DownloadErrorCode.VersionFileNotAccessible,
+        `Version file not accessible (${e.message})`
+      );
+    }
+
     if (!response.ok) {
       const code =
         response.status === 404
@@ -334,7 +344,7 @@ async function getVersionInfo({
           : DownloadErrorCode.VersionFileNotAccessible;
       throw new DownloadError(
         code,
-        `Version file not accessible (status: ${response.status}`
+        `Version file not accessible (status: ${response.status})`
       );
     }
 
@@ -468,7 +478,17 @@ async function* getEvents<EntryLine, DeletionLine>({
   isDeletionLine: (a: any) => a is DeletionLine;
 }): AsyncIterableIterator<DownloadEvent<EntryLine, DeletionLine>> {
   const url = `${baseUrl}${dbName}-rc-${lang}-${version.major}.${version.minor}.${version.patch}-${fileType}.ljson`;
-  const response = await fetch(url, { signal });
+
+  // Fetch rejects the promise for network errors, but not for HTTP errors :(
+  let response;
+  try {
+    response = await fetch(url, { signal });
+  } catch (e) {
+    throw new DownloadError(
+      DownloadErrorCode.DatabaseFileNotFound,
+      `Database file ${url} not accessible (${e.message})`
+    );
+  }
 
   if (!response.ok) {
     const code =

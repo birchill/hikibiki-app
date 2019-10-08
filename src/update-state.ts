@@ -21,6 +21,7 @@ export type CheckingUpdateState = {
   state: 'checking';
   dbName: 'kanjidb' | 'bushudb';
   lastCheck: Date | null;
+  retryIntervalMs?: number;
 };
 
 // Downloading an update.
@@ -33,6 +34,7 @@ export type DownloadingUpdateState = {
   downloadVersion: DatabaseVersion;
   progress: number;
   lastCheck: Date | null;
+  retryIntervalMs?: number;
 };
 
 // Downloading has finished and we are now applying an update to the local
@@ -42,6 +44,7 @@ export type UpdatingDbUpdateState = {
   dbName: 'kanjidb' | 'bushudb';
   downloadVersion: DatabaseVersion;
   lastCheck: Date | null;
+  retryIntervalMs?: number;
 };
 
 // Encountered an error on the previous attempt to update.
@@ -51,8 +54,8 @@ export type ErrorUpdateState = {
   error: Error;
   lastCheck: Date | null;
   // The following are only set if the error was a network-related error.
-  nextRetry: Date | null;
-  retryIntervalMs: number | null;
+  nextRetry?: Date;
+  retryIntervalMs?: number;
 };
 
 export type UpdateState =
@@ -75,8 +78,8 @@ export type CloneableErrorUpdateState = {
     code?: number;
   };
   lastCheck: Date | null;
-  nextRetry: Date | null;
-  retryIntervalMs: number | null;
+  nextRetry?: Date;
+  retryIntervalMs?: number;
 };
 
 export type CloneableUpdateState =

@@ -278,7 +278,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       return (
         <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
           <div class="flex-grow mr-8">
-            Update failed: {updateState.error.message}.
+            Update failed: {updateState.error.message}
             {updateState.nextRetry ? (
               <Fragment>
                 <br />

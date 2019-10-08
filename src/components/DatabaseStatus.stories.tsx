@@ -97,7 +97,6 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: null,
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryIntervalMs: null,
         }}
         initiallyExpanded
       />
@@ -301,7 +300,6 @@ storiesOf('Components|DatabaseStatus', module)
           },
           lastCheck: new Date(),
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryIntervalMs: null,
         }}
         initiallyExpanded
       />
@@ -414,7 +412,6 @@ storiesOf('Components|DatabaseStatus', module)
           error: { name: 'Bad error', message: 'Something went wrong' },
           lastCheck: null,
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryIntervalMs: null,
         }}
       />
     </div>
