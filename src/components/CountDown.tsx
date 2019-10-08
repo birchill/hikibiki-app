@@ -6,71 +6,81 @@ type Props = {
 };
 
 export const CountDown: FunctionalComponent<Props> = (props: Props) => {
-  const [dateString, setDateString] = useState(toRelativeTime(props.deadline));
+  const [relativeTime, setRelativeTime] = useState(
+    toRelativeTime(props.deadline)
+  );
 
   useEffect(() => {
-    const updateIntervalMs = getUpdateIntervalMs(props.deadline);
-    if (updateIntervalMs === null) {
+    if (relativeTime.nextUpdate === null) {
       return;
     }
 
     const setTimeoutHandle = setTimeout(() => {
-      setDateString(toRelativeTime(props.deadline));
-    }, updateIntervalMs);
+      setRelativeTime(toRelativeTime(props.deadline));
+    }, relativeTime.nextUpdate - Date.now());
 
     return () => {
       clearTimeout(setTimeoutHandle);
     };
-  }, [props.deadline, dateString]);
+  }, [props.deadline, relativeTime.nextUpdate]);
 
-  return <time dateTime={props.deadline.toISOString()}>{dateString}</time>;
+  return (
+    <time dateTime={props.deadline.toISOString()}>{relativeTime.asString}</time>
+  );
 };
 
-function toRelativeTime(date: Date): string {
-  const diff = date.getTime() - Date.now();
+function toRelativeTime(
+  date: Date
+): { asString: string; nextUpdate: number | null } {
+  const now = Date.now();
+  const diff = date.getTime() - now;
+
   if (diff < 100) {
-    return 'any time now';
+    return { asString: 'any moment now', nextUpdate: null };
   }
 
   if (diff <= 1000) {
-    return 'in 1 second';
+    return { asString: 'in 1 second', nextUpdate: date.getTime() };
   }
 
-  if (diff < 60.5 * 1000) {
-    return `in ${Math.round(diff / 1000)} seconds`;
+  // From 00:00:01 ~ 00:01:00 wait 1 second between each update.
+  if (diff < 59 * 1000) {
+    const toNextSecond = diff % 1000 || 1000;
+    return {
+      asString: `in ${Math.ceil(diff / 1000)} seconds`,
+      nextUpdate: now + toNextSecond + 100,
+    };
   }
 
+  // From 00:01:00 ~ 00:01:30 wait until the end of the minute.
   if (diff < 90 * 1000) {
-    return 'in 1 minute';
+    return {
+      asString: 'in 1 minute',
+      nextUpdate: now + (diff - 59 * 1000 || 100) + 100,
+    };
   }
 
-  if (diff < 60.5 * 60 * 1000) {
-    console.log(diff);
-    return `in ${Math.round(diff / (60 * 1000))} minutes`;
+  // From 00:01:30 ~ 00:59:30 wait until the next 30s mark.
+  if (diff < 59 * 60 * 1000) {
+    const toNextMinute = diff % (60 * 1000) || 60 * 1000;
+    return {
+      asString: `in ${Math.ceil(diff / (60 * 1000))} minutes`,
+      nextUpdate: now + toNextMinute + 100,
+    };
   }
 
-  if (diff <= 60.5 * 60 * 1000) {
-    return 'in 1 hour';
+  // From 00:59:30 ~ 01:30:00 wait until the end of the hour.
+  if (diff < 90 * 60 * 1000) {
+    return {
+      asString: 'in 1 hour',
+      nextUpdate: now + (diff - 59 * 60 * 1000 || 100) + 100,
+    };
   }
 
-  return `in ${Math.round(diff / (60 * 60 * 1000))} hours`;
-}
-
-function getUpdateIntervalMs(date: Date): number | null {
-  const diff = date.getTime() - Date.now();
-  if (diff < 100) {
-    return null;
-  }
-
-  if (diff < 60 * 1000) {
-    return 1000;
-  }
-
-  // XXX This is all wrong... if the deadline is 70 seconds away, the update
-  // interval should be 10 seconds, not 1 minute.
-  if (diff < 60 * 60 * 1000) {
-    return 60 * 1000;
-  }
-
-  return 60 * 60 * 1000;
+  // From there on, wait until the next 30 min mark
+  const toNextHour = diff % (60 * 60 * 1000) || 60 * 60 * 1000;
+  return {
+    asString: `in ${Math.ceil(diff / (60 * 60 * 1000))} hours`,
+    nextUpdate: now + toNextHour + 100,
+  };
 }
