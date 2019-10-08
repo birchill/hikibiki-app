@@ -1,9 +1,12 @@
 import { h, render } from 'preact';
+import {
+  CloneableUpdateState,
+  DatabaseVersion,
+  DatabaseState,
+  KanjiResult,
+} from '@birchill/hikibiki-sync';
 
-import { DatabaseVersion } from './common';
-import { DatabaseState, KanjiResult } from './database';
 import { DB_LANGUAGES } from './db-languages';
-import { CloneableUpdateState } from './update-state';
 import { WorkerMessage } from './worker-messages';
 import * as messages from './worker-messages';
 import { hasReadableStreamSupport } from './browser-support';

@@ -1,5 +1,9 @@
-import { KanjiDatabase } from './database';
-import { toCloneable } from './update-state';
+import {
+  CloneableUpdateState,
+  DownloadError,
+  KanjiDatabase,
+  UpdateState,
+} from '@birchill/hikibiki-sync';
 import {
   notifyDbStateUpdated,
   notifyQueryResult,
@@ -78,4 +82,21 @@ onmessage = (evt: MessageEvent) => {
       );
       break;
   }
+};
+
+// Turn the object into something we can postMessage
+const toCloneable = (state: UpdateState): CloneableUpdateState => {
+  if (state.state === 'error') {
+    return {
+      ...state,
+      error: {
+        name: state.error.name,
+        message: state.error.message,
+        code:
+          state.error instanceof DownloadError ? state.error.code : undefined,
+      },
+    };
+  }
+
+  return state;
 };

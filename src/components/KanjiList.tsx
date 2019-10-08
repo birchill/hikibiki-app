@@ -1,6 +1,6 @@
 import { h, FunctionalComponent } from 'preact';
+import { KanjiResult } from '@birchill/hikibiki-sync';
 
-import { KanjiResult } from '../database';
 import { KanjiEntry } from './KanjiEntry';
 
 type Props = {

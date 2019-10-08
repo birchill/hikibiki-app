@@ -1,9 +1,8 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/preact';
+import { DatabaseState, DownloadErrorCode } from '@birchill/hikibiki-sync';
 
 import { DatabaseStatus } from './DatabaseStatus';
-import { DatabaseState } from '../database';
-import { DownloadErrorCode } from '../download';
 
 storiesOf('Components|DatabaseStatus', module)
   .add('initializing', () => (

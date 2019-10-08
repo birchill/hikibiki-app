@@ -1,6 +1,6 @@
 import { h, FunctionalComponent } from 'preact';
+import { DatabaseVersion } from '@birchill/hikibiki-sync';
 
-import { DatabaseVersion } from '../common';
 import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 
 type Props = {

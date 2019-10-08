@@ -1,6 +1,9 @@
-import { DatabaseVersion } from './common';
-import { DatabaseState, KanjiResult } from './database';
-import { UpdateState } from './update-state';
+import {
+  DatabaseState,
+  DatabaseVersion,
+  KanjiResult,
+  UpdateState,
+} from '@birchill/hikibiki-sync';
 
 export const updateDb = () => ({
   type: 'update',

@@ -32,9 +32,5 @@ jobs:
           command: yarn run build
 
       - run:
-          name: Browser-based tests
-          command: yarn test
-
-      - run:
           name: Verify storybook setup
           command: yarn run build:storybook
