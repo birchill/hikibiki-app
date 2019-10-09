@@ -48,7 +48,7 @@
   },
   "homepage": "https://github.com/birchill/hikibiki#readme",
   "dependencies": {
-    "@birchill/hikibiki-sync": "0.0.2",
+    "@birchill/hikibiki-sync": "^1.0.1",
     "deep-equal": "^1.1.0",
     "dexie": "^3.0.0-alpha.8",
     "preact": "^10.0.0",

@@ -1,11 +1,12 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
-  CloneableUpdateState,
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
 } from '@birchill/hikibiki-sync';
+
+import { CloneableUpdateState } from '../cloneable-update-state';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';

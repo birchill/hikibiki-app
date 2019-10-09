@@ -703,10 +703,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-sync@0.0.2":
-  version "0.0.2"
-  resolved "https://npm.pkg.github.com/download/@birchill/hikibiki-sync/0.0.2/a7f2335ea00da4c99287ede5c2bd0f9e3748ea0e705097e29e228ceb443fb169#"
-  integrity sha512-7obKoa225m9mJYcI+xME6JMp7FJoaPAs2koCJZ6NRnujxif30GfG6jLvwg3XEg8o7Jj2Rgo+YnUEPZmnDeRRVA==
+"@birchill/hikibiki-sync@^1.0.1":
+  version "1.0.1"
+  resolved "https://npm.pkg.github.com/download/@birchill/hikibiki-sync/1.0.1/4bda6f2fe2b15d04d88412638071a16ead918a2336762ac3538c1de7d9fd69ff#"
+  integrity sha512-Vr9dLUgQSncxSg+DBD3hsfy7fzmnkoGEq4JdM7TVc4Z85FfIFb+o0EHnppE/TUDQyVe8JWCyK9s3wEbZXo6LiQ==
   dependencies:
     deep-equal "^1.1.0"
     dexie "^3.0.0-alpha.8"
