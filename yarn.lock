@@ -705,8 +705,8 @@
 
 "@birchill/hikibiki-sync@^1.0.1":
   version "1.0.1"
-  resolved "https://npm.pkg.github.com/download/@birchill/hikibiki-sync/1.0.1/4bda6f2fe2b15d04d88412638071a16ead918a2336762ac3538c1de7d9fd69ff#"
-  integrity sha512-Vr9dLUgQSncxSg+DBD3hsfy7fzmnkoGEq4JdM7TVc4Z85FfIFb+o0EHnppE/TUDQyVe8JWCyK9s3wEbZXo6LiQ==
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.1.tgz#afe5366eeeb66d361d799c8650577c761a2b481e"
+  integrity sha512-dEnSia+iFmLYx3iIb3qJBk1T0rOtoZbijkdIz8SdrkiIJiUo897w1auijncmLJogQemYyrTRSpgFVJObSEzHvA==
   dependencies:
     deep-equal "^1.1.0"
     dexie "^3.0.0-alpha.8"
