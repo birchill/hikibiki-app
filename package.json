@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/birchill/hikibiki/issues"
   },
-  "homepage": "https://github.com/birchill/hikibiki#readme",
+  "homepage": "https://hikibiki.app/",
   "dependencies": {
     "@birchill/hikibiki-sync": "^1.0.1",
     "deep-equal": "^1.1.0",
