@@ -703,12 +703,12 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-sync@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.2.tgz#b143d472f654ae9d555c36df45848e829cec908c"
-  integrity sha512-dL9WypLC9GMDHYGDabQe8a4AFPp9FqkXb7wsOdAtPFMksf/Ft2BactKCABFvwjuoH29U54I2MM77LkxNneIhgA==
+"@birchill/hikibiki-sync@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-sync/-/hikibiki-sync-1.0.4.tgz#a55ed9c31dc998ed63a460f338b6e4e9d988a94b"
+  integrity sha512-tvGRJPbynT93ql7wLZlSHzWnXYV+pvCzm0nVWo/EJp5ucpW8NxmvRSnOAwaSByl8JOltwKr0XXtA1KX/oPdZPQ==
   dependencies:
-    dexie "^3.0.0-alpha.8"
+    dexie "^3.0.0-beta.1"
 
 "@emotion/cache@^10.0.17":
   version "10.0.19"
@@ -3139,10 +3139,10 @@ detect-port@^1.3.0:
     address "^1.0.1"
     debug "^2.6.0"
 
-dexie@^3.0.0-alpha.8:
-  version "3.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-alpha.8.tgz#f4cd733c0c120816a73a6eac2157131af3bc7dd3"
-  integrity sha512-fujc1ZETUyJ7b0w7JzG4PK1wQca58BQbR7Gb3xaf+fWGrLm/uxfmB/k/FpHoGHHxCh3+v5lvB3XQG3ANoownNg==
+dexie@^3.0.0-alpha.8, dexie@^3.0.0-beta.1:
+  version "3.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.0-beta.1.tgz#fcd75ca08c8be2c34b25b563b7617d9cf97a3c96"
+  integrity sha512-gT65LlB31mVMsGFoTQyS+A/osPQMvICzwy/kySVcabNnGYNU0RVtx8TR5tCWm6qvF76QBt/NNcwS4Iju4tRCYw==
 
 diffie-hellman@^5.0.0:
   version "5.0.3"
