@@ -1,6 +1,5 @@
-import { KanjiDatabase } from '@birchill/hikibiki-sync';
+import { KanjiDatabase, toCloneableUpdateState } from '@birchill/hikibiki-sync';
 
-import { toCloneableUpdateState } from './cloneable-update-state';
 import {
   notifyDbStateUpdated,
   notifyQueryResult,

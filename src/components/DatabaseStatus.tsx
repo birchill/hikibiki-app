@@ -1,8 +1,10 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
-import { DatabaseState, DatabaseVersion } from '@birchill/hikibiki-sync';
-
-import { CloneableUpdateState } from '../cloneable-update-state';
+import {
+  CloneableUpdateState,
+  DatabaseState,
+  DatabaseVersion,
+} from '@birchill/hikibiki-sync';
 
 import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';

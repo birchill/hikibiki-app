@@ -1,11 +1,11 @@
 import { h, render } from 'preact';
 import {
+  CloneableUpdateState,
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
 } from '@birchill/hikibiki-sync';
 
-import { CloneableUpdateState } from './cloneable-update-state';
 import { DB_LANGUAGES } from './db-languages';
 import { WorkerMessage } from './worker-messages';
 import * as messages from './worker-messages';
