@@ -5,7 +5,7 @@ import {
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
-} from '@birchill/hikibiki-sync';
+} from '@birchill/hikibiki-data';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';

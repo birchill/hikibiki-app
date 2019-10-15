@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/preact';
-import { DatabaseState, DownloadErrorCode } from '@birchill/hikibiki-sync';
+import { DatabaseState, DownloadErrorCode } from '@birchill/hikibiki-data';
 
 import { DatabaseStatus } from './DatabaseStatus';
 

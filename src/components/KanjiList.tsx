@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { KanjiResult } from '@birchill/hikibiki-sync';
+import { KanjiResult } from '@birchill/hikibiki-data';
 
 import { KanjiEntry } from './KanjiEntry';
 

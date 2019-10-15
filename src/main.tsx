@@ -4,7 +4,7 @@ import {
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
-} from '@birchill/hikibiki-sync';
+} from '@birchill/hikibiki-data';
 
 import { DB_LANGUAGES } from './db-languages';
 import { WorkerMessage } from './worker-messages';

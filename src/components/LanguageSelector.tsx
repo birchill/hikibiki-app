@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { DatabaseVersion } from '@birchill/hikibiki-sync';
+import { DatabaseVersion } from '@birchill/hikibiki-data';
 
 import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 

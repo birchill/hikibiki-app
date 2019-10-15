@@ -4,7 +4,7 @@ import {
   CloneableUpdateState,
   DatabaseState,
   DatabaseVersion,
-} from '@birchill/hikibiki-sync';
+} from '@birchill/hikibiki-data';
 
 import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';

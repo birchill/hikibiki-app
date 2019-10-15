@@ -3,7 +3,7 @@ import {
   DatabaseVersion,
   KanjiResult,
   UpdateState,
-} from '@birchill/hikibiki-sync';
+} from '@birchill/hikibiki-data';
 
 export const updateDb = () => ({
   type: 'update',
