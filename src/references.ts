@@ -2,7 +2,7 @@ export const ReferenceLabels: Array<[string, string]> = [
   ['kanken', '漢検'],
   ['conning', 'Conning'],
   ['nelson_c', 'Classic Nelson'],
-  ['halpern_njecd', 'Halpbern'],
+  ['halpern_njecd', 'Halpern'],
   ['heisig6', 'Heisig (6th ed.)'],
   ['henshall', 'Henshall'],
   ['busy_people', 'Japanese for Busy People'],
