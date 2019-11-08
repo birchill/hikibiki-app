@@ -12,6 +12,7 @@ export const ReferenceLabels: Array<[string, string]> = [
   ['kodansha_compact', 'Kodansha Compact Kanji Guide'],
   ['maniette', 'Les Kanjis dans la tete'],
   ['nelson_n', 'New Nelson'],
+  ['py', 'Pinyin'],
   ['skip', 'SKIP'],
   ['sh_kk2', 'Tuttle Kanji & Kana (2011)'],
 ];

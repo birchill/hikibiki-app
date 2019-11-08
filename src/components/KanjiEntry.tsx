@@ -267,14 +267,8 @@ function renderReferences(props: Props) {
 
   const referenceLabels = getReferenceLabels({ lang: props.lang });
   const referenceData = referenceLabels
-    .filter(([id]) => id !== 'kanken' && enabledReferences.has(id))
-    .map(([id, label]) => `${label} ${props.refs[id] || '-'}`);
-
-  // Handle 漢検 separately because it is in the misc section
-  if (enabledReferences.has('kanken')) {
-    const label = referenceLabels.find(([id]) => id === 'kanken')![1];
-    referenceData.unshift(`${label} ${renderKanKen(props.misc.kk)}`);
-  }
+    .filter(([id]) => enabledReferences.has(id))
+    .map(([id, label]) => `${label} ${getReferenceValue(id, props) || '-'}`);
 
   return (
     <div class="refs flex mb-2">
@@ -296,6 +290,19 @@ function renderReferences(props: Props) {
       </div>
     </div>
   );
+}
+
+function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
+  switch (id) {
+    case 'kanken':
+      return renderKanKen(entry.misc.kk);
+
+    case 'py':
+      return (entry.r as any).py ? (entry.r as any).py.join(', ') : undefined;
+
+    default:
+      return entry.refs[id] ? String(entry.refs[id]) : undefined;
+  }
 }
 
 function renderLinks(props: Props) {
