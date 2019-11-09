@@ -268,7 +268,7 @@ function renderReferences(props: Props) {
   const referenceLabels = getReferenceLabels({ lang: props.lang });
   const referenceData = referenceLabels
     .filter(([id]) => enabledReferences.has(id))
-    .map(([id, label]) => `${label} ${getReferenceValue(id, props) || '-'}`);
+    .map(([id, label]) => `${label} ${getReferenceValue(id, props) ?? '-'}`);
 
   return (
     <div class="refs flex mb-2">
