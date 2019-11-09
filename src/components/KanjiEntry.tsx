@@ -294,6 +294,12 @@ function renderReferences(props: Props) {
 
 function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
   switch (id) {
+    case 'radical': {
+      const { rad } = entry;
+      const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
+      return `${rad.x} ${radChar}`;
+    }
+
     case 'kanken':
       return renderKanKen(entry.misc.kk);
 

@@ -1,4 +1,5 @@
 export const ReferenceLabels: Array<[string, string]> = [
+  ['radical', 'Radical'],
   ['kanken', '漢検'],
   ['conning', 'Conning'],
   ['nelson_c', 'Classic Nelson'],
