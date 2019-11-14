@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import { h, FunctionalComponent, JSX } from 'preact';
 import { useCallback } from 'preact/hooks';
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 
 export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
   const onInput = useCallback(
-    (evt: InputEvent) => {
+    (evt: JSX.TargetedEvent<HTMLInputElement, InputEvent>) => {
       if (props.onUpdateSearch && !evt.isComposing) {
-        props.onUpdateSearch((evt.target as HTMLInputElement).value || '');
+        props.onUpdateSearch(evt.currentTarget?.value ?? '');
       }
     },
     [props.onUpdateSearch]
