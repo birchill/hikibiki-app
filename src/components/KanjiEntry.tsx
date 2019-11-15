@@ -138,11 +138,25 @@ function renderComponents(props: Props): JSX.Element {
     </Fragment>
   );
 
+  // Typically, the radical will also be one of the components, but in case it's
+  // not (the data is frequently hand-edited, after all), make sure we add it
+  // first.
+  const forcedRadicalRow = !props.comp.some(
+    comp => comp.c === rad.b || comp.c === rad.k
+  )
+    ? radicalRow
+    : null;
+
   return (
     <div class="components font-light mt-4 flex-grow">
       <table>
-        {radicalRow}
-        {props.comp.map(comp => renderComponent(comp, props.rad))}
+        {forcedRadicalRow}
+        {props.comp.map(comp => {
+          if (comp.c === rad.b || comp.c === rad.k) {
+            return radicalRow;
+          }
+          return renderComponent(comp, rad);
+        })}
       </table>
     </div>
   );
@@ -153,10 +167,6 @@ function renderComponent(
   radical: KanjiResult['rad']
 ): JSX.Element | null {
   let { c, na, m, m_lang } = comp;
-
-  if (comp.c === radical.b || comp.c === radical.k) {
-    return null;
-  }
 
   return (
     <tr class="component">
