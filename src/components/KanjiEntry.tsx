@@ -338,6 +338,12 @@ function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
     case 'jlpt':
       return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
 
+    case 'unicode':
+      return `U+${entry.c
+        .codePointAt(0)!
+        .toString(16)
+        .toUpperCase()}`;
+
     default:
       return entry.refs[id] ? String(entry.refs[id]) : undefined;
   }

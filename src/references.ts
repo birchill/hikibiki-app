@@ -18,6 +18,7 @@ export const ReferenceLabels: Array<[string, string]> = [
   ['py', 'Pinyin'],
   ['skip', 'SKIP'],
   ['sh_kk2', 'Tuttle Kanji & Kana (2011)'],
+  ['unicode', 'Unicode'],
 ];
 
 export function filterReferencesByLanguage(
