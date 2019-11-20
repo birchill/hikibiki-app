@@ -278,6 +278,14 @@ function renderReferences(props: Props) {
   const referenceLabels = getReferenceLabels({ lang: props.lang });
   const referenceData = referenceLabels
     .filter(([id]) => enabledReferences.has(id))
+    // Don't show the Nelson radical if it is the same as the regular radical
+    // (in which case it will be empty) and the regular radical is being shown.
+    .filter(([id]) => {
+      if (id !== 'nelson_r') {
+        return true;
+      }
+      return !enabledReferences.has('radical') || !!props.rad.nelson;
+    })
     .map(([id, label]) => `${label} ${getReferenceValue(id, props) ?? '-'}`);
 
   return (
@@ -304,6 +312,17 @@ function renderReferences(props: Props) {
 
 function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
   switch (id) {
+    case 'nelson_r': {
+      // If we are trying to get the Nelson radical value and it's not set, it
+      // means that it's the same as the regular radical so we should fall
+      // through.
+      if (entry.rad.nelson) {
+        const { nelson } = entry.rad;
+        return `${nelson} ${String.fromCodePoint(nelson + 0x2eff)}`;
+      }
+      // Fall through
+    }
+
     case 'radical': {
       const { rad } = entry;
       const radChar = rad.base ? rad.base.b || rad.base.k : rad.b || rad.k;
