@@ -8,6 +8,7 @@ export const ReferenceLabels: Array<[string, string]> = [
   ['heisig6', 'Heisig (6th ed.)'],
   ['henshall', 'Henshall'],
   ['busy_people', 'Japanese for Busy People'],
+  ['jlpt', 'JLPT'],
   ['kanji_in_context', 'Kanji in Context'],
   ['sh_desc', 'The Kanji Dictionary'],
   ['halpern_kkld_2ed', "Kanji Learner's Dictionary (2nd ed.)"],

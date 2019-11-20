@@ -335,6 +335,9 @@ function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
     case 'py':
       return entry.r.py ? entry.r.py.join(', ') : undefined;
 
+    case 'jlpt':
+      return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
+
     default:
       return entry.refs[id] ? String(entry.refs[id]) : undefined;
   }
