@@ -1,4 +1,29 @@
-export const ReferenceLabels: Array<[string, string]> = [
+const ReferenceIds = [
+  'radical',
+  'nelson_r',
+  'kanken',
+  'conning',
+  'nelson_c',
+  'halpern_njecd',
+  'heisig6',
+  'henshall',
+  'busy_people',
+  'jlpt',
+  'kanji_in_context',
+  'sh_desc',
+  'halpern_kkld_2ed',
+  'kodansha_compact',
+  'maniette',
+  'nelson_n',
+  'py',
+  'skip',
+  'sh_kk2',
+  'unicode',
+] as const;
+
+export type ReferenceId = typeof ReferenceIds[number];
+
+export const ReferenceLabels: Array<[ReferenceId, string]> = [
   ['radical', 'Radical'],
   ['nelson_r', 'Nelson Radical'],
   ['kanken', '漢検'],
@@ -22,9 +47,9 @@ export const ReferenceLabels: Array<[string, string]> = [
 ];
 
 export function filterReferencesByLanguage(
-  references: Array<[string, string]>,
+  references: Array<[ReferenceId, string]>,
   lang?: string
-): Array<[string, string]> {
+): Array<[ReferenceId, string]> {
   return references.filter(
     ([id]) =>
       id !== 'maniette' || (typeof lang !== 'undefined' && lang === 'fr')

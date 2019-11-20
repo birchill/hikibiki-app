@@ -2,7 +2,7 @@ import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 import { KanjiResult } from '@birchill/hikibiki-data';
 
-import { getReferenceLabels } from '../references';
+import { getReferenceLabels, ReferenceId } from '../references';
 import { LinkLabels } from '../links';
 
 interface Props extends KanjiResult {
@@ -310,7 +310,10 @@ function renderReferences(props: Props) {
   );
 }
 
-function getReferenceValue(id: string, entry: KanjiResult): string | undefined {
+function getReferenceValue(
+  id: ReferenceId,
+  entry: KanjiResult
+): string | undefined {
   switch (id) {
     case 'nelson_r': {
       // If we are trying to get the Nelson radical value and it's not set, it
