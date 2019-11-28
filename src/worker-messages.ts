@@ -17,6 +17,10 @@ export const destroyDb = () => ({
   type: 'destroy',
 });
 
+export const rebuildDb = () => ({
+  type: 'rebuild',
+});
+
 export interface CombinedDatabaseState {
   databaseState: DatabaseState;
   updateState: UpdateState;
@@ -64,6 +68,7 @@ export type WorkerMessage =
   | ReturnType<typeof updateDb>
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
+  | ReturnType<typeof rebuildDb>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof query>
   | ReturnType<typeof notifyQueryResult>

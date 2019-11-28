@@ -65,6 +65,8 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         heading += ' (💔)';
         break;
     }
+  } else if (!expanded && databaseState === DatabaseState.Unavailable) {
+    heading += ' (💔)';
   }
 
   return (
@@ -195,6 +197,8 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       let status: string | JSX.Element;
       if (databaseState === DatabaseState.Empty) {
         status = 'No database';
+      } else if (databaseState === DatabaseState.Unavailable) {
+        status = 'Database storage unavailable';
       } else {
         const { major, minor, patch } = databaseVersions.kanjidb!;
         status = (
@@ -214,7 +218,9 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
           <div class="flex-grow mr-8 italic">{status}</div>
           <div class="self-end">
             <button class={buttonStyles} type="button" onClick={props.onUpdate}>
-              Check for updates
+              {databaseState === DatabaseState.Unavailable
+                ? 'Retry'
+                : 'Check for updates'}
             </button>
           </div>
         </div>

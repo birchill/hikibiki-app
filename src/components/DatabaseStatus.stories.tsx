@@ -330,27 +330,10 @@ storiesOf('Components|DatabaseStatus', module)
       />
     </div>
   ))
-  .add('out-of-date', () => (
+  .add('unavailable', () => (
     <DatabaseStatus
-      databaseState={DatabaseState.OutOfDate}
-      databaseVersions={{
-        kanjidb: {
-          major: 1,
-          minor: 0,
-          patch: 0,
-          databaseVersion: '2019-197',
-          dateOfCreation: '2019-07-16',
-          lang: 'en',
-        },
-        bushudb: {
-          major: 1,
-          minor: 0,
-          patch: 0,
-          databaseVersion: '2019-197',
-          dateOfCreation: '2019-07-16',
-          lang: 'en',
-        },
-      }}
+      databaseState={DatabaseState.Unavailable}
+      databaseVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
       initiallyExpanded
     />

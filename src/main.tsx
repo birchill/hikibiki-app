@@ -50,7 +50,9 @@ import './index.css';
         databaseState = state.databaseState;
         updateState = state.updateState;
         databaseVersions = state.versions;
-        runInitialDbUpdate();
+        if (databaseState !== DatabaseState.Unavailable) {
+          runInitialDbUpdate();
+        }
         update();
         break;
 
@@ -104,7 +106,11 @@ import './index.css';
   };
 
   const updateDb = () => {
-    dbWorker.postMessage(messages.updateDb());
+    if (databaseState === DatabaseState.Unavailable) {
+      dbWorker.postMessage(messages.rebuildDb());
+    } else {
+      dbWorker.postMessage(messages.updateDb());
+    }
   };
 
   const cancelDbUpdate = () => {

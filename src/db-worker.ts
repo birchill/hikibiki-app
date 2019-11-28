@@ -11,31 +11,36 @@ import {
 
 declare var self: DedicatedWorkerGlobalScope;
 
-const db = new KanjiDatabase();
+let db = initDb();
 
-db.onChange = () => {
-  // Wait until we have finished resolving the database versions before
-  // reporting anything.
-  if (
-    typeof db.dbVersions.kanjidb === 'undefined' ||
-    typeof db.dbVersions.bushudb === 'undefined'
-  ) {
-    return;
-  }
+function initDb(): KanjiDatabase {
+  const result = new KanjiDatabase();
+  result.onChange = () => {
+    // Wait until we have finished resolving the database versions before
+    // reporting anything.
+    if (
+      typeof db.dbVersions.kanjidb === 'undefined' ||
+      typeof db.dbVersions.bushudb === 'undefined'
+    ) {
+      return;
+    }
 
-  const combinedState: CombinedDatabaseState = {
-    databaseState: db.state,
-    updateState: toCloneableUpdateState(db.updateState),
-    versions: db.dbVersions as ResolvedDbVersions,
+    const combinedState: CombinedDatabaseState = {
+      databaseState: db.state,
+      updateState: toCloneableUpdateState(db.updateState),
+      versions: db.dbVersions as ResolvedDbVersions,
+    };
+
+    try {
+      self.postMessage(notifyDbStateUpdated(combinedState));
+    } catch (e) {
+      console.log('Error posting message');
+      console.log(e);
+    }
   };
 
-  try {
-    self.postMessage(notifyDbStateUpdated(combinedState));
-  } catch (e) {
-    console.log('Error posting message');
-    console.log(e);
-  }
-};
+  return result;
+}
 
 onmessage = (evt: MessageEvent) => {
   // We seem to get random events here occasionally. Not sure where they come
@@ -55,6 +60,17 @@ onmessage = (evt: MessageEvent) => {
 
     case 'destroy':
       db.destroy();
+      break;
+
+    case 'rebuild':
+      db.destroy()
+        .then(() => {
+          db = initDb();
+        })
+        .catch(e => {
+          console.error('Error rebuildling database');
+          console.error(e);
+        });
       break;
 
     case 'query':
