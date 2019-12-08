@@ -13,7 +13,7 @@ jobs:
     - name: Verify build
       run: |
         yarn install
-        yarn test
+        yarn build
       env:
         CI: true
     - name: Verify storybook setup
