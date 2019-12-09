@@ -5,6 +5,7 @@ import {
   DatabaseState,
   KanjiResult,
 } from '@birchill/hikibiki-data';
+import Rollbar from 'rollbar';
 
 import { DB_LANGUAGES } from './db-languages';
 import { WorkerMessage } from './worker-messages';
@@ -26,6 +27,14 @@ import './index.css';
   }
 
   const dbWorker = new Worker('./db-worker', { type: 'module' });
+  const rollbar = new Rollbar({
+    accessToken: 'c5e59969fd504e6c8b9064f67beb9e93',
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+    payload: {
+      environment: process.env.NODE_ENV,
+    },
+  });
 
   let databaseState: DatabaseState = DatabaseState.Initializing;
   let databaseVersions: {
@@ -103,6 +112,7 @@ import './index.css';
 
   dbWorker.onmessageerror = (evt: MessageEvent) => {
     console.log(`Worker error: ${JSON.stringify(evt)}`);
+    rollbar.error(`Worker error: ${JSON.stringify(evt)}`);
   };
 
   const updateDb = () => {
