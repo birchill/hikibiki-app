@@ -56,6 +56,15 @@ import './index.css';
         } else if (entries.length && state.databaseState !== DatabaseState.Ok) {
           entries = [];
         }
+
+        if (
+          updateState.state !== 'error' &&
+          state.updateState.state === 'error'
+        ) {
+          const { name, message } = state.updateState.error;
+          rollbar.error(`${name}: ${message}`, state.updateState);
+        }
+
         databaseState = state.databaseState;
         updateState = state.updateState;
         databaseVersions = state.versions;
