@@ -47,7 +47,7 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
-    "@birchill/hikibiki-data": "^1.5.1",
+    "@birchill/hikibiki-data": "^1.5.3",
     "preact": "^10.1.0",
     "rollbar": "^2.14.4",
     "tailwindcss": "^1.1.4"
