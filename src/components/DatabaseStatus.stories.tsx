@@ -87,15 +87,15 @@ storiesOf('Components|DatabaseStatus', module)
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{
-          state: 'error',
-          dbName: 'kanjidb',
-          error: {
-            name: 'DownloadError',
-            message: 'Could not parse JSON in database file: #$%&#$%&',
-            code: DownloadErrorCode.DatabaseFileInvalidJSON,
-          },
+          state: 'idle',
           lastCheck: null,
+        }}
+        updateError={{
+          name: 'DownloadError',
+          message: 'Could not parse JSON in database file: #$%&#$%&',
+          code: DownloadErrorCode.DatabaseFileInvalidJSON,
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryCount: 0,
         }}
         initiallyExpanded
       />
@@ -103,8 +103,12 @@ storiesOf('Components|DatabaseStatus', module)
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{
-          state: 'offline',
+          state: 'idle',
           lastCheck: null,
+        }}
+        updateError={{
+          name: 'OfflineError',
+          message: '',
         }}
         initiallyExpanded
       />
@@ -290,15 +294,15 @@ storiesOf('Components|DatabaseStatus', module)
           },
         }}
         updateState={{
-          state: 'error',
-          dbName: 'kanjidb',
-          error: {
-            name: 'DownloadError',
-            message: 'Could not parse JSON in database file: #$%&#$%&',
-            code: DownloadErrorCode.DatabaseFileInvalidJSON,
-          },
+          state: 'idle',
           lastCheck: new Date(),
+        }}
+        updateError={{
+          name: 'DownloadError',
+          message: 'Could not parse JSON in database file: #$%&#$%&',
+          code: DownloadErrorCode.DatabaseFileInvalidJSON,
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryCount: 0,
         }}
         initiallyExpanded
       />
@@ -323,8 +327,12 @@ storiesOf('Components|DatabaseStatus', module)
           },
         }}
         updateState={{
-          state: 'offline',
+          state: 'idle',
           lastCheck: new Date(),
+        }}
+        updateError={{
+          name: 'OfflineError',
+          message: '',
         }}
         initiallyExpanded
       />
@@ -389,11 +397,15 @@ storiesOf('Components|DatabaseStatus', module)
         databaseState={DatabaseState.Empty}
         databaseVersions={{}}
         updateState={{
-          state: 'error',
-          dbName: 'kanjidb',
-          error: { name: 'Bad error', message: 'Something went wrong' },
+          state: 'idle',
           lastCheck: null,
+        }}
+        updateError={{
+          name: 'Bad error',
+          message: 'Something went wrong',
+          code: DownloadErrorCode.DatabaseFileInvalidJSON,
           nextRetry: new Date(new Date().getTime() + 30 * 1000),
+          retryCount: 0,
         }}
       />
     </div>

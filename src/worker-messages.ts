@@ -2,11 +2,16 @@ import {
   DatabaseState,
   DatabaseVersion,
   KanjiResult,
+  UpdateErrorState,
   UpdateState,
 } from '@birchill/hikibiki-data';
 
 export const updateDb = () => ({
   type: 'update',
+});
+
+export const forceUpdateDb = () => ({
+  type: 'forceupdate',
 });
 
 export const cancelDbUpdate = () => ({
@@ -24,6 +29,7 @@ export const rebuildDb = () => ({
 export interface CombinedDatabaseState {
   databaseState: DatabaseState;
   updateState: UpdateState;
+  updateError?: UpdateErrorState;
   versions: ResolvedDbVersions;
 }
 

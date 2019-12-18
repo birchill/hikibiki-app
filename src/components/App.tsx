@@ -1,10 +1,11 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
-  CloneableUpdateState,
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
+  UpdateState,
+  UpdateErrorState,
 } from '@birchill/hikibiki-data';
 
 import { DatabaseStatus } from './DatabaseStatus';
@@ -19,7 +20,8 @@ type Props = {
     kanjidb?: DatabaseVersion;
     bushudb?: DatabaseVersion;
   };
-  updateState: CloneableUpdateState;
+  updateState: UpdateState;
+  updateError?: UpdateErrorState;
   entries: Array<KanjiResult>;
   search?: string;
   onUpdateSearch?: (search: string) => void;
@@ -85,6 +87,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}
           updateState={props.updateState}
+          updateError={props.updateError}
           disabled={!kanjiEnabled}
           enabledReferences={enabledReferences}
           enabledLinks={enabledLinks}

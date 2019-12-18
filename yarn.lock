@@ -745,10 +745,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-1.6.1.tgz#7a67ce21a57d73cb8459f3866274e3787098bb10"
-  integrity sha512-P6s8h7b3cd/rB+AVir+C0jwFXECtRJl9PsuIystO2ytJMPSJXUsaridcmPMYe6KG51wqMfZjT3FOiBfk52nK+g==
+"@birchill/hikibiki-data@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-2.1.0.tgz#76b0a0671c07b8a8b05359eb158b15a31bd84aaa"
+  integrity sha512-O/YS7ojH9ec9s/BPjAVzEJY4B7K6NC7gO4v91i6wdpEaGCyIqOLNe8jolvIRy1JW4NIfA3d1TziLD0zdEmKh/Q==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     idb "^4.0.5"

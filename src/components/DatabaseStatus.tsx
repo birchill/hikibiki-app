@@ -1,9 +1,11 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import {
-  CloneableUpdateState,
   DatabaseState,
   DatabaseVersion,
+  DownloadingUpdateState,
+  UpdateErrorState,
+  UpdateState,
 } from '@birchill/hikibiki-data';
 
 import { CountDown } from './CountDown';
@@ -17,7 +19,8 @@ type Props = {
     kanjidb?: DatabaseVersion;
     bushudb?: DatabaseVersion;
   };
-  updateState: CloneableUpdateState;
+  updateState: UpdateState;
+  updateError?: UpdateErrorState;
   disabled?: boolean;
   initiallyExpanded?: boolean;
   enabledReferences?: Array<string>;
@@ -61,8 +64,10 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         heading += ' (updating…)';
         break;
 
-      case 'error':
-        heading += ' (💔)';
+      default:
+        if (hasUpdateError(props)) {
+          heading += ' (💔)';
+        }
         break;
     }
   } else if (!expanded && databaseState === DatabaseState.Unavailable) {
@@ -184,8 +189,17 @@ function renderLicenseInfo(props: Props): JSX.Element {
   );
 }
 
+function hasUpdateError(props: Props): boolean {
+  const { updateError } = props;
+  return (
+    !!updateError &&
+    updateError.name !== 'AbortError' &&
+    updateError.name !== 'OfflineError'
+  );
+}
+
 function renderDatabaseStatus(props: Props): JSX.Element | null {
-  const { databaseState, updateState, databaseVersions } = props;
+  const { updateState } = props;
 
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
@@ -193,39 +207,8 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
     'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 self-end leading-none rounded focus:outline-none border-2 shadow cursor-default';
 
   switch (updateState.state) {
-    case 'idle': {
-      let status: string | JSX.Element;
-      if (databaseState === DatabaseState.Empty) {
-        status = 'No database';
-      } else if (databaseState === DatabaseState.Unavailable) {
-        status = 'Database storage unavailable';
-      } else {
-        const { major, minor, patch } = databaseVersions.kanjidb!;
-        status = (
-          <Fragment>
-            <div>
-              Version {major}.{minor}.{patch}.
-            </div>
-            {updateState.lastCheck ? (
-              <div>Last check {formatDate(updateState.lastCheck)}.</div>
-            ) : null}
-          </Fragment>
-        );
-      }
-
-      return (
-        <div class="flex mb-10">
-          <div class="flex-grow mr-8 italic">{status}</div>
-          <div class="self-end">
-            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
-              {databaseState === DatabaseState.Unavailable
-                ? 'Retry'
-                : 'Check for updates'}
-            </button>
-          </div>
-        </div>
-      );
-    }
+    case 'idle':
+      return renderIdleDatabaseStatus(props, buttonStyles);
 
     case 'checking':
       return (
@@ -238,10 +221,13 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       );
 
     case 'downloading': {
-      const { major, minor, patch } = updateState.downloadVersion;
-      const { progress } = updateState;
+      const downloadingUpdateState = updateState as DownloadingUpdateState;
+      const { major, minor, patch } = downloadingUpdateState.downloadVersion;
+      const { progress } = downloadingUpdateState;
       const dbLabel =
-        updateState.dbName === 'kanjidb' ? 'kanji data' : 'radical data';
+        downloadingUpdateState.dbName === 'kanjidb'
+          ? 'kanji data'
+          : 'radical data';
       const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
         progress * 100
       )}%)`;
@@ -280,40 +266,79 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
         </div>
       );
     }
+  }
+}
 
-    case 'error':
-      return (
-        <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
-          <div class="flex-grow mr-8">
-            Update failed: {updateState.error.message}
-            {updateState.nextRetry ? (
-              <Fragment>
-                <br />
-                Retrying <CountDown deadline={updateState.nextRetry} />.
-              </Fragment>
-            ) : null}
-          </div>
-          <div>
-            <button class={buttonStyles} type="button" onClick={props.onUpdate}>
-              Retry
-            </button>
-          </div>
+function renderIdleDatabaseStatus(
+  props: Props,
+  buttonStyles: string
+): JSX.Element | null {
+  if (hasUpdateError(props)) {
+    const { updateError } = props;
+    return (
+      <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
+        <div class="flex-grow mr-8">
+          Update failed: {updateError!.message}
+          {updateError!.nextRetry ? (
+            <Fragment>
+              <br />
+              Retrying <CountDown deadline={updateError!.nextRetry} />.
+            </Fragment>
+          ) : null}
         </div>
-      );
-
-    case 'offline':
-      return (
-        <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
-          <div class="flex-grow mr-8">
-            Could not check for updates because this device is currently
-            offline. An update will be performed once the device is online
-            again.
-          </div>
+        <div>
+          <button class={buttonStyles} type="button" onClick={props.onUpdate}>
+            Retry
+          </button>
         </div>
-      );
+      </div>
+    );
   }
 
-  return null;
+  if (!!props.updateError && props.updateError.name === 'OfflineError') {
+    return (
+      <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
+        <div class="flex-grow mr-8">
+          Could not check for updates because this device is currently offline.
+          An update will be performed once the device is online again.
+        </div>
+      </div>
+    );
+  }
+
+  const { databaseState, updateState, databaseVersions } = props;
+
+  let status: string | JSX.Element;
+  if (databaseState === DatabaseState.Empty) {
+    status = 'No database';
+  } else if (databaseState === DatabaseState.Unavailable) {
+    status = 'Database storage unavailable';
+  } else {
+    const { major, minor, patch } = databaseVersions.kanjidb!;
+    status = (
+      <Fragment>
+        <div>
+          Version {major}.{minor}.{patch}.
+        </div>
+        {updateState.lastCheck ? (
+          <div>Last check {formatDate(updateState.lastCheck)}.</div>
+        ) : null}
+      </Fragment>
+    );
+  }
+
+  return (
+    <div class="flex mb-10">
+      <div class="flex-grow mr-8 italic">{status}</div>
+      <div class="self-end">
+        <button class={buttonStyles} type="button" onClick={props.onUpdate}>
+          {databaseState === DatabaseState.Unavailable
+            ? 'Retry'
+            : 'Check for updates'}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // Our special date formatting that is a simplified ISO 8601 in local time

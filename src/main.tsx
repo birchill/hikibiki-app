@@ -1,9 +1,10 @@
 import { h, render } from 'preact';
 import {
-  CloneableUpdateState,
   DatabaseVersion,
   DatabaseState,
   KanjiResult,
+  UpdateErrorState,
+  UpdateState,
 } from '@birchill/hikibiki-data';
 import Rollbar from 'rollbar';
 
@@ -41,7 +42,8 @@ import './index.css';
     kanjidb?: DatabaseVersion;
     bushudb?: DatabaseVersion;
   } = {};
-  let updateState: CloneableUpdateState = { state: 'idle', lastCheck: null };
+  let updateState: UpdateState = { state: 'idle', lastCheck: null };
+  let updateError: UpdateErrorState | undefined;
   let entries: Array<KanjiResult> = [];
 
   dbWorker.onmessage = (evt: MessageEvent) => {
@@ -57,16 +59,14 @@ import './index.css';
           entries = [];
         }
 
-        if (
-          updateState.state !== 'error' &&
-          state.updateState.state === 'error'
-        ) {
-          const { name, message } = state.updateState.error;
-          rollbar.error(`${name}: ${message}`, state.updateState);
+        if (!updateError && !!state.updateError) {
+          const { name, message } = state.updateError;
+          rollbar.error(`${name}: ${message}`, state.updateError);
         }
 
         databaseState = state.databaseState;
         updateState = state.updateState;
+        updateError = state.updateError;
         databaseVersions = state.versions;
         if (databaseState !== DatabaseState.Unavailable) {
           runInitialDbUpdate();
@@ -128,7 +128,7 @@ import './index.css';
     if (databaseState === DatabaseState.Unavailable) {
       dbWorker.postMessage(messages.rebuildDb());
     } else {
-      dbWorker.postMessage(messages.updateDb());
+      dbWorker.postMessage(messages.forceUpdateDb());
     }
   };
 
@@ -212,6 +212,7 @@ import './index.css';
         databaseState={databaseState}
         databaseVersions={databaseVersions}
         updateState={updateState}
+        updateError={updateError}
         entries={entries}
         search={q || undefined}
         onUpdateSearch={onUpdateSearch}
