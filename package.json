@@ -49,7 +49,7 @@
   "dependencies": {
     "@birchill/hikibiki-data": "^2.2.2",
     "preact": "^10.3.3",
-    "rollbar": "^2.14.4",
+    "rollbar": "^2.15.0",
     "tailwindcss": "^1.2.0"
   },
   "husky": {
