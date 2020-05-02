@@ -25,11 +25,13 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
     let clipboardText = `${props.c}`;
     clipboardText += `\n${commonReadings}`;
     clipboardText += `\n${props.m.join(', ')}`;
-    clipboardText += `\n部首：${props.rad.b ||
-      props.rad.k}（${props.rad.na.join('、')}）`;
+    clipboardText += `\n部首：${
+      props.rad.b || props.rad.k
+    }（${props.rad.na.join('、')}）`;
     if (props.rad.base) {
-      clipboardText += ` from ${props.rad.base.b ||
-        props.rad.base.k}（${props.rad.base.na.join('、')}）`;
+      clipboardText += ` from ${
+        props.rad.base.b || props.rad.base.k
+      }（${props.rad.base.na.join('、')}）`;
     }
     await navigator.clipboard.writeText(clipboardText);
 
@@ -142,7 +144,7 @@ function renderComponents(props: Props): JSX.Element {
   // not (the data is frequently hand-edited, after all), make sure we add it
   // first.
   const forcedRadicalRow = !props.comp.some(
-    comp => comp.c === rad.b || comp.c === rad.k
+    (comp) => comp.c === rad.b || comp.c === rad.k
   )
     ? radicalRow
     : null;
@@ -151,7 +153,7 @@ function renderComponents(props: Props): JSX.Element {
     <div class="components font-light mt-4 flex-grow">
       <table>
         {forcedRadicalRow}
-        {props.comp.map(comp => {
+        {props.comp.map((comp) => {
           if (comp.c === rad.b || comp.c === rad.k) {
             return radicalRow;
           }
@@ -297,7 +299,7 @@ function renderReferences(props: Props) {
         <use width="16" height="16" href="#book" />
       </svg>
       <div class="flex-grow">
-        {referenceData.map(data => (
+        {referenceData.map((data) => (
           <div
             class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800"
             lang={data.startsWith('漢検') ? 'ja' : undefined}
@@ -338,14 +340,16 @@ function getReferenceValue(
     case 'py':
       return entry.r.py ? entry.r.py.join(', ') : undefined;
 
-    case 'jlpt':
-      return entry.misc.jlpt ? String(entry.misc.jlpt) : '';
+    case 'jlpt': {
+      let result = entry.misc.jlptn ? `N${entry.misc.jlptn}` : '-';
+      if (entry.misc.jlpt) {
+        result += ` (${entry.misc.jlpt}級)`;
+      }
+      return result;
+    }
 
     case 'unicode':
-      return `U+${entry.c
-        .codePointAt(0)!
-        .toString(16)
-        .toUpperCase()}`;
+      return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
 
     default:
       return entry.refs[id] ? String(entry.refs[id]) : undefined;
