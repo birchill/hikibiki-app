@@ -108,20 +108,24 @@ function renderComponents(props: Props): JSX.Element {
       <Fragment>
         {' from '}
         <span lang="ja">
-          {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
+          <a href={`?q=${rad.base.k}`}>
+            {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
+          </a>
         </span>
       </Fragment>
     );
   }
 
+  const linkHref = `?q=${rad.base?.k || rad.k}`;
+
   const radicalRow = (
     <Fragment>
       <tr class="component radical" title="Radical for this kanji">
         <td class="px-8 rounded-l bg-gray-100" lang="ja">
-          {rad.b || rad.k}
+          <a href={linkHref}>{rad.b || rad.k}</a>
         </td>
         <td class="px-4 bg-gray-100" lang="ja">
-          {rad.na.join('、')}
+          <a href={linkHref}>{rad.na.join('、')}</a>
         </td>
         <td
           class="px-8 rounded-r bg-gray-100"
@@ -157,26 +161,24 @@ function renderComponents(props: Props): JSX.Element {
           if (comp.c === rad.b || comp.c === rad.k) {
             return radicalRow;
           }
-          return renderComponent(comp, rad);
+          return renderComponent(comp);
         })}
       </table>
     </div>
   );
 }
 
-function renderComponent(
-  comp: KanjiResult['comp'][0],
-  radical: KanjiResult['rad']
-): JSX.Element | null {
-  let { c, na, m, m_lang } = comp;
+function renderComponent(comp: KanjiResult['comp'][0]): JSX.Element | null {
+  let { c, na, k, m, m_lang } = comp;
+  const linkHref = `?q=${k || c}`;
 
   return (
     <tr class="component">
       <td class="px-8" lang="ja">
-        {c}
+        <a href={linkHref}>{c}</a>
       </td>
       <td class="px-4" lang="ja">
-        {na.length ? na[0] : '-'}
+        <a href={linkHref}>{na.length ? na[0] : '-'}</a>
       </td>
       <td class="px-8" lang={m_lang !== 'en' ? m_lang : undefined}>
         {m.length ? m[0] : '-'}
@@ -341,7 +343,7 @@ function getReferenceValue(
       return entry.r.py ? entry.r.py.join(', ') : undefined;
 
     case 'jlpt': {
-      let result = entry.misc.jlptn ? `N${entry.misc.jlptn}` : '-';
+      let result = entry.misc.jlptn ? `N${entry.misc.jlptn}` : '—';
       if (entry.misc.jlpt) {
         result += ` (${entry.misc.jlpt}級)`;
       }
