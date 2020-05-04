@@ -101,6 +101,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
 
 function renderComponents(props: Props): JSX.Element {
   const { rad } = props;
+  const linkStyles = 'hover:underline';
 
   let base: JSX.Element | null = null;
   if (rad.base) {
@@ -108,7 +109,7 @@ function renderComponents(props: Props): JSX.Element {
       <Fragment>
         {' from '}
         <span lang="ja">
-          <a href={`?q=${rad.base.k}`}>
+          <a class={linkStyles} href={`?q=${rad.base.k}`}>
             {rad.base.b || rad.base.k}（{rad.base.na.join(`、`)}）
           </a>
         </span>
@@ -122,10 +123,14 @@ function renderComponents(props: Props): JSX.Element {
     <Fragment>
       <tr class="component radical" title="Radical for this kanji">
         <td class="px-8 rounded-l bg-gray-100" lang="ja">
-          <a href={linkHref}>{rad.b || rad.k}</a>
+          <a class={linkStyles} href={linkHref}>
+            {rad.b || rad.k}
+          </a>
         </td>
         <td class="px-4 bg-gray-100" lang="ja">
-          <a href={linkHref}>{rad.na.join('、')}</a>
+          <a class={linkStyles} href={linkHref}>
+            {rad.na.join('、')}
+          </a>
         </td>
         <td
           class="px-8 rounded-r bg-gray-100"
@@ -161,24 +166,31 @@ function renderComponents(props: Props): JSX.Element {
           if (comp.c === rad.b || comp.c === rad.k) {
             return radicalRow;
           }
-          return renderComponent(comp);
+          return renderComponent(comp, linkStyles);
         })}
       </table>
     </div>
   );
 }
 
-function renderComponent(comp: KanjiResult['comp'][0]): JSX.Element | null {
+function renderComponent(
+  comp: KanjiResult['comp'][0],
+  linkStyles: string
+): JSX.Element | null {
   let { c, na, k, m, m_lang } = comp;
   const linkHref = `?q=${k || c}`;
 
   return (
     <tr class="component">
       <td class="px-8" lang="ja">
-        <a href={linkHref}>{c}</a>
+        <a class={linkStyles} href={linkHref}>
+          {c}
+        </a>
       </td>
       <td class="px-4" lang="ja">
-        <a href={linkHref}>{na.length ? na[0] : '-'}</a>
+        <a class={linkStyles} href={linkHref}>
+          {na.length ? na[0] : '-'}
+        </a>
       </td>
       <td class="px-8" lang={m_lang !== 'en' ? m_lang : undefined}>
         {m.length ? m[0] : '-'}
