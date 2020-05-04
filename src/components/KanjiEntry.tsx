@@ -355,7 +355,7 @@ function getReferenceValue(
       return entry.r.py ? entry.r.py.join(', ') : undefined;
 
     case 'jlpt': {
-      let result = entry.misc.jlptn ? `N${entry.misc.jlptn}` : '—';
+      let result = entry.misc.jlptn ? `~N${entry.misc.jlptn}` : '-';
       if (entry.misc.jlpt) {
         result += ` (${entry.misc.jlpt}級)`;
       }
@@ -431,7 +431,7 @@ function renderLinks(props: Props) {
 
 function renderKanKen(level: number | undefined): string {
   if (!level) {
-    return '—';
+    return '-';
   }
   if (level === 15) {
     return '準1級';
