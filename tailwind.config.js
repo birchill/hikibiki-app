@@ -91,11 +91,12 @@ module.exports = {
         ...fontSize,
         kanjixl: '6rem',
       },
+      gridTemplateColumns: {
+        seealso: '3em minmax(50px, max-content) minmax(120px, max-content)',
+      },
       margin: {
         ...margin,
-        '-half-input-text-2xl-py-6': `calc(-1 * (1.5 * 0.5 * ${
-          fontSize['2xl']
-        } + 12px))`,
+        '-half-input-text-2xl-py-6': `calc(-1 * (1.5 * 0.5 * ${fontSize['2xl']} + 12px))`,
       },
     },
   },
@@ -110,7 +111,7 @@ module.exports = {
     ],
   },
   plugins: [
-    function({ addVariant, e }) {
+    function ({ addVariant, e }) {
       addVariant('focus-invisible', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `.${e(

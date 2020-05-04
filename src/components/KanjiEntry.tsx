@@ -11,11 +11,17 @@ interface Props extends KanjiResult {
   enabledLinks?: Array<string>;
 }
 
-export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
-  const commonReadings = [
-    ...(props.r.on ? props.r.on : []),
-    ...(props.r.kun ? props.r.kun : []),
+function getCommonReadings(readings: KanjiResult['r']): string {
+  return [
+    ...(readings.on ? readings.on : []),
+    ...(readings.kun ? readings.kun : []),
   ].join('、');
+}
+
+const linkStyles = 'hover:underline';
+
+export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
+  const commonReadings = getCommonReadings(props.r);
 
   const clipboardCopiedLabel = useRef<HTMLDivElement | null>(null);
   const clipboardEnabled =
@@ -95,13 +101,13 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
       {renderMisc(props)}
       {renderReferences(props)}
       {renderLinks(props)}
+      {renderRelated(props)}
     </div>
   );
 };
 
 function renderComponents(props: Props): JSX.Element {
   const { rad } = props;
-  const linkStyles = 'hover:underline';
 
   let base: JSX.Element | null = null;
   if (rad.base) {
@@ -166,17 +172,14 @@ function renderComponents(props: Props): JSX.Element {
           if (comp.c === rad.b || comp.c === rad.k) {
             return radicalRow;
           }
-          return renderComponent(comp, linkStyles);
+          return renderComponent(comp);
         })}
       </table>
     </div>
   );
 }
 
-function renderComponent(
-  comp: KanjiResult['comp'][0],
-  linkStyles: string
-): JSX.Element | null {
+function renderComponent(comp: KanjiResult['comp'][0]): JSX.Element | null {
   let { c, na, k, m, m_lang } = comp;
   const linkHref = `?q=${k || c}`;
 
@@ -423,6 +426,39 @@ function renderLinks(props: Props) {
               <use width="16" height="16" href="#external" />
             </svg>
           </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function renderRelated(props: Props) {
+  if (!props.cf.length) {
+    return null;
+  }
+
+  return (
+    <div class="related mt-8">
+      <div class="seealso text-gray-500 text-light mb-2" lang="en">
+        See also
+      </div>
+      <div class="grid grid-cols-seealso items-baseline">
+        {props.cf.map((related, i) => (
+          <Fragment>
+            <div class="text-2xl" lang="ja">
+              <a class={linkStyles} href={`?q=${related.c}`}>
+                {related.c}
+              </a>
+            </div>
+            <div class="mr-8" lang="ja">
+              <a class={linkStyles} href={`?q=${related.c}`}>
+                {getCommonReadings(related.r)}
+              </a>
+            </div>
+            <div lang={related.m_lang !== 'en' ? props.m_lang : undefined}>
+              {related.m.join(', ')}
+            </div>
+          </Fragment>
         ))}
       </div>
     </div>
