@@ -97,7 +97,7 @@ import './index.css';
     }
     if (!preferredLang) {
       // Otherwise use the user's most preferred language
-      const userLanguages = navigator.languages.map(lang =>
+      const userLanguages = navigator.languages.map((lang) =>
         lang.substring(0, 2)
       );
       for (const lang of userLanguages) {
@@ -180,7 +180,13 @@ import './index.css';
     }
   }
 
-  function onUpdateSearch(search: string) {
+  function onUpdateSearch({
+    search,
+    historyMode = 'replace',
+  }: {
+    search: string;
+    historyMode?: 'replace' | 'push' | 'skip';
+  }) {
     // Ignore redundant changes since this might arise due to differences in
     // browsers handling compositionend events.
     if (q === search) {
@@ -195,6 +201,10 @@ import './index.css';
     }
     update();
 
+    if (historyMode === 'skip') {
+      return;
+    }
+
     // Update the location
     const url = new URL(document.location.href);
     const params = url.searchParams;
@@ -203,8 +213,22 @@ import './index.css';
     } else {
       params.delete('q');
     }
-    history.replaceState({}, '', url.href);
+
+    switch (historyMode) {
+      case 'push':
+        history.pushState({}, '', url.href);
+        break;
+
+      case 'replace':
+        history.replaceState({}, '', url.href);
+        break;
+    }
   }
+
+  window.addEventListener('popstate', (evt) => {
+    const search = new URL(document.location.href).searchParams.get('q') ?? '';
+    onUpdateSearch({ search, historyMode: 'skip' });
+  });
 
   function update() {
     render(

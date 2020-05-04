@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent } from 'preact';
+import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
   DatabaseVersion,
@@ -24,7 +24,10 @@ type Props = {
   updateError?: UpdateErrorState;
   entries: Array<KanjiResult>;
   search?: string;
-  onUpdateSearch?: (search: string) => void;
+  onUpdateSearch?: (options: {
+    search: string;
+    historyMode?: 'replace' | 'push' | 'skip';
+  }) => void;
   onUpdateDb?: () => void;
   onCancelDbUpdate?: () => void;
   onDestroyDb?: () => void;
@@ -51,6 +54,42 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       document.title = 'hiki Biki';
     }
   }, [props.search]);
+
+  // Handle local links
+  const onClick = useCallback(
+    (evt: JSX.TargetedEvent<HTMLElement, MouseEvent>) => {
+      if (!props.onUpdateSearch) {
+        return;
+      }
+
+      // Check for a link click
+      if (!evt.target || !(evt.target instanceof HTMLAnchorElement)) {
+        return;
+      }
+
+      // Check for a local link
+      if (evt.target.hostname != window.location.hostname) {
+        return;
+      }
+
+      // Check for normal click
+      if (evt.button !== 0 || isModifiedEvent(evt)) {
+        return;
+      }
+
+      // Check for search parameters
+      const href = new URL(evt.target.href);
+      const search = href.searchParams.get('q');
+      if (!search) {
+        return;
+      }
+
+      props.onUpdateSearch({ search, historyMode: 'push' });
+
+      evt.preventDefault();
+    },
+    [props.onUpdateSearch]
+  );
 
   // References and links
   const {
@@ -82,7 +121,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         </svg>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
-      <div class="container mx-auto max-w-3xl px-8">
+      <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
           databaseState={props.databaseState}
           databaseVersions={props.databaseVersions}
@@ -116,3 +155,6 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     </Fragment>
   );
 };
+
+const isModifiedEvent = (evt: MouseEvent) =>
+  !!(evt.metaKey || evt.altKey || evt.ctrlKey || evt.shiftKey);

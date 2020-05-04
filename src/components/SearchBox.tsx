@@ -3,14 +3,17 @@ import { useCallback } from 'preact/hooks';
 
 type Props = {
   search?: string;
-  onUpdateSearch?: (search: string) => void;
+  onUpdateSearch?: (options: {
+    search: string;
+    historyMode?: 'replace' | 'push' | 'skip';
+  }) => void;
 };
 
 export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
   const onInput = useCallback(
     (evt: JSX.TargetedEvent<HTMLInputElement, InputEvent>) => {
       if (props.onUpdateSearch && !evt.isComposing) {
-        props.onUpdateSearch(evt.currentTarget?.value ?? '');
+        props.onUpdateSearch({ search: evt.currentTarget?.value ?? '' });
       }
     },
     [props.onUpdateSearch]
@@ -25,7 +28,9 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
   const onCompositionEnd = useCallback(
     (evt: InputEvent) => {
       if (props.onUpdateSearch) {
-        props.onUpdateSearch((evt.target as HTMLInputElement).value || '');
+        props.onUpdateSearch({
+          search: (evt.target as HTMLInputElement).value || '',
+        });
       }
     },
     [props.onUpdateSearch]
