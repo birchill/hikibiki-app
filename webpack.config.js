@@ -54,11 +54,13 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      { from: 'img/*', flatten: true },
-      { from: 'src/manifest.webmanifest', flatten: true },
-      { from: '_headers' },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'img/*', flatten: true },
+        { from: 'src/manifest.webmanifest', flatten: true },
+        { from: '_headers' },
+      ],
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       excludeChunks: ['db-worker'],
