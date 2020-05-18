@@ -121,4 +121,6 @@ module.exports = {
       });
     },
   ],
+  // Silence warning since we run PurgeCSS in separate postcss step
+  purge: false,
 };
