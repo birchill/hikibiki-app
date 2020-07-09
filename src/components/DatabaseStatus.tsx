@@ -2,7 +2,7 @@ import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import {
   DatabaseState,
-  DatabaseVersion,
+  DataVersion,
   DownloadingUpdateState,
   UpdateErrorState,
   UpdateState,
@@ -15,9 +15,9 @@ import { ReferencesConfig } from './ReferencesConfig';
 
 type Props = {
   databaseState: DatabaseState;
-  databaseVersions: {
-    kanjidb?: DatabaseVersion;
-    bushudb?: DatabaseVersion;
+  dataVersions: {
+    kanji?: DataVersion;
+    radicals?: DataVersion;
   };
   updateState: UpdateState;
   updateError?: UpdateErrorState;
@@ -128,8 +128,8 @@ function renderBody(props: Props) {
     return 'Initializing…';
   }
 
-  const lang = props.databaseVersions.kanjidb
-    ? props.databaseVersions.kanjidb.lang
+  const lang = props.dataVersions.kanji
+    ? props.dataVersions.kanji.lang
     : undefined;
 
   return (
@@ -155,11 +155,11 @@ function renderLicenseInfo(props: Props): JSX.Element {
     style: { 'text-decoration-style': 'dotted' },
   };
 
-  const kanjiDbVersion = props.databaseVersions.kanjidb;
+  const kanjiDataVersion = props.dataVersions.kanji;
 
   let versionInformation = '';
-  if (kanjiDbVersion) {
-    versionInformation = ` version ${kanjiDbVersion.databaseVersion} generated on ${kanjiDbVersion.dateOfCreation}`;
+  if (kanjiDataVersion) {
+    versionInformation = ` version ${kanjiDataVersion.databaseVersion} generated on ${kanjiDataVersion.dateOfCreation}`;
   }
 
   return (
@@ -225,7 +225,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       const { major, minor, patch } = downloadingUpdateState.downloadVersion;
       const { progress } = downloadingUpdateState;
       const dbLabel =
-        downloadingUpdateState.dbName === 'kanjidb'
+        downloadingUpdateState.series === 'kanji'
           ? 'kanji data'
           : 'radical data';
       const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
@@ -251,9 +251,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
     case 'updatingdb': {
       const { major, minor, patch } = updateState.downloadVersion;
       const dbLabel =
-        updateState.dbName === 'kanjidb'
-          ? 'kanji database'
-          : 'radical database';
+        updateState.series === 'kanji' ? 'kanji database' : 'radical database';
       const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
       return (
         <div class="flex">
@@ -306,7 +304,7 @@ function renderIdleDatabaseStatus(
     );
   }
 
-  const { databaseState, updateState, databaseVersions } = props;
+  const { databaseState, updateState, dataVersions } = props;
 
   let status: string | JSX.Element;
   if (databaseState === DatabaseState.Empty) {
@@ -314,7 +312,7 @@ function renderIdleDatabaseStatus(
   } else if (databaseState === DatabaseState.Unavailable) {
     status = 'Database storage unavailable';
   } else {
-    const { major, minor, patch } = databaseVersions.kanjidb!;
+    const { major, minor, patch } = dataVersions.kanji!;
     status = (
       <Fragment>
         <div>

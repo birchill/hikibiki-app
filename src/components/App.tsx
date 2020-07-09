@@ -1,7 +1,7 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
-  DatabaseVersion,
+  DataVersion,
   DatabaseState,
   KanjiResult,
   UpdateState,
@@ -16,9 +16,9 @@ import { useStoredToggleList } from './hooks/useStoredToggleList';
 
 type Props = {
   databaseState: DatabaseState;
-  databaseVersions: {
-    kanjidb?: DatabaseVersion;
-    bushudb?: DatabaseVersion;
+  dataVersions: {
+    kanji?: DataVersion;
+    radicals?: DataVersion;
   };
   updateState: UpdateState;
   updateError?: UpdateErrorState;
@@ -36,8 +36,8 @@ type Props = {
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
   let lang: string | undefined;
-  if (props.databaseVersions.kanjidb) {
-    lang = props.databaseVersions.kanjidb.lang;
+  if (props.dataVersions.kanji) {
+    lang = props.dataVersions.kanji.lang;
   }
 
   // Toggling the database on/off
@@ -124,7 +124,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
           databaseState={props.databaseState}
-          databaseVersions={props.databaseVersions}
+          dataVersions={props.dataVersions}
           updateState={props.updateState}
           updateError={props.updateError}
           disabled={!kanjiEnabled}
@@ -148,7 +148,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       </div>
       <nav class="mt-12 sm:mt-20 mb-12">
         <LanguageSelector
-          databaseVersions={props.databaseVersions}
+          dataVersions={props.dataVersions}
           onSetLang={props.onSetLang}
         />
       </nav>

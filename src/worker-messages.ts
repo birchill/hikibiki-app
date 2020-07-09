@@ -1,6 +1,6 @@
 import {
   DatabaseState,
-  DatabaseVersion,
+  DataVersion,
   KanjiResult,
   UpdateErrorState,
   UpdateState,
@@ -30,12 +30,12 @@ export interface CombinedDatabaseState {
   databaseState: DatabaseState;
   updateState: UpdateState;
   updateError?: UpdateErrorState;
-  versions: ResolvedDbVersions;
+  versions: ResolvedDataVersions;
 }
 
-export interface ResolvedDbVersions {
-  kanjidb: DatabaseVersion | null;
-  bushudb: DatabaseVersion | null;
+export interface ResolvedDataVersions {
+  kanji: DataVersion | null;
+  radicals: DataVersion | null;
 }
 
 export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({

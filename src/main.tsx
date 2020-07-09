@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import {
-  DatabaseVersion,
+  DataVersion,
   DatabaseState,
   KanjiResult,
   UpdateErrorState,
@@ -38,9 +38,9 @@ import './index.css';
   });
 
   let databaseState: DatabaseState = DatabaseState.Initializing;
-  let databaseVersions: {
-    kanjidb?: DatabaseVersion;
-    bushudb?: DatabaseVersion;
+  let dataVersions: {
+    kanji?: DataVersion;
+    radicals?: DataVersion;
   } = {};
   let updateState: UpdateState = { state: 'idle', lastCheck: null };
   let updateError: UpdateErrorState | undefined;
@@ -67,7 +67,7 @@ import './index.css';
         databaseState = state.databaseState;
         updateState = state.updateState;
         updateError = state.updateError;
-        databaseVersions = state.versions;
+        dataVersions = state.versions;
         if (databaseState !== DatabaseState.Unavailable) {
           runInitialDbUpdate();
         }
@@ -92,8 +92,8 @@ import './index.css';
 
     // Check if we have an existing language selected
     let preferredLang: string | null = null;
-    if (databaseVersions.kanjidb) {
-      preferredLang = databaseVersions.kanjidb.lang;
+    if (dataVersions.kanji) {
+      preferredLang = dataVersions.kanji.lang;
     }
     if (!preferredLang) {
       // Otherwise use the user's most preferred language
@@ -234,7 +234,7 @@ import './index.css';
     render(
       <App
         databaseState={databaseState}
-        databaseVersions={databaseVersions}
+        dataVersions={dataVersions}
         updateState={updateState}
         updateError={updateError}
         entries={entries}

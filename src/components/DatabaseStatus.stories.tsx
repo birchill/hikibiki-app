@@ -8,7 +8,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('initializing', () => (
     <DatabaseStatus
       databaseState={DatabaseState.Initializing}
-      databaseVersions={{}}
+      dataVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
       initiallyExpanded
     />
@@ -17,23 +17,23 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{ state: 'idle', lastCheck: null }}
         initiallyExpanded
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
-        updateState={{ state: 'checking', dbName: 'kanjidb', lastCheck: null }}
+        dataVersions={{}}
+        updateState={{ state: 'checking', series: 'kanji', lastCheck: null }}
         initiallyExpanded
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'downloading',
           progress: 0,
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -48,11 +48,11 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'downloading',
           progress: 0.8523452,
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -67,10 +67,10 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'updatingdb',
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -85,7 +85,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'idle',
           lastCheck: null,
@@ -101,7 +101,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'idle',
           lastCheck: null,
@@ -118,8 +118,8 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -127,7 +127,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -141,8 +141,8 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -150,7 +150,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -161,15 +161,15 @@ storiesOf('Components|DatabaseStatus', module)
         }}
         updateState={{
           state: 'checking',
-          dbName: 'kanjidb',
+          series: 'kanji',
           lastCheck: new Date(),
         }}
         initiallyExpanded
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -177,7 +177,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -189,7 +189,7 @@ storiesOf('Components|DatabaseStatus', module)
         updateState={{
           state: 'downloading',
           progress: 0,
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -204,8 +204,8 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -213,7 +213,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -225,7 +225,7 @@ storiesOf('Components|DatabaseStatus', module)
         updateState={{
           state: 'downloading',
           progress: 0.8523452,
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -240,8 +240,8 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -249,7 +249,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -260,7 +260,7 @@ storiesOf('Components|DatabaseStatus', module)
         }}
         updateState={{
           state: 'updatingdb',
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -275,8 +275,8 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -284,7 +284,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -308,8 +308,8 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Ok}
-        databaseVersions={{
-          kanjidb: {
+        dataVersions={{
+          kanji: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -317,7 +317,7 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          bushudb: {
+          radicals: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -341,7 +341,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('unavailable', () => (
     <DatabaseStatus
       databaseState={DatabaseState.Unavailable}
-      databaseVersions={{}}
+      dataVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
       initiallyExpanded
     />
@@ -350,21 +350,21 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{ state: 'idle', lastCheck: null }}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
-        updateState={{ state: 'checking', dbName: 'kanjidb', lastCheck: null }}
+        dataVersions={{}}
+        updateState={{ state: 'checking', series: 'kanji', lastCheck: null }}
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'downloading',
           progress: 0,
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -378,10 +378,10 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'updatingdb',
-          dbName: 'kanjidb',
+          series: 'kanji',
           downloadVersion: {
             major: 1,
             minor: 0,
@@ -395,7 +395,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         databaseState={DatabaseState.Empty}
-        databaseVersions={{}}
+        dataVersions={{}}
         updateState={{
           state: 'idle',
           lastCheck: null,
@@ -413,7 +413,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('disabled', () => (
     <DatabaseStatus
       databaseState={DatabaseState.Empty}
-      databaseVersions={{}}
+      dataVersions={{}}
       updateState={{ state: 'idle', lastCheck: null }}
       disabled
     />

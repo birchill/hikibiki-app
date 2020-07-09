@@ -1,19 +1,19 @@
 import { h, FunctionalComponent } from 'preact';
-import { DatabaseVersion } from '@birchill/hikibiki-data';
+import { DataVersion } from '@birchill/hikibiki-data';
 
 import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 
 type Props = {
-  databaseVersions: {
-    kanjidb?: DatabaseVersion;
-    bushudb?: DatabaseVersion;
+  dataVersions: {
+    kanji?: DataVersion;
+    radicals?: DataVersion;
   };
   onSetLang?: (lang: string) => void;
 };
 
 export const LanguageSelector: FunctionalComponent<Props> = (props: Props) => {
-  const selectedLang = props.databaseVersions.kanjidb
-    ? props.databaseVersions.kanjidb.lang
+  const selectedLang = props.dataVersions.kanji
+    ? props.dataVersions.kanji.lang
     : 'en';
 
   return (
@@ -28,13 +28,13 @@ export const LanguageSelector: FunctionalComponent<Props> = (props: Props) => {
         id="lang"
         name="lang"
         class="bg-white text-gray-800 text-lg cursor-pointer px-6 py-2 border border-gray-600 rounded-lg"
-        onChange={evt => {
+        onChange={(evt) => {
           if (evt && evt.target && props.onSetLang) {
             props.onSetLang((evt.target as HTMLSelectElement).value);
           }
         }}
       >
-        {DB_LANGUAGES.map(lang => (
+        {DB_LANGUAGES.map((lang) => (
           <option value={lang} selected={lang === selectedLang}>
             {DB_LANGUAGE_NAMES.get(lang)!}
           </option>

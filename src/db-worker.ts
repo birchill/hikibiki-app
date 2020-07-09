@@ -1,5 +1,5 @@
 import {
-  KanjiDatabase,
+  JpdictDatabase,
   toUpdateErrorState,
   UpdateErrorState,
   updateWithRetry,
@@ -11,7 +11,7 @@ import {
   notifyQueryResult,
   notifySetPreferredLangResult,
   CombinedDatabaseState,
-  ResolvedDbVersions,
+  ResolvedDataVersions,
   WorkerMessage,
 } from './worker-messages';
 
@@ -23,8 +23,8 @@ const doDbStateNotification = debounce(() => {
   // Wait until we have finished resolving the database versions before
   // reporting anything.
   if (
-    typeof db.dbVersions.kanjidb === 'undefined' ||
-    typeof db.dbVersions.bushudb === 'undefined'
+    typeof db.dataVersions.kanji === 'undefined' ||
+    typeof db.dataVersions.radicals === 'undefined'
   ) {
     return;
   }
@@ -33,7 +33,7 @@ const doDbStateNotification = debounce(() => {
     databaseState: db.state,
     updateState: db.updateState,
     updateError: lastUpdateError,
-    versions: db.dbVersions as ResolvedDbVersions,
+    versions: db.dataVersions as ResolvedDataVersions,
   };
 
   try {
@@ -46,8 +46,8 @@ const doDbStateNotification = debounce(() => {
 
 let db = initDb();
 
-function initDb(): KanjiDatabase {
-  const result = new KanjiDatabase();
+function initDb(): JpdictDatabase {
+  const result = new JpdictDatabase();
   result.addChangeListener(doDbStateNotification);
   return result;
 }
@@ -86,14 +86,14 @@ onmessage = (evt: MessageEvent) => {
         .then(() => {
           db = initDb();
         })
-        .catch(e => {
+        .catch((e) => {
           console.error('Error rebuilding database');
           console.error(e);
         });
       break;
 
     case 'query':
-      db.getKanji(evt.data.kanji).then(result => {
+      db.getKanji(evt.data.kanji).then((result) => {
         self.postMessage(notifyQueryResult(result));
       });
       break;
