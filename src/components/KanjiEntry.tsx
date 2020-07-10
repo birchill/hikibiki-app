@@ -96,6 +96,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         class="meanings text-lg text-gray-500 text-light mb-8"
         lang={props.m_lang !== 'en' ? props.m_lang : undefined}
       >
+        {props.misc.meta ? props.misc.meta.map(renderMeta) : null}
         {props.m.join(', ')}
       </div>
       {renderMisc(props)}
@@ -199,6 +200,14 @@ function renderComponent(comp: KanjiResult['comp'][0]): JSX.Element | null {
         {m.length ? m[0] : '-'}
       </td>
     </tr>
+  );
+}
+
+function renderMeta(meta: string): JSX.Element {
+  return (
+    <span class="meta border border-gray-500 rounded p-2 m-2 text-sm">
+      {meta}
+    </span>
   );
 }
 
