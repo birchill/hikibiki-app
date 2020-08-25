@@ -50,7 +50,7 @@
     "@birchill/hikibiki-data": "^4.0.1",
     "preact": "^10.4.7",
     "rollbar": "^2.19.2",
-    "tailwindcss": "^1.6.2"
+    "tailwindcss": "^1.7.3"
   },
   "husky": {
     "hooks": {
