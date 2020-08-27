@@ -16,7 +16,17 @@ import { ProgressBar } from './ProgressBar';
 
 // TODO: Handle secondary state properly
 // TODO: Rename state to databaseState
-// TODO: Show correct license info for names case
+
+const headings: { [series in MajorDataSeries]: string } = {
+  kanji: 'Kanji',
+  names: 'Names',
+};
+
+const dataLabels: { [series in DataSeries]: string } = {
+  kanji: 'kanji data',
+  radicals: 'radical data',
+  names: 'name data',
+};
 
 type Props = {
   series: MajorDataSeries;
@@ -57,7 +67,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
 
   // We the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
-  let heading = props.series === 'kanji' ? 'Kanji' : 'Names';
+  let heading = headings[props.series];
   if (!expanded && databaseState === DataSeriesState.Empty) {
     switch (updateState.state) {
       case 'checking':
@@ -194,11 +204,7 @@ function renderDatabaseStatus({
       const { major, minor, patch } = downloadingUpdateState.downloadVersion;
       const { progress } = downloadingUpdateState;
 
-      // TODO: Make this translate the label correctly.
-      const dbLabel =
-        downloadingUpdateState.series === 'kanji'
-          ? 'kanji data'
-          : 'radical data';
+      const dbLabel = dataLabels[downloadingUpdateState.series];
       const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
         progress * 100
       )}%)`;
