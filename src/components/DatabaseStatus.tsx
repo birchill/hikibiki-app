@@ -1,10 +1,17 @@
-import { h, Fragment, FunctionalComponent, JSX, RenderableProps } from 'preact';
+import {
+  h,
+  ComponentChildren,
+  Fragment,
+  FunctionalComponent,
+  JSX,
+  RenderableProps,
+} from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import {
   DataSeries,
   DataSeriesState,
-  DownloadingUpdateState,
   MajorDataSeries,
+  UpdateState,
 } from '@birchill/hikibiki-data';
 
 import { DataSeriesInfo } from '../worker-messages';
@@ -13,9 +20,6 @@ import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
 import { LicenseInfo } from './LicenseInfo';
 import { ProgressBar } from './ProgressBar';
-
-// TODO: Handle secondary state properly
-// TODO: Rename state to databaseState
 
 const headings: { [series in MajorDataSeries]: string } = {
   kanji: 'Kanji',
@@ -30,8 +34,7 @@ const dataLabels: { [series in DataSeries]: string } = {
 
 type Props = {
   series: MajorDataSeries;
-  dbState: DataSeriesInfo;
-  secondaryState?: {
+  dataState: {
     [series in DataSeries]?: DataSeriesInfo;
   };
   disabled?: boolean;
@@ -49,26 +52,27 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
   const disabledPanelStyles =
     'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 border-transparent border';
 
-  const { dbState, initiallyExpanded, onToggleActive, series } = props;
-  const disabled = !!props.disabled;
+  const { series, initiallyExpanded, onToggleActive } = props;
 
   const [expanded, setExpanded] = useState(!!initiallyExpanded);
   const toggleExpanded = useCallback(() => setExpanded(!expanded), [expanded]);
 
   const onUpdate = useCallback(
-    () => (props.onUpdate ? props.onUpdate({ series: props.series }) : null),
-    [props.series, props.onUpdate]
+    () => (props.onUpdate ? props.onUpdate({ series }) : null),
+    [series, props.onUpdate]
   );
   const onCancel = useCallback(
-    () => (props.onCancel ? props.onCancel({ series: props.series }) : null),
-    [props.series, props.onCancel]
+    () => (props.onCancel ? props.onCancel({ series }) : null),
+    [series, props.onCancel]
   );
 
-  // We the database is empty and we're still downloading it, we should let the
+  const dataState = getCombinedDataState({ series, data: props.dataState });
+
+  // If the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
   let heading = headings[series];
-  if (!expanded && dbState.state === DataSeriesState.Empty) {
-    switch (dbState.updateState.state) {
+  if (!expanded && dataState.state === DataSeriesState.Empty) {
+    switch (dataState.updateState.state) {
       case 'checking':
       case 'downloading':
         heading += ' (downloading…)';
@@ -79,20 +83,25 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
         break;
 
       default:
-        if (hasUpdateError(props)) {
+        if (
+          dataState.updateError &&
+          dataState.updateError.name !== 'OfflineError'
+        ) {
           heading += ' (💔)';
         }
         break;
     }
-  } else if (!expanded && dbState.state === DataSeriesState.Unavailable) {
+  } else if (!expanded && dataState.state === DataSeriesState.Unavailable) {
     heading += ' (💔)';
   }
+
+  const disabled = !!props.disabled;
 
   return (
     <div className={disabled ? disabledPanelStyles : panelStyles}>
       <div className="my-10 flex flex-row items-center">
         <FancyCheckbox
-          id={`${props.series}-enabled`}
+          id={`${series}-enabled`}
           checked={!disabled}
           onChange={onToggleActive}
           theme={disabled ? 'gray' : 'orange'}
@@ -103,26 +112,111 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
         >
           {heading}
         </h2>
-        {renderSettingsIcon(props, expanded, toggleExpanded)}
+        {renderSettingsIcon({
+          disabled,
+          expanded,
+          onToggleSettings: toggleExpanded,
+        })}
       </div>
       {!disabled && expanded ? (
-        <div className="mb-10">{renderBody({ props, onUpdate, onCancel })}</div>
+        <div className="mb-10">
+          {renderBody({
+            series,
+            dataState,
+            children: props.children,
+            onUpdate,
+            onCancel,
+          })}
+        </div>
       ) : null}
     </div>
   );
 };
 
-function renderSettingsIcon(
-  props: Props,
-  expanded: boolean,
-  onToggleSettings: () => void
-) {
-  let containerStyles =
-    !props.disabled && !expanded ? 'text-orange-400' : undefined;
+// I don't know why TypeScript doesn't work out the type of Object.keys()
+// automatically but it doesn't seem to.
+function definedSeries(
+  data: Props['dataState']
+): ReadonlyArray<keyof Props['dataState']> {
+  return Object.keys(data) as ReadonlyArray<keyof Props['dataState']>;
+}
+
+// We present the user with a combined view based on the status of all the
+// different data sources that make up a "major data series".
+function getCombinedDataState({
+  series,
+  data,
+}: {
+  series: MajorDataSeries;
+  data: Props['dataState'];
+}): DataSeriesInfo {
+  // Simple case of a single data series
+  if (definedSeries(data).length === 1) {
+    return data[definedSeries(data)[0]]!;
+  }
+
+  // If any of the series are initializing, empty, unavailable, the whole series is.
+  let state: DataSeriesState = DataSeriesState.Ok;
+  for (const series of definedSeries(data)) {
+    if (data[series]!.state !== DataSeriesState.Ok) {
+      state = data[series]!.state;
+      break;
+    }
+  }
+
+  // The version is the version corresponding to the major data series. (For now
+  // anyway we have an invariant that the major data series is always
+  // available.)
+  if (typeof data[series] === 'undefined') {
+    throw new Error(`No data available for major data series: ${series}`);
+  }
+  const version = data[series]!.version;
+
+  // The update state is the first series that is not idle or else it is the
+  // update state of the major data series.
+  let updateState: UpdateState = data[series]!.updateState;
+  for (const series of definedSeries(data)) {
+    const thisUpdateState = data[series]!.updateState;
+    if (thisUpdateState.state !== 'idle') {
+      updateState = thisUpdateState;
+      break;
+    }
+  }
+
+  const result: DataSeriesInfo = {
+    state,
+    version,
+    updateState,
+  };
+
+  // The update error is similarly, the first one we find that isn't an
+  // AbortError (since it's not really an error for the purposes of displaying
+  // to the user).
+  for (const series of definedSeries(data)) {
+    const updateError = data[series]?.updateError;
+    if (updateError && updateError.name !== 'AbortError') {
+      result.updateError = updateError;
+      break;
+    }
+  }
+
+  return result;
+}
+
+function renderSettingsIcon({
+  disabled,
+  expanded,
+  onToggleSettings,
+}: {
+  disabled: boolean;
+  expanded: boolean;
+  onToggleSettings: () => void;
+}) {
+  let containerStyles = !disabled && !expanded ? 'text-orange-400' : undefined;
   containerStyles +=
     ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400 focus-invisible:border-transparent';
 
-  if (!!props.disabled) {
+  if (disabled) {
     containerStyles += ' invisible pointer-events-none';
   }
 
@@ -137,47 +231,41 @@ function renderSettingsIcon(
 }
 
 function renderBody({
-  props,
+  series,
+  dataState,
+  children,
   onUpdate,
   onCancel,
 }: {
-  props: RenderableProps<Props>;
+  series: MajorDataSeries;
+  dataState: DataSeriesInfo;
+  children?: ComponentChildren;
   onUpdate: () => void;
   onCancel: () => void;
 }) {
-  const { dbState: state } = props;
-  if (state.state === DataSeriesState.Initializing) {
+  if (dataState.state === DataSeriesState.Initializing) {
     return 'Initializing…';
   }
 
   return (
     <Fragment>
-      <LicenseInfo series={props.series} version={props.dbState.version} />
-      {renderDatabaseStatus({ props, onUpdate, onCancel })}
-      {state.state !== DataSeriesState.Empty ? props.children : null}
+      <LicenseInfo series={series} version={dataState.version} />
+      {renderDatabaseStatus({ dataState, onUpdate, onCancel })}
+      {dataState.state !== DataSeriesState.Empty ? children : null}
     </Fragment>
   );
 }
 
-function hasUpdateError(props: Props): boolean {
-  const { updateError } = props.dbState;
-  return (
-    !!updateError &&
-    updateError.name !== 'AbortError' &&
-    updateError.name !== 'OfflineError'
-  );
-}
-
 function renderDatabaseStatus({
-  props,
+  dataState,
   onUpdate,
   onCancel,
 }: {
-  props: Props;
+  dataState: DataSeriesInfo;
   onUpdate: () => void;
   onCancel: () => void;
 }): JSX.Element | null {
-  const { updateState } = props.dbState;
+  const { updateState } = dataState;
 
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
@@ -186,7 +274,7 @@ function renderDatabaseStatus({
 
   switch (updateState.state) {
     case 'idle':
-      return renderIdleDatabaseStatus({ props, buttonStyles, onUpdate });
+      return renderIdleDatabaseStatus({ dataState, buttonStyles, onUpdate });
 
     case 'checking':
       return (
@@ -199,11 +287,10 @@ function renderDatabaseStatus({
       );
 
     case 'downloading': {
-      const downloadingUpdateState = updateState as DownloadingUpdateState;
-      const { major, minor, patch } = downloadingUpdateState.downloadVersion;
-      const { progress } = downloadingUpdateState;
+      const { major, minor, patch } = updateState.downloadVersion;
+      const { progress } = updateState;
 
-      const dbLabel = dataLabels[downloadingUpdateState.series];
+      const dbLabel = dataLabels[updateState.series];
       const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
         progress * 100
       )}%)`;
@@ -244,24 +331,38 @@ function renderDatabaseStatus({
 }
 
 function renderIdleDatabaseStatus({
-  props,
+  dataState,
   buttonStyles,
   onUpdate,
 }: {
-  props: Props;
+  dataState: DataSeriesInfo;
   buttonStyles: string;
   onUpdate: () => void;
 }): JSX.Element | null {
-  if (hasUpdateError(props)) {
-    const { updateError } = props.dbState;
+  const { updateError } = dataState;
+
+  // Offline case
+  if (updateError && updateError.name === 'OfflineError') {
+    return (
+      <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
+        <div class="flex-grow mr-8">
+          Could not check for updates because this device is currently offline.
+          An update will be performed once the device is online again.
+        </div>
+      </div>
+    );
+  }
+
+  // Any other error (except AbortErrors which we skip in getUpdateError)
+  if (updateError) {
     return (
       <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
         <div class="flex-grow mr-8">
-          Update failed: {updateError!.message}
-          {updateError!.nextRetry ? (
+          Update failed: {updateError.message}
+          {updateError.nextRetry ? (
             <Fragment>
               <br />
-              Retrying <CountDown deadline={updateError!.nextRetry} />.
+              Retrying <CountDown deadline={updateError.nextRetry} />.
             </Fragment>
           ) : null}
         </div>
@@ -274,19 +375,7 @@ function renderIdleDatabaseStatus({
     );
   }
 
-  const { updateError } = props.dbState;
-  if (!!updateError && updateError.name === 'OfflineError') {
-    return (
-      <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
-        <div class="flex-grow mr-8">
-          Could not check for updates because this device is currently offline.
-          An update will be performed once the device is online again.
-        </div>
-      </div>
-    );
-  }
-
-  const { state, updateState, version } = props.dbState;
+  const { state, updateState, version } = dataState;
 
   let status: string | JSX.Element;
   if (state === DataSeriesState.Empty) {
