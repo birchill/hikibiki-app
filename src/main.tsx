@@ -98,6 +98,57 @@ import './index.css';
     update();
   }
 
+  // Preferred lang
+  let preferredLang: string | undefined;
+  get('lang', settingsStore).then((lang: string | undefined) => {
+    if (lang && DB_LANGUAGES.includes(lang)) {
+      preferredLang = lang;
+    }
+  });
+
+  function getLangToUse(): string {
+    // Check for an explicit user setting
+    if (preferredLang) {
+      return preferredLang;
+    }
+
+    // Otherwise check if we have downloaded some particular language
+    // (currently only the kanji/radicals database support languages other thna
+    // English).
+    if (databaseState.kanji.state === DataSeriesState.Ok) {
+      return databaseState.kanji.version!.lang;
+    }
+
+    // Otherwise try the user's most preferred language
+    const userLanguages = navigator.languages.map((lang) =>
+      lang.substring(0, 2)
+    );
+    for (const lang of userLanguages) {
+      if (DB_LANGUAGES.includes(lang)) {
+        return lang;
+      }
+    }
+
+    // Finally fall back to English since all databases support that.
+    return 'en';
+  }
+
+  async function onSetLang(lang: string) {
+    if (!DB_LANGUAGES.includes(lang)) {
+      throw new Error(`Unsupported language requested: ${lang}`);
+    }
+
+    if (lang === getLangToUse()) {
+      return;
+    }
+
+    preferredLang = lang;
+    set('lang', lang, settingsStore);
+
+    updateDb();
+    update();
+  }
+
   let entries: { kanji: Array<KanjiResult>; names: Array<NameResult> } = {
     kanji: [],
     names: [],
@@ -179,34 +230,12 @@ import './index.css';
     }
   }
 
-  function getPreferredLang() {
-    // Check if we have an existing language selected
-    if (databaseState.kanji.state === DataSeriesState.Ok) {
-      return databaseState.kanji.version!.lang;
-    }
-
-    // Otherwise use the user's most preferred language
-    const userLanguages = navigator.languages.map((lang) =>
-      lang.substring(0, 2)
-    );
-    for (const lang of userLanguages) {
-      if (DB_LANGUAGES.includes(lang)) {
-        return lang;
-      }
-    }
-
-    return 'en';
-  }
-
   dbWorker.onmessageerror = (evt: MessageEvent) => {
     console.log(`Worker error: ${JSON.stringify(evt)}`);
     rollbar.error(`Worker error: ${JSON.stringify(evt)}`);
   };
 
-  const updateDb = ({
-    series,
-    lang: requestedLang,
-  }: { series?: MajorDataSeries; lang?: string } = {}) => {
+  const updateDb = ({ series }: { series?: MajorDataSeries } = {}) => {
     // We use this same callback to trigger re-building the database when it is
     // unavailable.
     //
@@ -220,7 +249,7 @@ import './index.css';
       return;
     }
 
-    const lang = requestedLang || getPreferredLang();
+    const lang = getLangToUse();
 
     if (series) {
       dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
@@ -234,12 +263,6 @@ import './index.css';
   const cancelDbUpdate = ({ series }: { series: MajorDataSeries }) => {
     dbWorker.postMessage(messages.cancelDbUpdate({ series }));
   };
-
-  async function onSetLang(lang: string) {
-    // TODO: Actually store this in local storage so that even if we disable all
-    // the data stores we don't forget it.
-    updateDb({ lang });
-  }
 
   const params = new URL(document.location.href).searchParams;
   let q = params.get('q');
@@ -329,6 +352,7 @@ import './index.css';
       <App
         databaseState={databaseState}
         enabledSeries={enabledSeries}
+        lang={getLangToUse()}
         entries={entries}
         search={q || undefined}
         onUpdateSearch={onUpdateSearch}

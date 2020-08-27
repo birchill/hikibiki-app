@@ -18,6 +18,7 @@ import { useStoredToggleList } from './hooks/useStoredToggleList';
 type Props = {
   databaseState: CombinedDatabaseState;
   enabledSeries: Set<MajorDataSeries>;
+  lang: string;
   entries: {
     kanji: Array<KanjiResult>;
     names: Array<NameResult>;
@@ -168,10 +169,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         />
       </div>
       <nav class="mt-12 sm:mt-20 mb-12">
-        <LanguageSelector
-          lang={props.databaseState.kanji.version?.lang}
-          onSetLang={props.onSetLang}
-        />
+        <LanguageSelector lang={props.lang} onSetLang={props.onSetLang} />
       </nav>
     </Fragment>
   );
