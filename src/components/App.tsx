@@ -1,12 +1,12 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import {
-  DataVersion,
-  DatabaseState,
   KanjiResult,
-  UpdateState,
-  UpdateErrorState,
+  MajorDataSeries,
+  NameResult,
 } from '@birchill/hikibiki-data';
+
+import { CombinedDatabaseState } from '../worker-messages';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
@@ -15,35 +15,34 @@ import { SearchBox } from './SearchBox';
 import { useStoredToggleList } from './hooks/useStoredToggleList';
 
 type Props = {
-  databaseState: DatabaseState;
-  dataVersions: {
-    kanji?: DataVersion;
-    radicals?: DataVersion;
+  databaseState: CombinedDatabaseState;
+  entries: {
+    kanji: Array<KanjiResult>;
+    names: Array<NameResult>;
   };
-  updateState: UpdateState;
-  updateError?: UpdateErrorState;
-  entries: Array<KanjiResult>;
   search?: string;
   onUpdateSearch?: (options: {
     search: string;
     historyMode?: 'replace' | 'push' | 'skip';
   }) => void;
-  onUpdateDb?: () => void;
-  onCancelDbUpdate?: () => void;
-  onDestroyDb?: () => void;
+  onUpdateDb?: (params: { series: MajorDataSeries }) => void;
+  onCancelDbUpdate?: (params: { series: MajorDataSeries }) => void;
   onSetLang?: (lang: string) => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
-  let lang: string | undefined;
-  if (props.dataVersions.kanji) {
-    lang = props.dataVersions.kanji.lang;
-  }
-
-  // Toggling the database on/off
+  // Toggling the kanji database on/off
   const [kanjiEnabled, setKanjiEnabled] = useState(true);
   const toggleKanjiEnabled = useCallback(() => setKanjiEnabled(!kanjiEnabled), [
     kanjiEnabled,
+  ]);
+
+  // Toggling the names database on/off
+  //
+  // TODO: Toggling this on needs to trigger an call to update DB
+  const [namesEnabled, setNamesEnabled] = useState(false);
+  const toggleNamesEnabled = useCallback(() => setNamesEnabled(!namesEnabled), [
+    namesEnabled,
   ]);
 
   // Document title
@@ -123,32 +122,42 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
-          databaseState={props.databaseState}
-          dataVersions={props.dataVersions}
-          updateState={props.updateState}
-          updateError={props.updateError}
+          series="kanji"
+          state={props.databaseState.kanji}
+          secondaryState={{ radicals: props.databaseState.radicals }}
           disabled={!kanjiEnabled}
           enabledReferences={enabledReferences}
           enabledLinks={enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
-          onDestroy={props.onDestroyDb}
           onToggleActive={toggleKanjiEnabled}
           onToggleReference={onToggleReference}
           onToggleLink={onToggleLink}
         />
         {kanjiEnabled ? (
           <KanjiList
-            entries={props.entries}
-            lang={lang}
+            entries={props.entries.kanji}
+            lang={props.databaseState.kanji.version?.lang}
             enabledReferences={enabledReferences}
             enabledLinks={enabledLinks}
           />
         ) : null}
       </div>
+      <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
+        <DatabaseStatus
+          series="names"
+          state={props.databaseState.names}
+          disabled={!namesEnabled}
+          enabledReferences={enabledReferences}
+          enabledLinks={enabledLinks}
+          onUpdate={props.onUpdateDb}
+          onCancel={props.onCancelDbUpdate}
+          onToggleActive={toggleNamesEnabled}
+        />
+      </div>
       <nav class="mt-12 sm:mt-20 mb-12">
         <LanguageSelector
-          dataVersions={props.dataVersions}
+          lang={props.databaseState.kanji.version?.lang}
           onSetLang={props.onSetLang}
         />
       </nav>

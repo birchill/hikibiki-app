@@ -1,20 +1,14 @@
 import { h, FunctionalComponent } from 'preact';
-import { DataVersion } from '@birchill/hikibiki-data';
 
 import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 
 type Props = {
-  dataVersions: {
-    kanji?: DataVersion;
-    radicals?: DataVersion;
-  };
+  lang?: string;
   onSetLang?: (lang: string) => void;
 };
 
 export const LanguageSelector: FunctionalComponent<Props> = (props: Props) => {
-  const selectedLang = props.dataVersions.kanji
-    ? props.dataVersions.kanji.lang
-    : 'en';
+  const selectedLang = props.lang || 'en';
 
   return (
     <div class="flex mx-auto justify-center items-center">

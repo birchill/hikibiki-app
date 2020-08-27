@@ -1,114 +1,138 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/preact';
-import { DatabaseState, DownloadErrorCode } from '@birchill/hikibiki-data';
+import { DataSeriesState, DownloadErrorCode } from '@birchill/hikibiki-data';
 
 import { DatabaseStatus } from './DatabaseStatus';
 
 storiesOf('Components|DatabaseStatus', module)
   .add('initializing', () => (
     <DatabaseStatus
-      databaseState={DatabaseState.Initializing}
-      dataVersions={{}}
-      updateState={{ state: 'idle', lastCheck: null }}
+      series="kanji"
+      state={{
+        state: DataSeriesState.Initializing,
+        version: null,
+        updateState: { state: 'idle', lastCheck: null },
+      }}
       initiallyExpanded
     />
   ))
   .add('empty', () => (
     <div>
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{ state: 'idle', lastCheck: null }}
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: { state: 'idle', lastCheck: null },
+        }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{ state: 'checking', series: 'kanji', lastCheck: null }}
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: { state: 'checking', series: 'kanji', lastCheck: null },
+        }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'downloading',
-          progress: 0,
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'downloading',
+            progress: 0,
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: null,
           },
-          lastCheck: null,
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'downloading',
-          progress: 0.8523452,
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'downloading',
+            progress: 0.8523452,
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: null,
           },
-          lastCheck: null,
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'updatingdb',
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'updatingdb',
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: null,
           },
-          lastCheck: null,
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'idle',
-          lastCheck: null,
-        }}
-        updateError={{
-          name: 'DownloadError',
-          message: 'Could not parse JSON in database file: #$%&#$%&',
-          code: DownloadErrorCode.DatabaseFileInvalidJSON,
-          nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryCount: 0,
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'idle',
+            lastCheck: null,
+          },
+          updateError: {
+            name: 'DownloadError',
+            message: 'Could not parse JSON in database file: #$%&#$%&',
+            code: DownloadErrorCode.DatabaseFileInvalidJSON,
+            nextRetry: new Date(new Date().getTime() + 30 * 1000),
+            retryCount: 0,
+          },
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'idle',
-          lastCheck: null,
-        }}
-        updateError={{
-          name: 'OfflineError',
-          message: '',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'idle',
+            lastCheck: null,
+          },
+          updateError: {
+            name: 'OfflineError',
+            message: '',
+          },
         }}
         initiallyExpanded
       />
@@ -117,9 +141,10 @@ storiesOf('Components|DatabaseStatus', module)
   .add('ok', () => (
     <div>
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -127,49 +152,35 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+          updateState: {
+            state: 'idle',
+            lastCheck: new Date(),
           },
         }}
-        updateState={{ state: 'idle', lastCheck: new Date() }}
-        initiallyExpanded
-      />
-      <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
-          },
+        secondaryState={{
           radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
           },
-        }}
-        updateState={{
-          state: 'checking',
-          series: 'kanji',
-          lastCheck: new Date(),
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -177,35 +188,36 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+          updateState: {
+            state: 'checking',
+            series: 'kanji',
+            lastCheck: new Date(),
           },
         }}
-        updateState={{
-          state: 'downloading',
-          progress: 0,
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        secondaryState={{
+          radicals: {
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
           },
-          lastCheck: new Date(),
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -213,35 +225,45 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+          updateState: {
+            state: 'downloading',
+            progress: 0,
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: new Date(),
           },
         }}
-        updateState={{
-          state: 'downloading',
-          progress: 0.8523452,
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        secondaryState={{
+          radicals: {
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
           },
-          lastCheck: new Date(),
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -249,34 +271,45 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
-          radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+          updateState: {
+            state: 'downloading',
+            progress: 0.8523452,
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: new Date(),
           },
         }}
-        updateState={{
-          state: 'updatingdb',
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        secondaryState={{
+          radicals: {
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
           },
-          lastCheck: new Date(),
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -284,32 +317,44 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
+          updateState: {
+            state: 'updatingdb',
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: new Date(),
+          },
+        }}
+        secondaryState={{
           radicals: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
           },
-        }}
-        updateState={{
-          state: 'idle',
-          lastCheck: new Date(),
-        }}
-        updateError={{
-          name: 'DownloadError',
-          message: 'Could not parse JSON in database file: #$%&#$%&',
-          code: DownloadErrorCode.DatabaseFileInvalidJSON,
-          nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryCount: 0,
         }}
         initiallyExpanded
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Ok}
-        dataVersions={{
-          kanji: {
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -317,7 +362,42 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
+          updateState: {
+            state: 'idle',
+            lastCheck: new Date(),
+          },
+          updateError: {
+            name: 'DownloadError',
+            message: 'Could not parse JSON in database file: #$%&#$%&',
+            code: DownloadErrorCode.DatabaseFileInvalidJSON,
+            nextRetry: new Date(new Date().getTime() + 30 * 1000),
+            retryCount: 0,
+          },
+        }}
+        secondaryState={{
           radicals: {
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
+          },
+        }}
+        initiallyExpanded
+      />
+      <DatabaseStatus
+        series="kanji"
+        state={{
+          state: DataSeriesState.Ok,
+          version: {
             major: 1,
             minor: 0,
             patch: 0,
@@ -325,14 +405,31 @@ storiesOf('Components|DatabaseStatus', module)
             dateOfCreation: '2019-07-16',
             lang: 'en',
           },
+          updateState: {
+            state: 'idle',
+            lastCheck: new Date(),
+          },
+          updateError: {
+            name: 'OfflineError',
+            message: '',
+          },
         }}
-        updateState={{
-          state: 'idle',
-          lastCheck: new Date(),
-        }}
-        updateError={{
-          name: 'OfflineError',
-          message: '',
+        secondaryState={{
+          radicals: {
+            state: DataSeriesState.Ok,
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: {
+              state: 'idle',
+              lastCheck: new Date(),
+            },
+          },
         }}
         initiallyExpanded
       />
@@ -340,81 +437,99 @@ storiesOf('Components|DatabaseStatus', module)
   ))
   .add('unavailable', () => (
     <DatabaseStatus
-      databaseState={DatabaseState.Unavailable}
-      dataVersions={{}}
-      updateState={{ state: 'idle', lastCheck: null }}
+      series="kanji"
+      state={{
+        state: DataSeriesState.Unavailable,
+        version: null,
+        updateState: { state: 'idle', lastCheck: null },
+      }}
       initiallyExpanded
     />
   ))
   .add('collapsed', () => (
     <div>
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{ state: 'idle', lastCheck: null }}
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: { state: 'idle', lastCheck: null },
+        }}
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{ state: 'checking', series: 'kanji', lastCheck: null }}
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: { state: 'checking', series: 'kanji', lastCheck: null },
+        }}
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'downloading',
-          progress: 0,
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'downloading',
+            progress: 0,
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: null,
           },
-          lastCheck: null,
         }}
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'updatingdb',
-          series: 'kanji',
-          downloadVersion: {
-            major: 1,
-            minor: 0,
-            patch: 0,
-            databaseVersion: '2019-197',
-            dateOfCreation: '2019-07-16',
-            lang: 'en',
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: {
+            state: 'updatingdb',
+            series: 'kanji',
+            downloadVersion: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            lastCheck: null,
           },
-          lastCheck: new Date(),
         }}
       />
       <DatabaseStatus
-        databaseState={DatabaseState.Empty}
-        dataVersions={{}}
-        updateState={{
-          state: 'idle',
-          lastCheck: null,
-        }}
-        updateError={{
-          name: 'Bad error',
-          message: 'Something went wrong',
-          code: DownloadErrorCode.DatabaseFileInvalidJSON,
-          nextRetry: new Date(new Date().getTime() + 30 * 1000),
-          retryCount: 0,
+        series="kanji"
+        state={{
+          state: DataSeriesState.Empty,
+          version: null,
+          updateState: { state: 'checking', series: 'kanji', lastCheck: null },
+          updateError: {
+            name: 'Bad error',
+            message: 'Something went wrong',
+            code: DownloadErrorCode.DatabaseFileInvalidJSON,
+            nextRetry: new Date(new Date().getTime() + 30 * 1000),
+            retryCount: 0,
+          },
         }}
       />
     </div>
   ))
   .add('disabled', () => (
     <DatabaseStatus
-      databaseState={DatabaseState.Empty}
-      dataVersions={{}}
-      updateState={{ state: 'idle', lastCheck: null }}
+      series="kanji"
+      state={{
+        state: DataSeriesState.Empty,
+        version: null,
+        updateState: { state: 'idle', lastCheck: null },
+      }}
       disabled
     />
   ));

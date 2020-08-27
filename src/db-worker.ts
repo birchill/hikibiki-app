@@ -1,4 +1,5 @@
 import {
+  DataSeries,
   JpdictDatabase,
   toUpdateErrorState,
   UpdateErrorState,
@@ -8,10 +9,9 @@ import {
 import { debounce } from './debounce';
 import {
   notifyDbStateUpdated,
-  notifyQueryResult,
-  notifySetPreferredLangResult,
+  notifyQueryKanjiResult,
+  notifyQueryNamesResult,
   CombinedDatabaseState,
-  ResolvedDataVersions,
   WorkerMessage,
 } from './worker-messages';
 
@@ -23,17 +23,26 @@ const doDbStateNotification = debounce(() => {
   // Wait until we have finished resolving the database versions before
   // reporting anything.
   if (
-    typeof db.dataVersions.kanji === 'undefined' ||
-    typeof db.dataVersions.radicals === 'undefined'
+    typeof db.kanji.version === 'undefined' ||
+    typeof db.radicals.version === 'undefined' ||
+    typeof db.names.version === 'undefined'
   ) {
     return;
   }
 
   const combinedState: CombinedDatabaseState = {
-    databaseState: db.state,
-    updateState: db.updateState,
-    updateError: lastUpdateError,
-    versions: db.dataVersions as ResolvedDataVersions,
+    kanji: {
+      ...db.kanji,
+      updateError: lastUpdateError.kanji,
+    },
+    radicals: {
+      ...db.radicals,
+      updateError: lastUpdateError.radicals,
+    },
+    names: {
+      ...db.names,
+      updateError: lastUpdateError.names,
+    },
   };
 
   try {
@@ -61,20 +70,30 @@ onmessage = (evt: MessageEvent) => {
 
   switch ((evt.data as WorkerMessage).type) {
     case 'update':
-      updateWithRetry({ db, onUpdateComplete, onUpdateError });
+      updateWithRetry({
+        db,
+        series: evt.data.series,
+        lang: evt.data.lang,
+        onUpdateComplete: () => onUpdateComplete({ series: evt.data.series }),
+        onUpdateError: (params) =>
+          onUpdateError({ ...params, series: evt.data.series }),
+      });
       break;
 
     case 'forceupdate':
       updateWithRetry({
         db,
+        series: evt.data.series,
+        lang: evt.data.lang,
         forceUpdate: true,
-        onUpdateComplete,
-        onUpdateError,
+        onUpdateComplete: () => onUpdateComplete({ series: evt.data.series }),
+        onUpdateError: (params) =>
+          onUpdateError({ ...params, series: evt.data.series }),
       });
       break;
 
     case 'cancelupdate':
-      db.cancelUpdate();
+      db.cancelUpdate({ series: evt.data.series });
       break;
 
     case 'destroy':
@@ -93,40 +112,35 @@ onmessage = (evt: MessageEvent) => {
       break;
 
     case 'query':
-      db.getKanji(evt.data.kanji).then((result) => {
-        self.postMessage(notifyQueryResult(result));
-      });
-      break;
-
-    case 'setpreferredlang':
-      db.setPreferredLang(evt.data.lang).then(
-        () => {
-          self.postMessage(
-            notifySetPreferredLangResult({ ok: true, lang: evt.data.lang })
-          );
-        },
-        () => {
-          self.postMessage(
-            notifySetPreferredLangResult({ ok: false, lang: evt.data.lang })
-          );
-        }
-      );
+      if (evt.data.kanji) {
+        db.getKanji(evt.data.kanji).then((result) => {
+          self.postMessage(notifyQueryKanjiResult(result));
+        });
+      }
+      if (evt.data.names) {
+        db.getNames(evt.data.names).then((result) => {
+          self.postMessage(notifyQueryNamesResult(result));
+        });
+      }
       break;
   }
 };
 
-let lastUpdateError: UpdateErrorState | undefined;
+let lastUpdateError: {
+  [series in DataSeries]: UpdateErrorState | undefined;
+} = { kanji: undefined, radicals: undefined, names: undefined };
 
-function onUpdateComplete() {
-  lastUpdateError = undefined;
+function onUpdateComplete({ series }: { series: DataSeries }) {
+  lastUpdateError[series] = undefined;
   doDbStateNotification();
 }
 
 function onUpdateError(params: {
+  series: DataSeries;
   error: Error;
   nextRetry?: Date;
   retryCount?: number;
 }) {
-  lastUpdateError = toUpdateErrorState(params);
+  lastUpdateError[params.series] = toUpdateErrorState(params);
   doDbStateNotification();
 }

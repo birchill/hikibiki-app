@@ -1,33 +1,36 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import {
-  DatabaseState,
-  DataVersion,
+  DataSeries,
+  DataSeriesState,
   DownloadingUpdateState,
-  UpdateErrorState,
-  UpdateState,
+  MajorDataSeries,
 } from '@birchill/hikibiki-data';
+
+import { DataSeriesInfo } from '../worker-messages';
 
 import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
 import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
 
+// TODO: Handle secondary state properly
+// TODO: Rename state to databaseState
+// TODO: Show correct license info for names case
+// TODO: Possibly split this into two separate things and find a way to re-use stuff somehow?
+
 type Props = {
-  databaseState: DatabaseState;
-  dataVersions: {
-    kanji?: DataVersion;
-    radicals?: DataVersion;
+  series: MajorDataSeries;
+  state: DataSeriesInfo;
+  secondaryState?: {
+    [series in DataSeries]?: DataSeriesInfo;
   };
-  updateState: UpdateState;
-  updateError?: UpdateErrorState;
   disabled?: boolean;
   initiallyExpanded?: boolean;
   enabledReferences?: Array<string>;
   enabledLinks?: Array<string>;
-  onUpdate?: () => void;
-  onCancel?: () => void;
-  onDestroy?: () => void;
+  onUpdate?: (params: { series: MajorDataSeries }) => void;
+  onCancel?: (params: { series: MajorDataSeries }) => void;
   onToggleActive?: () => void;
   onToggleReference?: (ref: string, state: boolean) => void;
   onToggleLink?: (ref: string, state: boolean) => void;
@@ -39,21 +42,26 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
   const disabledPanelStyles =
     'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 border-transparent border';
 
-  const {
-    databaseState,
-    updateState,
-    initiallyExpanded,
-    onToggleActive,
-  } = props;
+  const { state: databaseState, updateState } = props.state;
+  const { initiallyExpanded, onToggleActive } = props;
   const disabled = !!props.disabled;
 
   const [expanded, setExpanded] = useState(!!initiallyExpanded);
   const toggleExpanded = useCallback(() => setExpanded(!expanded), [expanded]);
 
+  const onUpdate = useCallback(
+    () => (props.onUpdate ? props.onUpdate({ series: props.series }) : null),
+    [props.series, props.onUpdate]
+  );
+  const onCancel = useCallback(
+    () => (props.onCancel ? props.onCancel({ series: props.series }) : null),
+    [props.series, props.onCancel]
+  );
+
   // We the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
-  let heading = 'Kanji';
-  if (!expanded && databaseState === DatabaseState.Empty) {
+  let heading = props.series === 'kanji' ? 'Kanji' : 'Names';
+  if (!expanded && databaseState === DataSeriesState.Empty) {
     switch (updateState.state) {
       case 'checking':
       case 'downloading':
@@ -70,7 +78,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         }
         break;
     }
-  } else if (!expanded && databaseState === DatabaseState.Unavailable) {
+  } else if (!expanded && databaseState === DataSeriesState.Unavailable) {
     heading += ' (💔)';
   }
 
@@ -78,7 +86,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
     <div className={disabled ? disabledPanelStyles : panelStyles}>
       <div className="my-10 flex flex-row items-center">
         <FancyCheckbox
-          id="kanjidb-enabled"
+          id={`${props.series}-enabled`}
           checked={!disabled}
           onChange={onToggleActive}
           theme={disabled ? 'gray' : 'orange'}
@@ -92,7 +100,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
         {renderSettingsIcon(props, expanded, toggleExpanded)}
       </div>
       {!disabled && expanded ? (
-        <div className="mb-10">{renderBody(props)}</div>
+        <div className="mb-10">{renderBody({ props, onUpdate, onCancel })}</div>
       ) : null}
     </div>
   );
@@ -122,21 +130,27 @@ function renderSettingsIcon(
   );
 }
 
-function renderBody(props: Props) {
-  const { databaseState } = props;
-  if (databaseState === DatabaseState.Initializing) {
+function renderBody({
+  props,
+  onUpdate,
+  onCancel,
+}: {
+  props: Props;
+  onUpdate: () => void;
+  onCancel: () => void;
+}) {
+  const { state } = props;
+  if (state.state === DataSeriesState.Initializing) {
     return 'Initializing…';
   }
 
-  const lang = props.dataVersions.kanji
-    ? props.dataVersions.kanji.lang
-    : undefined;
+  const lang = state.version?.lang;
 
   return (
     <Fragment>
       {renderLicenseInfo(props)}
-      {renderDatabaseStatus(props)}
-      {databaseState !== DatabaseState.Empty ? (
+      {renderDatabaseStatus({ props, onUpdate, onCancel })}
+      {state.state !== DataSeriesState.Empty && props.series === 'kanji' ? (
         <ReferencesConfig
           lang={lang}
           enabledReferences={props.enabledReferences}
@@ -155,7 +169,7 @@ function renderLicenseInfo(props: Props): JSX.Element {
     style: { 'text-decoration-style': 'dotted' },
   };
 
-  const kanjiDataVersion = props.dataVersions.kanji;
+  const kanjiDataVersion = props.state.version;
 
   let versionInformation = '';
   if (kanjiDataVersion) {
@@ -190,7 +204,7 @@ function renderLicenseInfo(props: Props): JSX.Element {
 }
 
 function hasUpdateError(props: Props): boolean {
-  const { updateError } = props;
+  const { updateError } = props.state;
   return (
     !!updateError &&
     updateError.name !== 'AbortError' &&
@@ -198,8 +212,16 @@ function hasUpdateError(props: Props): boolean {
   );
 }
 
-function renderDatabaseStatus(props: Props): JSX.Element | null {
-  const { updateState } = props;
+function renderDatabaseStatus({
+  props,
+  onUpdate,
+  onCancel,
+}: {
+  props: Props;
+  onUpdate: () => void;
+  onCancel: () => void;
+}): JSX.Element | null {
+  const { updateState } = props.state;
 
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
@@ -208,13 +230,13 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
 
   switch (updateState.state) {
     case 'idle':
-      return renderIdleDatabaseStatus(props, buttonStyles);
+      return renderIdleDatabaseStatus({ props, buttonStyles, onUpdate });
 
     case 'checking':
       return (
         <div class="flex">
           <div class="flex-grow mr-8 italic">Checking for updates&hellip;</div>
-          <button class={buttonStyles} type="button" onClick={props.onCancel}>
+          <button class={buttonStyles} type="button" onClick={onCancel}>
             Cancel
           </button>
         </div>
@@ -224,6 +246,8 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
       const downloadingUpdateState = updateState as DownloadingUpdateState;
       const { major, minor, patch } = downloadingUpdateState.downloadVersion;
       const { progress } = downloadingUpdateState;
+
+      // TODO: Make this translate the label correctly.
       const dbLabel =
         downloadingUpdateState.series === 'kanji'
           ? 'kanji data'
@@ -241,7 +265,7 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
               label={`${label}…`}
             />
           </div>
-          <button class={buttonStyles} type="button" onClick={props.onCancel}>
+          <button class={buttonStyles} type="button" onClick={onCancel}>
             Cancel
           </button>
         </div>
@@ -267,12 +291,17 @@ function renderDatabaseStatus(props: Props): JSX.Element | null {
   }
 }
 
-function renderIdleDatabaseStatus(
-  props: Props,
-  buttonStyles: string
-): JSX.Element | null {
+function renderIdleDatabaseStatus({
+  props,
+  buttonStyles,
+  onUpdate,
+}: {
+  props: Props;
+  buttonStyles: string;
+  onUpdate: () => void;
+}): JSX.Element | null {
   if (hasUpdateError(props)) {
-    const { updateError } = props;
+    const { updateError } = props.state;
     return (
       <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
         <div class="flex-grow mr-8">
@@ -285,7 +314,7 @@ function renderIdleDatabaseStatus(
           ) : null}
         </div>
         <div>
-          <button class={buttonStyles} type="button" onClick={props.onUpdate}>
+          <button class={buttonStyles} type="button" onClick={onUpdate}>
             Retry
           </button>
         </div>
@@ -293,7 +322,8 @@ function renderIdleDatabaseStatus(
     );
   }
 
-  if (!!props.updateError && props.updateError.name === 'OfflineError') {
+  const { updateError } = props.state;
+  if (!!updateError && updateError.name === 'OfflineError') {
     return (
       <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
         <div class="flex-grow mr-8">
@@ -304,15 +334,15 @@ function renderIdleDatabaseStatus(
     );
   }
 
-  const { databaseState, updateState, dataVersions } = props;
+  const { state, updateState, version } = props.state;
 
   let status: string | JSX.Element;
-  if (databaseState === DatabaseState.Empty) {
+  if (state === DataSeriesState.Empty) {
     status = 'No database';
-  } else if (databaseState === DatabaseState.Unavailable) {
+  } else if (state === DataSeriesState.Unavailable) {
     status = 'Database storage unavailable';
   } else {
-    const { major, minor, patch } = dataVersions.kanji!;
+    const { major, minor, patch } = version!;
     status = (
       <Fragment>
         <div>
@@ -329,8 +359,8 @@ function renderIdleDatabaseStatus(
     <div class="flex mb-10">
       <div class="flex-grow mr-8 italic">{status}</div>
       <div class="self-end">
-        <button class={buttonStyles} type="button" onClick={props.onUpdate}>
-          {databaseState === DatabaseState.Unavailable
+        <button class={buttonStyles} type="button" onClick={onUpdate}>
+          {state === DataSeriesState.Unavailable
             ? 'Retry'
             : 'Check for updates'}
         </button>

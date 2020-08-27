@@ -1,21 +1,40 @@
 import {
-  DatabaseState,
+  DataSeriesState,
   DataVersion,
   KanjiResult,
+  MajorDataSeries,
+  NameResult,
   UpdateErrorState,
   UpdateState,
 } from '@birchill/hikibiki-data';
 
-export const updateDb = () => ({
+export const updateDb = ({
+  series,
+  lang,
+}: {
+  series: MajorDataSeries;
+  lang: string;
+}) => ({
   type: 'update',
+  series,
+  lang,
 });
 
-export const forceUpdateDb = () => ({
+export const forceUpdateDb = ({
+  series,
+  lang,
+}: {
+  series: MajorDataSeries;
+  lang: string;
+}) => ({
   type: 'forceupdate',
+  series,
+  lang,
 });
 
-export const cancelDbUpdate = () => ({
+export const cancelDbUpdate = ({ series }: { series: MajorDataSeries }) => ({
   type: 'cancelupdate',
+  series,
 });
 
 export const destroyDb = () => ({
@@ -26,16 +45,17 @@ export const rebuildDb = () => ({
   type: 'rebuild',
 });
 
-export interface CombinedDatabaseState {
-  databaseState: DatabaseState;
+export interface DataSeriesInfo {
+  state: DataSeriesState;
+  version: DataVersion | null;
   updateState: UpdateState;
   updateError?: UpdateErrorState;
-  versions: ResolvedDataVersions;
 }
 
-export interface ResolvedDataVersions {
-  kanji: DataVersion | null;
-  radicals: DataVersion | null;
+export interface CombinedDatabaseState {
+  kanji: DataSeriesInfo;
+  radicals: DataSeriesInfo;
+  names: DataSeriesInfo;
 }
 
 export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
@@ -43,31 +63,26 @@ export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
   state,
 });
 
-export const query = ({ kanji }: { kanji: Array<string> }) => ({
+export const query = ({
+  kanji,
+  names,
+}: {
+  kanji?: Array<string>;
+  names?: string;
+}) => ({
   type: 'query',
   kanji,
+  names,
 });
 
-export const notifyQueryResult = (results: Array<KanjiResult>) => ({
+export const notifyQueryKanjiResult = (results: Array<KanjiResult>) => ({
   type: 'queryresult',
-  results,
+  kanji: results,
 });
 
-export const setPreferredLang = ({ lang }: { lang: string | null }) => ({
-  type: 'setpreferredlang',
-  lang,
-});
-
-export const notifySetPreferredLangResult = ({
-  ok,
-  lang,
-}: {
-  ok: boolean;
-  lang: string | null;
-}) => ({
-  type: 'setpreferredlangresult',
-  ok,
-  lang,
+export const notifyQueryNamesResult = (results: Array<NameResult>) => ({
+  type: 'queryresult',
+  names: results,
 });
 
 export type WorkerMessage =
@@ -77,6 +92,5 @@ export type WorkerMessage =
   | ReturnType<typeof rebuildDb>
   | ReturnType<typeof notifyDbStateUpdated>
   | ReturnType<typeof query>
-  | ReturnType<typeof notifyQueryResult>
-  | ReturnType<typeof setPreferredLang>
-  | ReturnType<typeof notifySetPreferredLangResult>;
+  | ReturnType<typeof notifyQueryKanjiResult>
+  | ReturnType<typeof notifyQueryNamesResult>;
