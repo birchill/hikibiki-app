@@ -10,6 +10,7 @@ import { CombinedDatabaseState } from '../worker-messages';
 
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
+import { NameList } from './NameList';
 import { LanguageSelector } from './LanguageSelector';
 import { ReferencesConfig } from './ReferencesConfig';
 import { SearchBox } from './SearchBox';
@@ -167,6 +168,12 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           onCancel={props.onCancelDbUpdate}
           onToggleActive={toggleNamesEnabled}
         />
+        {namesEnabled ? (
+          <NameList
+            entries={props.entries.names}
+            lang={props.databaseState.kanji.version?.lang}
+          />
+        ) : null}
       </div>
       <nav class="mt-12 sm:mt-20 mb-12">
         <LanguageSelector lang={props.lang} onSetLang={props.onSetLang} />
