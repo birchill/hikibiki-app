@@ -8,7 +8,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('initializing', () => (
     <DatabaseStatus
       series="kanji"
-      state={{
+      dbState={{
         state: DataSeriesState.Initializing,
         version: null,
         updateState: { state: 'idle', lastCheck: null },
@@ -20,7 +20,7 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: { state: 'idle', lastCheck: null },
@@ -29,7 +29,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: { state: 'checking', series: 'kanji', lastCheck: null },
@@ -38,7 +38,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -60,7 +60,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -82,7 +82,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -103,7 +103,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -122,7 +122,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -142,7 +142,7 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -178,7 +178,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -215,7 +215,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -261,7 +261,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -307,7 +307,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -352,7 +352,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -395,7 +395,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Ok,
           version: {
             major: 1,
@@ -438,7 +438,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('unavailable', () => (
     <DatabaseStatus
       series="kanji"
-      state={{
+      dbState={{
         state: DataSeriesState.Unavailable,
         version: null,
         updateState: { state: 'idle', lastCheck: null },
@@ -450,7 +450,7 @@ storiesOf('Components|DatabaseStatus', module)
     <div>
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: { state: 'idle', lastCheck: null },
@@ -458,7 +458,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: { state: 'checking', series: 'kanji', lastCheck: null },
@@ -466,7 +466,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -487,7 +487,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: {
@@ -507,7 +507,7 @@ storiesOf('Components|DatabaseStatus', module)
       />
       <DatabaseStatus
         series="kanji"
-        state={{
+        dbState={{
           state: DataSeriesState.Empty,
           version: null,
           updateState: { state: 'checking', series: 'kanji', lastCheck: null },
@@ -525,7 +525,7 @@ storiesOf('Components|DatabaseStatus', module)
   .add('disabled', () => (
     <DatabaseStatus
       series="kanji"
-      state={{
+      dbState={{
         state: DataSeriesState.Empty,
         version: null,
         updateState: { state: 'idle', lastCheck: null },

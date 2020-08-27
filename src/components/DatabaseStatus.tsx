@@ -30,7 +30,7 @@ const dataLabels: { [series in DataSeries]: string } = {
 
 type Props = {
   series: MajorDataSeries;
-  state: DataSeriesInfo;
+  dbState: DataSeriesInfo;
   secondaryState?: {
     [series in DataSeries]?: DataSeriesInfo;
   };
@@ -49,8 +49,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
   const disabledPanelStyles =
     'bg-white rounded-lg px-10 sm:px-20 mb-12 text-gray-600 border-transparent border';
 
-  const { state: databaseState, updateState } = props.state;
-  const { initiallyExpanded, onToggleActive } = props;
+  const { dbState, initiallyExpanded, onToggleActive, series } = props;
   const disabled = !!props.disabled;
 
   const [expanded, setExpanded] = useState(!!initiallyExpanded);
@@ -67,9 +66,9 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
 
   // We the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
-  let heading = headings[props.series];
-  if (!expanded && databaseState === DataSeriesState.Empty) {
-    switch (updateState.state) {
+  let heading = headings[series];
+  if (!expanded && dbState.state === DataSeriesState.Empty) {
+    switch (dbState.updateState.state) {
       case 'checking':
       case 'downloading':
         heading += ' (downloading…)';
@@ -85,7 +84,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
         }
         break;
     }
-  } else if (!expanded && databaseState === DataSeriesState.Unavailable) {
+  } else if (!expanded && dbState.state === DataSeriesState.Unavailable) {
     heading += ' (💔)';
   }
 
@@ -146,14 +145,14 @@ function renderBody({
   onUpdate: () => void;
   onCancel: () => void;
 }) {
-  const { state } = props;
+  const { dbState: state } = props;
   if (state.state === DataSeriesState.Initializing) {
     return 'Initializing…';
   }
 
   return (
     <Fragment>
-      <LicenseInfo series={props.series} version={props.state.version} />
+      <LicenseInfo series={props.series} version={props.dbState.version} />
       {renderDatabaseStatus({ props, onUpdate, onCancel })}
       {state.state !== DataSeriesState.Empty ? props.children : null}
     </Fragment>
@@ -161,7 +160,7 @@ function renderBody({
 }
 
 function hasUpdateError(props: Props): boolean {
-  const { updateError } = props.state;
+  const { updateError } = props.dbState;
   return (
     !!updateError &&
     updateError.name !== 'AbortError' &&
@@ -178,7 +177,7 @@ function renderDatabaseStatus({
   onUpdate: () => void;
   onCancel: () => void;
 }): JSX.Element | null {
-  const { updateState } = props.state;
+  const { updateState } = props.dbState;
 
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
@@ -254,7 +253,7 @@ function renderIdleDatabaseStatus({
   onUpdate: () => void;
 }): JSX.Element | null {
   if (hasUpdateError(props)) {
-    const { updateError } = props.state;
+    const { updateError } = props.dbState;
     return (
       <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
         <div class="flex-grow mr-8">
@@ -275,7 +274,7 @@ function renderIdleDatabaseStatus({
     );
   }
 
-  const { updateError } = props.state;
+  const { updateError } = props.dbState;
   if (!!updateError && updateError.name === 'OfflineError') {
     return (
       <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
@@ -287,7 +286,7 @@ function renderIdleDatabaseStatus({
     );
   }
 
-  const { state, updateState, version } = props.state;
+  const { state, updateState, version } = props.dbState;
 
   let status: string | JSX.Element;
   if (state === DataSeriesState.Empty) {

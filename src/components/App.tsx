@@ -124,7 +124,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
           series="kanji"
-          state={props.databaseState.kanji}
+          dbState={props.databaseState.kanji}
           secondaryState={{ radicals: props.databaseState.radicals }}
           disabled={!kanjiEnabled}
           onUpdate={props.onUpdateDb}
@@ -151,7 +151,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
           series="names"
-          state={props.databaseState.names}
+          dbState={props.databaseState.names}
           disabled={!namesEnabled}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
