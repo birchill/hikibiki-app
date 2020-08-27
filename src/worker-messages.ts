@@ -81,7 +81,7 @@ export const notifyQueryKanjiResult = (results: Array<KanjiResult>) => ({
 });
 
 export const notifyQueryNamesResult = (results: Array<NameResult>) => ({
-  type: 'querynameresult',
+  type: 'querynamesresult',
   names: results,
 });
 
