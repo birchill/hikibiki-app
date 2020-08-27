@@ -6,7 +6,7 @@ import {
   updateWithRetry,
 } from '@birchill/hikibiki-data';
 
-import { debounce } from './debounce';
+import { debounceOnce } from './debounce';
 import {
   notifyDbStateUpdated,
   notifyQueryKanjiResult,
@@ -19,7 +19,10 @@ declare var self: DedicatedWorkerGlobalScope;
 
 // Debounce notifications since often we'll get an notification that the update
 // state has been updated quickly followed by a callback to onUpdateError.
-const doDbStateNotification = debounce(() => {
+//
+// Note that we only debounce once as otherwise we'll end up coalescing all the
+// download progress events and see no progress at all.
+const doDbStateNotification = debounceOnce(() => {
   // Wait until we have finished resolving the database versions before
   // reporting anything.
   if (
