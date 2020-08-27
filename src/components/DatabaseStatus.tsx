@@ -11,6 +11,7 @@ import { DataSeriesInfo } from '../worker-messages';
 
 import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
+import { LicenseInfo } from './LicenseInfo';
 import { ProgressBar } from './ProgressBar';
 import { ReferencesConfig } from './ReferencesConfig';
 
@@ -148,7 +149,7 @@ function renderBody({
 
   return (
     <Fragment>
-      {renderLicenseInfo(props)}
+      <LicenseInfo series={props.series} version={props.state.version} />
       {renderDatabaseStatus({ props, onUpdate, onCancel })}
       {state.state !== DataSeriesState.Empty && props.series === 'kanji' ? (
         <ReferencesConfig
@@ -160,46 +161,6 @@ function renderBody({
         />
       ) : null}
     </Fragment>
-  );
-}
-
-function renderLicenseInfo(props: Props): JSX.Element {
-  const linkStyles = {
-    class: 'text-orange-800 visited:text-orange-800 underline',
-    style: { 'text-decoration-style': 'dotted' },
-  };
-
-  const kanjiDataVersion = props.state.version;
-
-  let versionInformation = '';
-  if (kanjiDataVersion) {
-    versionInformation = ` version ${kanjiDataVersion.databaseVersion} generated on ${kanjiDataVersion.dateOfCreation}`;
-  }
-
-  return (
-    <div class="mb-6">
-      Includes data from{' '}
-      <a
-        href="https://www.edrdg.org/wiki/index.php/KANJIDIC_Project"
-        target="_blank"
-        {...linkStyles}
-      >
-        KANJIDIC
-      </a>
-      {versionInformation}. This data is the property of the{' '}
-      <a href="https://www.edrdg.org/" target="_blank" {...linkStyles}>
-        Electronic Dictionary Research and Development Group
-      </a>
-      , and is used in conformance with the Group's{' '}
-      <a
-        href="https://www.edrdg.org/edrdg/licence.html"
-        target="_blank"
-        {...linkStyles}
-      >
-        licence
-      </a>
-      .
-    </div>
   );
 }
 
