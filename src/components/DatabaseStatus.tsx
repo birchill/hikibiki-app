@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { h, Fragment, FunctionalComponent, JSX, RenderableProps } from 'preact';
 import { useState, useCallback } from 'preact/hooks';
 import {
   DataSeries,
@@ -13,12 +13,10 @@ import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
 import { LicenseInfo } from './LicenseInfo';
 import { ProgressBar } from './ProgressBar';
-import { ReferencesConfig } from './ReferencesConfig';
 
 // TODO: Handle secondary state properly
 // TODO: Rename state to databaseState
 // TODO: Show correct license info for names case
-// TODO: Possibly split this into two separate things and find a way to re-use stuff somehow?
 
 type Props = {
   series: MajorDataSeries;
@@ -28,16 +26,14 @@ type Props = {
   };
   disabled?: boolean;
   initiallyExpanded?: boolean;
-  enabledReferences?: Array<string>;
-  enabledLinks?: Array<string>;
   onUpdate?: (params: { series: MajorDataSeries }) => void;
   onCancel?: (params: { series: MajorDataSeries }) => void;
   onToggleActive?: () => void;
-  onToggleReference?: (ref: string, state: boolean) => void;
-  onToggleLink?: (ref: string, state: boolean) => void;
 };
 
-export const DatabaseStatus: FunctionalComponent<Props> = (props: Props) => {
+export const DatabaseStatus: FunctionalComponent<Props> = (
+  props: RenderableProps<Props>
+) => {
   const panelStyles =
     'bg-orange-200 rounded-lg px-10 sm:px-20 mb-12 text-orange-1000 border-transparent border';
   const disabledPanelStyles =
@@ -136,7 +132,7 @@ function renderBody({
   onUpdate,
   onCancel,
 }: {
-  props: Props;
+  props: RenderableProps<Props>;
   onUpdate: () => void;
   onCancel: () => void;
 }) {
@@ -145,21 +141,11 @@ function renderBody({
     return 'Initializing…';
   }
 
-  const lang = state.version?.lang;
-
   return (
     <Fragment>
       <LicenseInfo series={props.series} version={props.state.version} />
       {renderDatabaseStatus({ props, onUpdate, onCancel })}
-      {state.state !== DataSeriesState.Empty && props.series === 'kanji' ? (
-        <ReferencesConfig
-          lang={lang}
-          enabledReferences={props.enabledReferences}
-          enabledLinks={props.enabledLinks}
-          onToggleReference={props.onToggleReference}
-          onToggleLink={props.onToggleLink}
-        />
-      ) : null}
+      {state.state !== DataSeriesState.Empty ? props.children : null}
     </Fragment>
   );
 }

@@ -11,6 +11,7 @@ import { CombinedDatabaseState } from '../worker-messages';
 import { DatabaseStatus } from './DatabaseStatus';
 import { KanjiList } from './KanjiList';
 import { LanguageSelector } from './LanguageSelector';
+import { ReferencesConfig } from './ReferencesConfig';
 import { SearchBox } from './SearchBox';
 import { useStoredToggleList } from './hooks/useStoredToggleList';
 
@@ -126,14 +127,18 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           state={props.databaseState.kanji}
           secondaryState={{ radicals: props.databaseState.radicals }}
           disabled={!kanjiEnabled}
-          enabledReferences={enabledReferences}
-          enabledLinks={enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onToggleActive={toggleKanjiEnabled}
-          onToggleReference={onToggleReference}
-          onToggleLink={onToggleLink}
-        />
+        >
+          <ReferencesConfig
+            lang={props.databaseState.kanji.version?.lang}
+            enabledReferences={enabledReferences}
+            enabledLinks={enabledLinks}
+            onToggleReference={onToggleReference}
+            onToggleLink={onToggleLink}
+          />
+        </DatabaseStatus>
         {kanjiEnabled ? (
           <KanjiList
             entries={props.entries.kanji}
@@ -148,8 +153,6 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           series="names"
           state={props.databaseState.names}
           disabled={!namesEnabled}
-          enabledReferences={enabledReferences}
-          enabledLinks={enabledLinks}
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onToggleActive={toggleNamesEnabled}
