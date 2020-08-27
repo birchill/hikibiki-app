@@ -1,5 +1,8 @@
 import { h, render } from 'preact';
 import {
+  allDataSeries,
+  allMajorDataSeries,
+  isMajorDataSeries,
   DataSeries,
   DataSeriesState,
   KanjiResult,
@@ -67,9 +70,8 @@ import './index.css';
 
     enabledSeries.clear();
     for (const series of storedSeries.split(',')) {
-      // TODO: Move this to hikibiki-data
-      if (['kanji', 'names'].includes(series)) {
-        enabledSeries.add(series as MajorDataSeries);
+      if (isMajorDataSeries(series)) {
+        enabledSeries.add(series);
       }
     }
   });
@@ -161,8 +163,7 @@ import './index.css';
 
         // Check if we need to update any query results as a
         // result of databases become available or unavailable.
-        const majorDataSeries: Array<MajorDataSeries> = ['kanji', 'names'];
-        for (const series of majorDataSeries) {
+        for (const series of allMajorDataSeries) {
           const wasOk =
             series === 'kanji'
               ? databaseState.kanji.state === DataSeriesState.Ok &&
@@ -243,10 +244,7 @@ import './index.css';
   const updateDb = ({ series }: { series?: MajorDataSeries } = {}) => {
     // We use this same callback to trigger re-building the database when it is
     // unavailable.
-    //
-    // TODO: Move this somewhere common (maybe even export from hikibiki-data)
-    const dataSeries: Array<DataSeries> = ['kanji', 'radicals', 'names'];
-    const isUnavailable = dataSeries.some(
+    const isUnavailable = allDataSeries.some(
       (series) => databaseState[series].state === DataSeriesState.Unavailable
     );
     if (isUnavailable) {

@@ -953,10 +953,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-5.0.1.tgz#d31d27874777bb20e4d747ed90219a62e87f403e"
-  integrity sha512-CHEcnVaiyh0kNl1MzJ1v3bTBgO9mMUBcq7pT3vaPqr9uVfq1M3fiO14qXjPmXJ09+RRhuZBweUbOu50d0hSWbA==
+"@birchill/hikibiki-data@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-5.1.0.tgz#5b1f4580d9b0b1bf2ef96d7554c7e4f58bd4b2c1"
+  integrity sha512-T8Grl+jBuRH1IbOzwqGrwT2tnUGmuGQncYhpb1JtDrj66e7E5A5/pIZTxjRfQZK+ik246wzyvui7N+mFga+rqA==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     idb "^5.0.0"
