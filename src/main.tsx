@@ -96,6 +96,9 @@ import './index.css';
       updateDb({ series });
     }
 
+    // TODO: If we have a search query, we might need to re-run the search for
+    // the newly-enabled series.
+
     // Re-render
     update();
   }
