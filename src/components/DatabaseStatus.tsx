@@ -27,9 +27,9 @@ const headings: { [series in MajorDataSeries]: string } = {
 };
 
 const dataLabels: { [series in DataSeries]: string } = {
-  kanji: 'kanji data',
-  radicals: 'radical data',
-  names: 'name data',
+  kanji: 'kanji',
+  radicals: 'radical',
+  names: 'name',
 };
 
 type Props = {
@@ -291,7 +291,7 @@ function renderDatabaseStatus({
       const { progress } = updateState;
 
       const dbLabel = dataLabels[updateState.series];
-      const label = `Downloading ${dbLabel} version ${major}.${minor}.${patch} (${Math.round(
+      const label = `Downloading ${dbLabel} data version ${major}.${minor}.${patch} (${Math.round(
         progress * 100
       )}%)`;
       return (
@@ -313,9 +313,9 @@ function renderDatabaseStatus({
 
     case 'updatingdb': {
       const { major, minor, patch } = updateState.downloadVersion;
-      const dbLabel =
-        updateState.series === 'kanji' ? 'kanji database' : 'radical database';
-      const label = `Updating ${dbLabel} to version ${major}.${minor}.${patch}`;
+      const label = `Updating ${
+        dataLabels[updateState.series]
+      } database to version ${major}.${minor}.${patch}`;
       return (
         <div class="flex">
           <div class="flex-grow mr-8">
