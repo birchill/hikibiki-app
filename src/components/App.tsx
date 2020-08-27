@@ -1,5 +1,5 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useCallback, useEffect } from 'preact/hooks';
 import {
   KanjiResult,
   MajorDataSeries,
@@ -17,6 +17,7 @@ import { useStoredToggleList } from './hooks/useStoredToggleList';
 
 type Props = {
   databaseState: CombinedDatabaseState;
+  enabledSeries: Set<MajorDataSeries>;
   entries: {
     kanji: Array<KanjiResult>;
     names: Array<NameResult>;
@@ -28,23 +29,27 @@ type Props = {
   }) => void;
   onUpdateDb?: (params: { series: MajorDataSeries }) => void;
   onCancelDbUpdate?: (params: { series: MajorDataSeries }) => void;
-  onSetLang?: (lang: string) => void;
+  onSetLang: (lang: string) => void;
+  onToggleSeries: (params: {
+    series: MajorDataSeries;
+    enabled: boolean;
+  }) => void;
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
-  // Toggling the kanji database on/off
-  const [kanjiEnabled, setKanjiEnabled] = useState(true);
-  const toggleKanjiEnabled = useCallback(() => setKanjiEnabled(!kanjiEnabled), [
-    kanjiEnabled,
-  ]);
+  // Toggle the kanji database on/off
+  const kanjiEnabled = props.enabledSeries.has('kanji');
+  const toggleKanjiEnabled = useCallback(
+    () => props.onToggleSeries({ series: 'kanji', enabled: !kanjiEnabled }),
+    [kanjiEnabled, props.onToggleSeries]
+  );
 
   // Toggling the names database on/off
-  //
-  // TODO: Toggling this on needs to trigger an call to update DB
-  const [namesEnabled, setNamesEnabled] = useState(false);
-  const toggleNamesEnabled = useCallback(() => setNamesEnabled(!namesEnabled), [
-    namesEnabled,
-  ]);
+  const namesEnabled = props.enabledSeries.has('names');
+  const toggleNamesEnabled = useCallback(
+    () => props.onToggleSeries({ series: 'names', enabled: !namesEnabled }),
+    [namesEnabled, props.onToggleSeries]
+  );
 
   // Document title
   useEffect(() => {

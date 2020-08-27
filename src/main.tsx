@@ -6,6 +6,7 @@ import {
   MajorDataSeries,
   NameResult,
 } from '@birchill/hikibiki-data';
+import { get, set, Store } from 'idb-keyval';
 import Rollbar from 'rollbar';
 
 import { DB_LANGUAGES } from './db-languages';
@@ -54,6 +55,48 @@ import './index.css';
     radicals: { ...initialDataSeriesState },
     names: { ...initialDataSeriesState },
   };
+
+  const settingsStore = new Store('hikibiki', 'settings');
+
+  // Enabled series
+  const enabledSeries: Set<MajorDataSeries> = new Set(['kanji']);
+  get('series', settingsStore).then((storedSeries: string | undefined) => {
+    if (typeof storedSeries === 'undefined') {
+      return;
+    }
+
+    enabledSeries.clear();
+    for (const series of storedSeries.split(',')) {
+      // TODO: Move this to hikibiki-data
+      if (['kanji', 'names'].includes(series)) {
+        enabledSeries.add(series as MajorDataSeries);
+      }
+    }
+  });
+
+  async function onToggleSeries({
+    series,
+    enabled,
+  }: {
+    series: MajorDataSeries;
+    enabled: boolean;
+  }) {
+    // Update local storage
+    if (enabled) {
+      enabledSeries.add(series);
+    } else {
+      enabledSeries.delete(series);
+    }
+    set('series', [...enabledSeries].join(','), settingsStore);
+
+    // If we enabled something, run an update if there's no data available.
+    if (enabled && databaseState[series].state === DataSeriesState.Empty) {
+      updateDb({ series });
+    }
+
+    // Re-render
+    update();
+  }
 
   let entries: { kanji: Array<KanjiResult>; names: Array<NameResult> } = {
     kanji: [],
@@ -182,15 +225,8 @@ import './index.css';
     if (series) {
       dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
     } else {
-      dbWorker.postMessage(messages.forceUpdateDb({ series: 'kanji', lang }));
-
-      // We only download the names dictionary if the user chooses to.
-      //
-      // TODO: We should have a better way of remembering if a data series
-      // is enabled or not, rather than just checking if there's data there or
-      // not.
-      if (databaseState.names.state === DataSeriesState.Ok) {
-        dbWorker.postMessage(messages.forceUpdateDb({ series: 'names', lang }));
+      for (const series of [...enabledSeries]) {
+        dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
       }
     }
   };
@@ -239,12 +275,16 @@ import './index.css';
 
     q = search;
     if (q) {
-      // TODO: This would also benefit from some local setting telling us which
-      // data series are supposed to be enabled.
-      if (databaseState.kanji.state === DataSeriesState.Ok) {
+      if (
+        enabledSeries.has('kanji') &&
+        databaseState.kanji.state === DataSeriesState.Ok
+      ) {
         runQuery({ series: 'kanji' });
       }
-      if (databaseState.names.state === DataSeriesState.Ok) {
+      if (
+        enabledSeries.has('names') &&
+        databaseState.names.state === DataSeriesState.Ok
+      ) {
         runQuery({ series: 'names' });
       }
     } else {
@@ -288,12 +328,14 @@ import './index.css';
     render(
       <App
         databaseState={databaseState}
+        enabledSeries={enabledSeries}
         entries={entries}
         search={q || undefined}
         onUpdateSearch={onUpdateSearch}
         onUpdateDb={updateDb}
         onCancelDbUpdate={cancelDbUpdate}
         onSetLang={onSetLang}
+        onToggleSeries={onToggleSeries}
       />,
       document.body
     );
