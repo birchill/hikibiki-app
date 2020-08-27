@@ -171,7 +171,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         {namesEnabled ? (
           <NameList
             entries={props.entries.names}
-            lang={props.databaseState.kanji.version?.lang}
+            lang={props.databaseState.names.version?.lang}
           />
         ) : null}
       </div>
