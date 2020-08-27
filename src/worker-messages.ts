@@ -76,12 +76,12 @@ export const query = ({
 });
 
 export const notifyQueryKanjiResult = (results: Array<KanjiResult>) => ({
-  type: 'queryresult',
+  type: 'querykanjiresult',
   kanji: results,
 });
 
 export const notifyQueryNamesResult = (results: Array<NameResult>) => ({
-  type: 'queryresult',
+  type: 'querynameresult',
   names: results,
 });
 

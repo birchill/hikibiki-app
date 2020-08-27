@@ -207,8 +207,13 @@ import './index.css';
         update();
         break;
 
-      case 'queryresult':
-        entries = evt.data.results;
+      case 'querykanjiresult':
+        entries = { ...entries, kanji: evt.data.kanji };
+        update();
+        break;
+
+      case 'querynamesresult':
+        entries = { ...entries, names: evt.data.names };
         update();
         break;
     }
