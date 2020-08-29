@@ -195,7 +195,7 @@ import './index.css';
             !databaseState[series].updateError &&
             !!state[series].updateError
           ) {
-            const { name, message } = state.updateError;
+            const { name, message } = state[series].updateError;
             rollbar.error(`${name}: ${message}`, state.updateError);
           }
         }
