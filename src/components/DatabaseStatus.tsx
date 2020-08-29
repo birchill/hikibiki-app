@@ -313,13 +313,21 @@ function renderDatabaseStatus({
 
     case 'updatingdb': {
       const { major, minor, patch } = updateState.downloadVersion;
-      const label = `Updating ${
-        dataLabels[updateState.series]
-      } database to version ${major}.${minor}.${patch}`;
+      const { progress } = updateState;
+
+      const dbLabel = dataLabels[updateState.series];
+      const label = `Updating ${dbLabel} database to version ${major}.${minor}.${patch} (${Math.round(
+        progress * 100
+      )}%)`;
       return (
         <div class="flex">
           <div class="flex-grow mr-8">
-            <ProgressBar id="update-progress" label={`${label}…`} />
+            <ProgressBar
+              id="update-progress"
+              max={100}
+              value={progress * 100}
+              label={`${label}…`}
+            />
           </div>
           <button class={disabledButtonStyles} type="button" disabled>
             Cancel
