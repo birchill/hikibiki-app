@@ -96,8 +96,11 @@ import './index.css';
       updateDb({ series });
     }
 
-    // TODO: If we have a search query, we might need to re-run the search for
-    // the newly-enabled series.
+    // If we enabled something, re-run the query in case the search term was
+    // altered while it was disabled.
+    if (enabled) {
+      runQuery({ series });
+    }
 
     // Re-render
     update();
