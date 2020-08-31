@@ -62,6 +62,7 @@ let db = initDb();
 
 function initDb(): JpdictDatabase {
   const result = new JpdictDatabase();
+  result.verbose = true;
   result.addChangeListener(doDbStateNotification);
   return result;
 }

@@ -193,7 +193,8 @@ import './index.css';
         for (const series of dataSeries) {
           if (
             !databaseState[series].updateError &&
-            !!state[series].updateError
+            !!state[series].updateError &&
+            state[series].updateError.name !== 'AbortError'
           ) {
             const { name, message } = state[series].updateError;
             rollbar.error(`${name}: ${message}`, state.updateError);
