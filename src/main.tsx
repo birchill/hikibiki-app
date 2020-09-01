@@ -8,6 +8,8 @@ import {
   KanjiResult,
   MajorDataSeries,
   NameResult,
+  getKanji,
+  getNames,
 } from '@birchill/hikibiki-data';
 import { get, set, Store } from 'idb-keyval';
 import Rollbar from 'rollbar';
@@ -214,16 +216,6 @@ import './index.css';
         }
         update();
         break;
-
-      case 'querykanjiresult':
-        entries = { ...entries, kanji: evt.data.kanji };
-        update();
-        break;
-
-      case 'querynamesresult':
-        entries = { ...entries, names: evt.data.names };
-        update();
-        break;
     }
   };
 
@@ -284,11 +276,20 @@ import './index.css';
 
     switch (series) {
       case 'kanji':
-        dbWorker.postMessage(messages.query({ kanji: [...q] }));
+        getKanji({
+          kanji: [...q],
+          lang: databaseState.kanji.version?.lang || 'en',
+        }).then((result) => {
+          entries = { ...entries, kanji: result };
+          update();
+        });
         break;
 
       case 'names':
-        dbWorker.postMessage(messages.query({ names: q }));
+        getNames(q).then((result) => {
+          entries = { ...entries, names: result };
+          update();
+        });
         break;
     }
   }

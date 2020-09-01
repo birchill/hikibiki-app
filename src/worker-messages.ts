@@ -1,9 +1,7 @@
 import {
   DataSeriesState,
   DataVersion,
-  KanjiResult,
   MajorDataSeries,
-  NameResult,
   UpdateErrorState,
   UpdateState,
 } from '@birchill/hikibiki-data';
@@ -63,34 +61,9 @@ export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
   state,
 });
 
-export const query = ({
-  kanji,
-  names,
-}: {
-  kanji?: Array<string>;
-  names?: string;
-}) => ({
-  type: 'query',
-  kanji,
-  names,
-});
-
-export const notifyQueryKanjiResult = (results: Array<KanjiResult>) => ({
-  type: 'querykanjiresult',
-  kanji: results,
-});
-
-export const notifyQueryNamesResult = (results: Array<NameResult>) => ({
-  type: 'querynamesresult',
-  names: results,
-});
-
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
   | ReturnType<typeof rebuildDb>
-  | ReturnType<typeof notifyDbStateUpdated>
-  | ReturnType<typeof query>
-  | ReturnType<typeof notifyQueryKanjiResult>
-  | ReturnType<typeof notifyQueryNamesResult>;
+  | ReturnType<typeof notifyDbStateUpdated>;

@@ -8,8 +8,6 @@ import {
 
 import {
   notifyDbStateUpdated,
-  notifyQueryKanjiResult,
-  notifyQueryNamesResult,
   CombinedDatabaseState,
   WorkerMessage,
 } from './worker-messages';
@@ -114,19 +112,6 @@ onmessage = (evt: MessageEvent) => {
           console.error('Error rebuilding database');
           console.error(e);
         });
-      break;
-
-    case 'query':
-      if (evt.data.kanji) {
-        db.getKanji(evt.data.kanji).then((result) => {
-          self.postMessage(notifyQueryKanjiResult(result));
-        });
-      }
-      if (evt.data.names) {
-        db.getNames(evt.data.names).then((result) => {
-          self.postMessage(notifyQueryNamesResult(result));
-        });
-      }
       break;
   }
 };
