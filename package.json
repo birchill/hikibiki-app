@@ -12,7 +12,7 @@
     "copy-webpack-plugin": "^6.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^4.2.2",
-    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-plugin": "^4.4.1",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.13",
     "mini-css-extract-plugin": "^0.10.0",
