@@ -51,7 +51,7 @@
     "idb-keyval": "^3.2.0",
     "preact": "^10.4.7",
     "rollbar": "^2.19.3",
-    "tailwindcss": "^1.7.3"
+    "tailwindcss": "^1.7.6"
   },
   "husky": {
     "hooks": {
