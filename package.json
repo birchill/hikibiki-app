@@ -1,5 +1,5 @@
 {
-  "name": "hikibiki",
+  "name": "hikibiki-app",
   "version": "0.0.1",
   "description": "Look up words and stuff",
   "main": "src/main.tsx",
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/birchill/hikibiki.git"
+    "url": "git+https://github.com/birchill/hikibiki-app.git"
   },
   "keywords": [
     "kanji",
@@ -43,7 +43,7 @@
   ],
   "author": "Brian Birtles",
   "bugs": {
-    "url": "https://github.com/birchill/hikibiki/issues"
+    "url": "https://github.com/birchill/hikibiki-app/issues"
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
