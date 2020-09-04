@@ -155,7 +155,8 @@ function getCombinedDataState({
     return data[definedSeries(data)[0]]!;
   }
 
-  // If any of the series are initializing, empty, unavailable, the whole series is.
+  // If any of the series are initializing, empty, unavailable, the whole series
+  // is.
   let state: DataSeriesState = DataSeriesState.Ok;
   for (const series of definedSeries(data)) {
     if (data[series]!.state !== DataSeriesState.Ok) {
@@ -189,7 +190,7 @@ function getCombinedDataState({
     updateState,
   };
 
-  // The update error is similarly, the first one we find that isn't an
+  // The update error is similar: the first one we find that isn't an
   // AbortError (since it's not really an error for the purposes of displaying
   // to the user).
   for (const series of definedSeries(data)) {
