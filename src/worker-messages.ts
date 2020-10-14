@@ -51,6 +51,7 @@ export interface DataSeriesInfo {
 }
 
 export interface CombinedDatabaseState {
+  words: DataSeriesInfo;
   kanji: DataSeriesInfo;
   radicals: DataSeriesInfo;
   names: DataSeriesInfo;

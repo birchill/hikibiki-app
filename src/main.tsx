@@ -2,14 +2,15 @@ import { h, render } from 'preact';
 import {
   allDataSeries,
   allMajorDataSeries,
+  getKanji,
+  getNames,
   isMajorDataSeries,
   DataSeries,
   DataSeriesState,
   KanjiResult,
   MajorDataSeries,
   NameResult,
-  getKanji,
-  getNames,
+  WordResult,
 } from '@birchill/hikibiki-data';
 import { get, set, Store } from 'idb-keyval';
 import Rollbar from 'rollbar';
@@ -56,6 +57,7 @@ import './index.css';
     },
   };
   let databaseState: CombinedDatabaseState = {
+    words: { ...initialDataSeriesState },
     kanji: { ...initialDataSeriesState },
     radicals: { ...initialDataSeriesState },
     names: { ...initialDataSeriesState },
@@ -159,7 +161,12 @@ import './index.css';
     update();
   }
 
-  let entries: { kanji: Array<KanjiResult>; names: Array<NameResult> } = {
+  let entries: {
+    words: Array<WordResult>;
+    kanji: Array<KanjiResult>;
+    names: Array<NameResult>;
+  } = {
+    words: [],
     kanji: [],
     names: [],
   };
@@ -323,6 +330,7 @@ import './index.css';
       }
     } else {
       entries = {
+        words: [],
         kanji: [],
         names: [],
       };

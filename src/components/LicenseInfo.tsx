@@ -7,11 +7,13 @@ type Props = {
 };
 
 const dictInfoLinks: { [series in MajorDataSeries]: string } = {
+  words: 'https://www.edrdg.org/jmdict/edict_doc.html',
   kanji: 'https://www.edrdg.org/wiki/index.php/KANJIDIC_Project',
-  names: 'http://www.edrdg.org/enamdict/enamdict_doc.html',
+  names: 'https://www.edrdg.org/enamdict/enamdict_doc.html',
 };
 
 const dictNames: { [series in MajorDataSeries]: string } = {
+  words: 'JMdict',
   kanji: 'KANJIDIC',
   names: 'ENAMDICT/JMnedict',
 };

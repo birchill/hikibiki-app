@@ -26,6 +26,7 @@ const doDbStateNotification = () => {
   // Wait until we have finished resolving the database versions before
   // reporting anything.
   if (
+    typeof db.words.version === 'undefined' ||
     typeof db.kanji.version === 'undefined' ||
     typeof db.radicals.version === 'undefined' ||
     typeof db.names.version === 'undefined'
@@ -34,6 +35,10 @@ const doDbStateNotification = () => {
   }
 
   const combinedState: CombinedDatabaseState = {
+    words: {
+      ...db.words,
+      updateError: lastUpdateError.words,
+    },
     kanji: {
       ...db.kanji,
       updateError: lastUpdateError.kanji,
@@ -118,7 +123,12 @@ onmessage = (evt: MessageEvent) => {
 
 let lastUpdateError: {
   [series in DataSeries]: UpdateErrorState | undefined;
-} = { kanji: undefined, radicals: undefined, names: undefined };
+} = {
+  words: undefined,
+  kanji: undefined,
+  radicals: undefined,
+  names: undefined,
+};
 
 function onUpdateComplete({ series }: { series: DataSeries }) {
   lastUpdateError[series] = undefined;

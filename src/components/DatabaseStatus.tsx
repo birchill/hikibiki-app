@@ -22,11 +22,13 @@ import { LicenseInfo } from './LicenseInfo';
 import { ProgressBar } from './ProgressBar';
 
 const headings: { [series in MajorDataSeries]: string } = {
+  words: 'Words',
   kanji: 'Kanji',
   names: 'Names',
 };
 
 const dataLabels: { [series in DataSeries]: string } = {
+  words: 'words',
   kanji: 'kanji',
   radicals: 'radical',
   names: 'name',
