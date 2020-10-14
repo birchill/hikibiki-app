@@ -127,5 +127,6 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
     standardFontWeights: true,
+    defaultLineHeights: true,
   },
 };
