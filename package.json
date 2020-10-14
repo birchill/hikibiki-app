@@ -29,7 +29,7 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base dist",
+    "start": "webpack serve --content-base dist",
     "storybook": "start-storybook -p 9001 -c .storybook -s dist",
     "build:storybook": "build-storybook -c .storybook -s dist"
   },
@@ -47,7 +47,7 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
-    "@birchill/hikibiki-data": "^6.3.2",
+    "@birchill/hikibiki-data": "^6.3.3",
     "idb-keyval": "^3.2.0",
     "preact": "^10.5.4",
     "rollbar": "^2.19.3",
