@@ -35,8 +35,28 @@ function renderListWithMatches<
   // the same shading as the preceding item.
   return array.map((item, i) => (
     <span class={item.match ? '' : 'text-gray-400 font-normal'}>
-      {item.ent}
+      {renderHeadword(item)}
       {i < array.length - 1 ? '、' : ''}
     </span>
   ));
+}
+
+function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
+  if (headword.matchRange) {
+    // We happen to know that we only currently do startsWith matching so the
+    // range is always going to start at zero.
+    console.assert(headword.matchRange[0] === 0, 'Range should start at 0');
+    const highlighted = [...headword.ent]
+      .slice(0, headword.matchRange[1])
+      .join('');
+    const tail = [...headword.ent].slice(headword.matchRange[1]).join('');
+    return (
+      <Fragment>
+        <span class="bg-yellow-200">{highlighted}</span>
+        {tail}
+      </Fragment>
+    );
+  } else {
+    return headword.ent;
+  }
 }
