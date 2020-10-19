@@ -5,7 +5,6 @@ import {
   getKanji,
   getNames,
   isMajorDataSeries,
-  DataSeries,
   DataSeriesState,
   KanjiResult,
   MajorDataSeries,
@@ -66,7 +65,7 @@ import './index.css';
   const settingsStore = new Store('hikibiki', 'settings');
 
   // Enabled series
-  const enabledSeries: Set<MajorDataSeries> = new Set(['kanji']);
+  const enabledSeries: Set<MajorDataSeries> = new Set(['words', 'kanji']);
   get('series', settingsStore).then((storedSeries: string | undefined) => {
     if (typeof storedSeries === 'undefined') {
       return;
@@ -124,9 +123,15 @@ import './index.css';
       return preferredLang;
     }
 
-    // Otherwise check if we have downloaded some particular language
-    // (currently only the kanji/radicals database support languages other thna
-    // English).
+    // Otherwise check if we have downloaded some particular language.
+    // (The words database supports the largest range of languages so use
+    // that first).
+    if (databaseState.words.state === DataSeriesState.Ok) {
+      return databaseState.words.version!.lang;
+    }
+
+    // However, we shipped support for the kanji database first so try that
+    // next.
     if (databaseState.kanji.state === DataSeriesState.Ok) {
       return databaseState.kanji.version!.lang;
     }
@@ -198,8 +203,7 @@ import './index.css';
         }
 
         // Check if there are any update errors to report
-        const dataSeries: Array<DataSeries> = ['kanji', 'radicals', 'names'];
-        for (const series of dataSeries) {
+        for (const series of allDataSeries) {
           if (
             !databaseState[series].updateError &&
             !!state[series].updateError &&
@@ -214,7 +218,7 @@ import './index.css';
 
         // Generally if one data series is unavailable, they are all
         // unavailable, but if at least one is available, run the update.
-        const hasAvailableData = dataSeries.some(
+        const hasAvailableData = allDataSeries.some(
           (series) =>
             databaseState[series].state !== DataSeriesState.Unavailable
         );
@@ -316,6 +320,12 @@ import './index.css';
 
     q = search;
     if (q) {
+      if (
+        enabledSeries.has('words') &&
+        databaseState.words.state === DataSeriesState.Ok
+      ) {
+        runQuery({ series: 'words' });
+      }
       if (
         enabledSeries.has('kanji') &&
         databaseState.kanji.state === DataSeriesState.Ok

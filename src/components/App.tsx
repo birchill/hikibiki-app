@@ -4,6 +4,7 @@ import {
   KanjiResult,
   MajorDataSeries,
   NameResult,
+  WordResult,
 } from '@birchill/hikibiki-data';
 
 import { CombinedDatabaseState } from '../worker-messages';
@@ -15,12 +16,14 @@ import { LanguageSelector } from './LanguageSelector';
 import { ReferencesConfig } from './ReferencesConfig';
 import { SearchBox } from './SearchBox';
 import { useStoredToggleList } from './hooks/useStoredToggleList';
+import { WordList } from './WordList';
 
 type Props = {
   databaseState: CombinedDatabaseState;
   enabledSeries: Set<MajorDataSeries>;
   lang: string;
   entries: {
+    words: Array<WordResult>;
     kanji: Array<KanjiResult>;
     names: Array<NameResult>;
   };
@@ -39,6 +42,13 @@ type Props = {
 };
 
 export const App: FunctionalComponent<Props> = (props: Props) => {
+  // Toggle the words database on/off
+  const wordsEnabled = props.enabledSeries.has('words');
+  const toggleWordsEnabled = useCallback(
+    () => props.onToggleSeries({ series: 'words', enabled: !wordsEnabled }),
+    [wordsEnabled, props.onToggleSeries]
+  );
+
   // Toggle the kanji database on/off
   const kanjiEnabled = props.enabledSeries.has('kanji');
   const toggleKanjiEnabled = useCallback(
@@ -128,6 +138,19 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         </svg>
       </header>
       <SearchBox search={props.search} onUpdateSearch={props.onUpdateSearch} />
+      <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
+        <DatabaseStatus
+          series="words"
+          dataState={{
+            names: props.databaseState.words,
+          }}
+          disabled={!wordsEnabled}
+          onUpdate={props.onUpdateDb}
+          onCancel={props.onCancelDbUpdate}
+          onToggleActive={toggleWordsEnabled}
+        />
+        {namesEnabled ? <WordList entries={props.entries.words} /> : null}
+      </div>
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
           series="kanji"
