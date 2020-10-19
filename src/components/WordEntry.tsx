@@ -4,27 +4,30 @@ import { WordResult } from '@birchill/hikibiki-data';
 export const WordEntry: FunctionalComponent<WordResult> = (
   props: WordResult
 ) => {
-  return <div class="word-entry text-xl mt-2 mb-2">{renderHeading(props)}</div>;
+  return (
+    <div class="word-entry text-xl mt-8 mb-8" id={`word-${props.id}`}>
+      {renderHeading(props)}
+      {renderSenses(props.s)}
+    </div>
+  );
 };
 
 function renderHeading(result: WordResult): JSX.Element {
   if (!result.k) {
     return (
-      <span class="mr-10 font-bold" lang="ja">
+      <div class="font-bold" lang="ja">
         {renderListWithMatches(result.r)}
-      </span>
+      </div>
     );
   }
 
   return (
-    <Fragment>
-      <span class="mr-10 font-bold" lang="ja">
-        {renderListWithMatches(result.k)}
-      </span>
-      <span class="mr-10 text-gray-700" lang="ja">
+    <div lang="ja">
+      <span class="font-bold mr-8">{renderListWithMatches(result.k)}</span>
+      <span class="text-gray-700 text-lg">
         {renderListWithMatches(result.r)}
       </span>
-    </Fragment>
+    </div>
   );
 }
 
@@ -59,4 +62,14 @@ function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
   } else {
     return headword.ent;
   }
+}
+
+function renderSenses(senses: WordResult['s']) {
+  return <ol class="ml-8">{senses.map(renderSense)}</ol>;
+}
+
+function renderSense(sense: WordResult['s'][0]) {
+  return (
+    <li lang={sense.lang || 'en'}>{sense.g.map((g) => g.str).join('; ')}</li>
+  );
 }
