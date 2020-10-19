@@ -288,7 +288,7 @@ import './index.css';
 
     switch (series) {
       case 'words':
-        getWords(q).then((result) => {
+        getWords(q, { matchType: 'startsWith', limit: 20 }).then((result) => {
           entries = { ...entries, words: result };
           update();
         });
