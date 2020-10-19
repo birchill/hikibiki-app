@@ -4,6 +4,7 @@ import {
   allMajorDataSeries,
   getKanji,
   getNames,
+  getWords,
   isMajorDataSeries,
   DataSeriesState,
   KanjiResult,
@@ -286,6 +287,13 @@ import './index.css';
     }
 
     switch (series) {
+      case 'words':
+        getWords(q).then((result) => {
+          entries = { ...entries, words: result };
+          update();
+        });
+        break;
+
       case 'kanji':
         getKanji({
           kanji: [...q],
