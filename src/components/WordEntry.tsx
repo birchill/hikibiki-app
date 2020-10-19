@@ -1,5 +1,5 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
-import { WordResult } from '@birchill/hikibiki-data';
+import { KanjiInfo, ReadingInfo, WordResult } from '@birchill/hikibiki-data';
 
 export const WordEntry: FunctionalComponent<WordResult> = (
   props: WordResult
@@ -13,7 +13,7 @@ export const WordEntry: FunctionalComponent<WordResult> = (
 };
 
 function renderHeading(result: WordResult): JSX.Element {
-  if (!result.k) {
+  if (!result.k || !result.k.length) {
     return (
       <div class="font-bold" lang="ja">
         {renderListWithMatches(result.r)}
@@ -37,8 +37,9 @@ function renderListWithMatches<
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.
   return array.map((item, i) => (
-    <span class={item.match ? '' : 'text-gray-400 font-normal'}>
+    <span class={item.match ? '' : 'text-gray-500 font-normal'}>
       {renderHeadword(item)}
+      {renderHeadwordAnnotations(item)}
       {i < array.length - 1 ? '、' : ''}
     </span>
   ));
@@ -61,6 +62,49 @@ function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
     );
   } else {
     return headword.ent;
+  }
+}
+
+function renderHeadwordAnnotations(
+  headword: WordResult['k'][0] | WordResult['r'][0]
+) {
+  if (!headword.i || !headword.i.length) {
+    return null;
+  }
+
+  return (
+    <span class="text-sm text-gray-500 font-normal ml-2">
+      {(headword.i as Array<KanjiInfo | ReadingInfo>).map(renderInfo)}
+    </span>
+  );
+}
+
+const kanjiInfoMeta: {
+  [key in KanjiInfo | ReadingInfo]: { label: string; descr?: string };
+} = {
+  ateji: { label: 'ateji', descr: 'Kanji chosen to represent sounds' },
+  io: { label: 'irr. okurigana', descr: 'Irregular okurigana (trailing kana)' },
+  iK: { label: 'irr. kanji', descr: 'Irregular kanji' },
+  ik: { label: 'irr. kana', descr: 'Irregular kana' },
+  ok: { label: 'out-dated kana' },
+  oK: { label: 'out-dated kanji' },
+  gikun: {
+    label: 'gikun',
+    descr: 'gikun (meaning as reading) or jukujikun (special kanji reading)',
+  },
+  uK: { label: 'usually kanji', descr: 'Usually written using kanji alone' },
+};
+
+function renderInfo(info: KanjiInfo | ReadingInfo) {
+  const { label, descr } = kanjiInfoMeta[info];
+  if (descr) {
+    return (
+      <span title={descr} class="underline decoration-dotted">
+        {label}
+      </span>
+    );
+  } else {
+    return label;
   }
 }
 

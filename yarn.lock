@@ -1621,10 +1621,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.4.0.tgz#28b1c097e5b958bb255539c512465e94030123ef"
-  integrity sha512-tP025dxQkBL+4RHTMDP4JAYE5Ey6OjvXJI1hwef2UQpnrexqJyHoCBmnsdgCq8Q1Dy/7OeI4bb4PyAo6FvWe+g==
+"@birchill/hikibiki-data@^6.4.1":
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-6.4.1.tgz#14fd147df49bf3bf6dc6f3dac0f4c21049842168"
+  integrity sha512-kjmVQgPn4/HMF9KaQMl1QTeg11vMGHM6p0CY6Iz+TrlS+D4i7GzvF9UzMdwITn1eAM/QTqgNKzgvdQcvzCy8dg==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     "@birchill/normal-jp" "^1.1.3"
