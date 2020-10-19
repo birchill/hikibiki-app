@@ -22,7 +22,7 @@ jobs:
         run: yarn install
 
       - name: Build production version
-        run: yarn build --json > webpack-stats.json
+        run: yarn build:stats
 
       - name: Record bundle stats
         uses: birchill/good-bundle@main

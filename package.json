@@ -29,6 +29,7 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
+    "build:stats": "cross-env NODE_ENV=production webpack --json > webpack-stats.json",
     "start": "webpack serve --content-base dist",
     "storybook": "start-storybook -p 9001 -c .storybook -s dist",
     "build:storybook": "build-storybook -c .storybook -s dist"
