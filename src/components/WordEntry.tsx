@@ -34,8 +34,9 @@ function renderListWithMatches<
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.
   return array.map((item, i) => (
-    <span class={item.match ? '' : 'text-gray-500'}>
-      item.ent{i < array.length - 1 ? '、' : ''}
+    <span class={item.match ? '' : 'text-gray-400 font-normal'}>
+      {item.ent}
+      {i < array.length - 1 ? '、' : ''}
     </span>
   ));
 }
