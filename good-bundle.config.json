@@ -1,0 +1,8 @@
+{
+  "assets": {
+    "hikibiki.js": "./dist/hikibiki.*.js",
+    "worker.js": "./dist/*.worker.js",
+    "hikibiki.css": "./dist/hikibiki.*.css"
+  },
+  "stats": "webpack-stats.json"
+}
