@@ -2,6 +2,7 @@ import { h, Fragment, FunctionalComponent } from 'preact';
 import {
   Gloss,
   KanjiInfo,
+  PartOfSpeech,
   ReadingInfo,
   WordResult,
 } from '@birchill/hikibiki-data';
@@ -207,6 +208,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
     return (
       <p class={className} lang={senses[0].lang || 'en'}>
         {renderGlosses(senses[0].g)}
+        {renderPartOfSpeech(senses[0].pos)}
       </p>
     );
   }
@@ -226,11 +228,195 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
   return (
     <li
       lang={sense.lang || 'en'}
-      class={isForeignSense(sense, lang) ? 'italic' : undefined}
+      class={isForeignSense(sense, lang) ? 'italic mb-2' : 'my-2'}
     >
       {renderGlosses(sense.g)}
+      {renderPartOfSpeech(sense.pos)}
     </li>
   );
+}
+
+const partsOfSpeechLabels: {
+  [pos in PartOfSpeech]: string | [string, string];
+} = {
+  'adj-f': ['pre-noun adj.', 'noun or verb modifying a following noun'],
+  'adj-i': ['i adj.', 'i-adjective (keiyoushi)'],
+  'adj-ix': ['ii/yoi adj.', 'yoi/ii class adjective (keiyoushi)'],
+  'adj-kari': ['kari adj.', "'kari' adjective (archaic)"],
+  'adj-ku': ['ku adj.', "'ku' adjective (archaic)"],
+  'adj-na': ['na adj.', 'adjectival noun or quasi-adjectives (keiyodoshi)'],
+  'adj-nari': ['nari adj.', 'archaic/formal form of na-adjective'],
+  'adj-no': ['no-adj.', "noun which may take the genitive case particle 'no'"],
+  'adj-pn': ['pre-noun adj.', 'pre-noun adjectival (rentaishi)'],
+  'adj-shiku': ['shiku adj.', "'shiku' adjective (archaic)"],
+  'adj-t': ['taru adj.', 'taru adjective'],
+  adv: 'adverb',
+  'adv-to': ['adverb to', "adverb taking the 'to' particle"],
+  aux: 'aux.',
+  'aux-adj': ['aux. adj.', 'auxiliary adjective'],
+  'aux-v': ['aux. verb', 'auxiliary verb'],
+  conj: ['conj.', 'conjugation'],
+  cop: 'copula',
+  ctr: 'counter',
+  exp: ['exp.', 'expression (phrase, clause, etc.)'],
+  int: ['int.', 'interjection (kandoushi)'],
+  n: 'noun',
+  'n-adv': ['adv. noun', 'adverbial noun (fukushitekimeishi)'],
+  'n-pr': 'proper noun',
+  'n-pref': ['n-pref', 'noun used as a prefix'],
+  'n-suf': ['n-suf', 'noun used as a suffic'],
+  'n-t': ['n-temp', 'noun (temporal) (jisoumeishi)'],
+  num: 'numeric',
+  pn: 'pronoun',
+  pref: 'prefix',
+  prt: 'particle',
+  suf: 'suffix',
+  unc: ['?', 'unclassified'],
+  'v-unspec': ['verb', 'verb, type unspecified'],
+  v1: ['-ru verb', 'ichidan verb'],
+  'v1-s': ['-ru verb*', 'ichidan verb - kureru special class'],
+  'v2a-s': ['-u nidan verb', "nidan verb with 'u' ending (archaic)"],
+  'v2b-k': [
+    '-bu nidan verb (upper)',
+    "nidan verb (upper class) with 'bu' ending (archaic)",
+  ],
+  'v2b-s': [
+    '-bu nidan verb (lower)',
+    "nidan verb (lower class) with 'bu' ending (archaic)",
+  ],
+  'v2d-k': [
+    '-dzu nidan verb (upper)',
+    "nidan verb (upper class) with 'dzu' ending (archaic)",
+  ],
+  'v2d-s': [
+    '-dzu nidan verb (lower)',
+    "nidan verb (lower class) with 'dzu' ending (archaic)",
+  ],
+  'v2g-k': [
+    '-gu nidan verb (upper)',
+    "nidan verb (upper class) with 'gu' ending (archaic)",
+  ],
+  'v2g-s': [
+    '-gu nidan verb (lower)',
+    "nidan verb (lower class) with 'gu' ending (archaic)",
+  ],
+  'v2h-k': [
+    '-hu/fu nidan verb (upper)',
+    "nidan verb (upper class) with 'hu/fu' ending (archaic)",
+  ],
+  'v2h-s': [
+    '-hu/fu nidan verb (lower)',
+    "nidan verb (lower class) with 'hu/fu' ending (archaic)",
+  ],
+  'v2k-k': [
+    '-ku nidan verb (upper)',
+    "nidan verb (upper class) with 'ku' ending (archaic)",
+  ],
+  'v2k-s': [
+    '-ku nidan verb (lower)',
+    "nidan verb (lower class) with 'ku' ending (archaic)",
+  ],
+  'v2m-k': [
+    '-mu nidan verb (upper)',
+    "nidan verb (upper class) with 'mu' ending (archaic)",
+  ],
+  'v2m-s': [
+    '-mu nidan verb (lower)',
+    "nidan verb (lower class) with 'mu' ending (archaic)",
+  ],
+  'v2n-s': [
+    '-nu nidan verb',
+    "nidan verb (lower class) with 'nu' ending (archaic)",
+  ],
+  'v2r-k': [
+    '-ru nidan verb (upper)',
+    "nidan verb (upper class) with 'ru' ending (archaic)",
+  ],
+  'v2r-s': [
+    '-ru nidan verb (lower)',
+    "nidan verb (lower class) with 'ru' ending (archaic)",
+  ],
+  'v2s-s': [
+    '-su nidan verb',
+    "nidan verb (lower class) with 'su' ending (archaic)",
+  ],
+  'v2t-k': [
+    '-tsu nidan verb (upper)',
+    "nidan verb (upper class) with 'tsu' ending (archaic)",
+  ],
+  'v2t-s': [
+    '-tsu nidan verb (lower)',
+    "nidan verb (lower class) with 'tsu' ending (archaic)",
+  ],
+  'v2w-s': [
+    '-u nidan verb + we',
+    "nidan verb (lower class) with 'u' ending and 'we' conjugation (archaic)",
+  ],
+  'v2y-k': [
+    '-yu nidan verb (upper)',
+    "nidan verb (upper class) with 'yu' ending (archaic)",
+  ],
+  'v2y-s': [
+    '-yu nidan verb (lower)',
+    "nidan verb (lower class) with 'yu' ending (archaic)",
+  ],
+  'v2z-s': [
+    '-zu nidan verb',
+    "nidan verb (lower class) with 'zu' ending (archaic)",
+  ],
+  v4b: ['-bu yodan verb', "yodan verb with 'bu' ending (archaic)"],
+  v4g: ['-gu yodan verb', "yodan verb with 'gu' ending (archaic)"],
+  v4h: ['-hu/fu yodan verb', "yodan verb with 'hu/fu' ending (archaic)"],
+  v4k: ['-ku yodan verb', "yodan verb with 'ku' ending (archaic)"],
+  v4m: ['-mu yodan verb', "yodan verb with 'mu' ending (archaic)"],
+  v4n: ['-nu yodan verb', "yodan verb with 'nu' ending (archaic)"],
+  v4r: ['-ru yodan verb', "yodan verb with 'ru' ending (archaic)"],
+  v4s: ['-su yodan verb', "yodan verb with 'su' ending (archaic)"],
+  v4t: ['-tsu yodan verb', "yodan verb with 'tsu' ending (archaic)"],
+  v5aru: ['-aru godan verb', 'godan verb - -aru special class'],
+  v5b: ['-bu verb', "godan verb with 'bu' ending"],
+  v5g: ['-gu verb', "godan verb with 'gu' ending"],
+  v5k: ['-ku verb', "godan verb with 'ku' ending"],
+  'v5k-s': ['iku/yuku verb', 'godan verb - Iku/Yuku special class'],
+  v5m: ['-mu verb', "godan verb with 'mu' ending"],
+  v5n: ['-nu verb', "godan verb with 'nu' ending"],
+  v5r: ['-u verb', "godan verb with 'ru' ending"],
+  'v5r-i': ['-u verb*', "godan verb with 'ru' ending (irregular verb)"],
+  v5s: ['-su verb', "godan verb with 'su' ending"],
+  v5t: ['-tsu verb', "godan verb with 'tsu' ending"],
+  v5u: ['-u verb', "godan verb with 'u' ending"],
+  'v5u-s': ['-u verb*', "godan verb with 'u' ending (special class)"],
+  v5uru: ['-uru verb', 'godan verb - Uru old class verb (old form of Eru)'],
+  vi: ['intransitive', 'intransitive verb'],
+  vk: 'kuru verb',
+  vn: ['-nu verb*', 'irregular nu verb'],
+  vr: ['-nu (-ri) verb*', 'irregular ru verb, plain form ends with -ri'],
+  vs: ['+suru', 'noun or participle which takes the aux. verb suru'],
+  'vs-c': ['su verb', 'su verb - precursor to the modern suru'],
+  'vs-i': ['suru verb', 'suru verb where the suru is included'],
+  'vs-s': ['suru verb*', 'suru verb - special class'],
+  vt: ['transitive', 'transitive verb'],
+  vz: ['zuru verb', 'Ichidan zuru verb (alternative form of -jiru verbs)'],
+};
+
+function renderPartOfSpeech(pos?: Array<PartOfSpeech>) {
+  if (!pos || !pos.length) {
+    return null;
+  }
+
+  return pos.map((p) => {
+    const labelData = partsOfSpeechLabels[p];
+    let label = Array.isArray(labelData) ? labelData[0] : labelData;
+    let descr = Array.isArray(labelData) ? labelData[1] : undefined;
+    return (
+      <span
+        class="text-xs text-blue-600 bg-blue-100 px-2 py-1 mx-1 rounded-sm"
+        title={descr}
+      >
+        {label}
+      </span>
+    );
+  });
 }
 
 function renderGlosses(glosses: Array<Gloss>) {
