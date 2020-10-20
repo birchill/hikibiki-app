@@ -40,7 +40,7 @@ import { hasJapanese } from './japanese';
     return;
   }
 
-  const dbWorker = new Worker('./db-worker', { type: 'module' });
+  const dbWorker = new Worker(new URL('./db-worker', import.meta.url));
   const rollbar = new Rollbar({
     accessToken: 'c5e59969fd504e6c8b9064f67beb9e93',
     captureUncaught: true,
