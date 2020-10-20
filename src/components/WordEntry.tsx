@@ -6,13 +6,15 @@ import {
   WordResult,
 } from '@birchill/hikibiki-data';
 
-export const WordEntry: FunctionalComponent<WordResult> = (
-  props: WordResult
-) => {
+interface Props extends WordResult {
+  lang?: string;
+}
+
+export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div class="word-entry text-xl mt-8 mb-8" id={`word-${props.id}`}>
       {renderHeading(props)}
-      {renderSenses(props.s)}
+      {renderSenses(props.s, props.lang)}
     </div>
   );
 };
@@ -196,21 +198,39 @@ function renderHeadwordPriority(
   );
 }
 
-function renderSenses(senses: WordResult['s']) {
+function renderSenses(senses: WordResult['s'], lang: string | undefined) {
   if (senses.length === 1) {
+    let className = 'ml-8';
+    if (isForeignSense(senses[0], lang)) {
+      className += ' italic';
+    }
     return (
-      <p class="ml-8" lang={senses[0].lang || 'en'}>
+      <p class={className} lang={senses[0].lang || 'en'}>
         {renderGlosses(senses[0].g)}
       </p>
     );
   }
   return (
-    <ol class="ml-8 list-circled list-inside">{senses.map(renderSense)}</ol>
+    <ol class="ml-8 list-circled list-inside">
+      {senses.map((sense) => renderSense(sense, lang))}
+    </ol>
   );
 }
 
-function renderSense(sense: WordResult['s'][0]) {
-  return <li lang={sense.lang || 'en'}>{renderGlosses(sense.g)}</li>;
+function isForeignSense(sense: WordResult['s'][0], lang: string | undefined) {
+  const resolveLang = (lang: string | undefined) => lang || 'en';
+  return resolveLang(sense.lang) !== resolveLang(lang);
+}
+
+function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
+  return (
+    <li
+      lang={sense.lang || 'en'}
+      class={isForeignSense(sense, lang) ? 'italic' : undefined}
+    >
+      {renderGlosses(sense.g)}
+    </li>
+  );
 }
 
 function renderGlosses(glosses: Array<Gloss>) {

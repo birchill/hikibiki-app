@@ -5,6 +5,7 @@ import { WordEntry } from './WordEntry';
 
 type Props = {
   entries: Array<WordResult>;
+  lang?: string;
 };
 
 export const WordList: FunctionalComponent<Props> = (props: Props) => {
@@ -17,6 +18,7 @@ export const WordList: FunctionalComponent<Props> = (props: Props) => {
       {props.entries.map((entry) =>
         WordEntry({
           ...entry,
+          lang: props.lang,
         })
       )}
     </div>
