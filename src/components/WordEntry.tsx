@@ -16,30 +16,35 @@ function renderHeading(result: WordResult): JSX.Element {
   if (!result.k || !result.k.length) {
     return (
       <div class="font-bold" lang="ja">
-        {renderListWithMatches(result.r)}
+        {renderListWithMatches(result.r, 'kana')}
       </div>
     );
   }
 
   return (
     <div lang="ja">
-      <span class="font-bold mr-4">{renderListWithMatches(result.k)}</span>
+      <span class="font-bold mr-4">
+        {renderListWithMatches(result.k, 'kanji')}
+      </span>
       <span class="text-gray-700 text-lg">
-        【{renderListWithMatches(result.r)}】
+        【{renderListWithMatches(result.r, 'reading')}】
       </span>
     </div>
   );
 }
 
+type HeadwordType = 'kanji' | 'kana' | 'reading';
+
 function renderListWithMatches<
   T extends WordResult['k'][0] | WordResult['r'][0]
->(array: Array<T>) {
+>(array: Array<T>, type: HeadwordType) {
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.
   return array.map((item, i) => (
     <span class={item.match ? '' : 'text-gray-500 font-normal'}>
       {renderHeadword(item)}
       {renderHeadwordAnnotations(item)}
+      {renderHeadwordPriority(item, type)}
       {i < array.length - 1 ? '、' : ''}
     </span>
   ));
@@ -73,7 +78,7 @@ function renderHeadwordAnnotations(
   }
 
   return (
-    <span class="text-sm text-gray-500 font-normal ml-2">
+    <span class="ml-2">
       {(headword.i as Array<KanjiInfo | ReadingInfo>).map(renderInfo)}
     </span>
   );
@@ -134,15 +139,58 @@ const headwordInfo: {
 function renderInfo(info: KanjiInfo | ReadingInfo) {
   const { icon, styles, descr } = headwordInfo[info];
   return (
-    <Fragment>
-      <svg
-        class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm ${styles}`}
-        viewBox="0 0 16 16"
-      >
-        <title>{descr}</title>
-        <use width="16" height="16" href={`#${icon}`} />
-      </svg>
-    </Fragment>
+    <svg
+      class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm ${styles}`}
+      viewBox="0 0 16 16"
+    >
+      <title>{descr}</title>
+      <use width="16" height="16" href={`#${icon}`} />
+    </svg>
+  );
+}
+
+function renderHeadwordPriority(
+  headword: WordResult['k'][0] | WordResult['r'][0],
+  type: HeadwordType
+) {
+  if (!headword.p || !headword.p.length) {
+    return null;
+  }
+
+  // These are the ones that are annotated with a (P) in the EDICT file.
+  const highPriorityLabels = ['i1', 'n1', 's1', 's2', 'g1'];
+  let highPriority = false;
+  for (const p of headword.p) {
+    if (highPriorityLabels.includes(p)) {
+      highPriority = true;
+      break;
+    }
+  }
+
+  let title = highPriority ? 'Common' : 'Somewhat common';
+  switch (type) {
+    case 'kanji':
+    case 'kana':
+      title += ' word';
+      break;
+
+    case 'reading':
+      title += ' reading';
+      break;
+  }
+
+  return (
+    <svg
+      class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm text-yellow-600 bg-yellow-100`}
+      viewBox="0 0 16 16"
+    >
+      <title>{title}</title>
+      <use
+        width="16"
+        height="16"
+        href={`#${highPriority ? 'full-star' : 'hollow-star'}`}
+      />
+    </svg>
   );
 }
 
