@@ -97,27 +97,27 @@ const headwordInfo: {
     descr: 'ateji: Kanji chosen to represent sounds',
   },
   io: {
-    icon: 'irr-okurigana',
-    styles: 'text-purple-500 bg-purple-200',
+    icon: 'rare',
+    styles: 'text-purple-800 bg-purple-200',
     descr: 'Irregular okurigana (trailing kana)',
   },
   iK: {
-    icon: 'irr-kanji',
-    styles: 'text-purple-500 bg-purple-200',
+    icon: 'rare',
+    styles: 'text-purple-800 bg-purple-200',
     descr: 'Irregular kanji',
   },
   ik: {
-    icon: 'irr-kana',
-    styles: 'text-purple-500 bg-purple-200',
+    icon: 'rare',
+    styles: 'text-purple-800 bg-purple-200',
     descr: 'Irregular kana',
   },
   oK: {
-    icon: 'kanji',
+    icon: 'old',
     styles: 'text-gray-600 bg-gray-200',
     descr: 'Out-dated kanji',
   },
   ok: {
-    icon: 'kana',
+    icon: 'old',
     styles: 'text-gray-600 bg-gray-200',
     descr: 'Out-dated reading',
   },
@@ -126,9 +126,6 @@ const headwordInfo: {
     styles: 'text-orange-500 bg-orange-100',
     descr: 'gikun (meaning as reading) or jukujikun (special kanji reading)',
   },
-  // This old differs from oK by color, which is not great for anyone whose
-  // color-blind. However, it only applies to readings whilst oK only applies
-  // to kanji so the context should make it obvious.
   uK: {
     icon: 'kanji',
     styles: 'text-orange-500 bg-orange-100',
