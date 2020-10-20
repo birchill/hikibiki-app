@@ -186,6 +186,7 @@ import { hasJapanese } from './japanese';
 
         // Check if we need to update any query results as a
         // result of databases become available or unavailable.
+        const queriesToRun: Array<MajorDataSeries> = [];
         for (const series of allMajorDataSeries) {
           const wasOk =
             series === 'kanji'
@@ -199,7 +200,8 @@ import { hasJapanese } from './japanese';
               : state[series].state === DataSeriesState.Ok;
 
           if (!wasOk && isOk) {
-            runQuery({ series });
+            // Defer this until after we've updated databaseState
+            queriesToRun.push(series);
           } else if (entries[series].length && !isOk) {
             entries[series] = [];
           }
@@ -218,6 +220,11 @@ import { hasJapanese } from './japanese';
         }
 
         databaseState = state;
+
+        // Update query results
+        for (const series of queriesToRun) {
+          runQuery({ series });
+        }
 
         // Generally if one data series is unavailable, they are all
         // unavailable, but if at least one is available, run the update.
