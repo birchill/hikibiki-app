@@ -149,7 +149,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           onCancel={props.onCancelDbUpdate}
           onToggleActive={toggleWordsEnabled}
         />
-        {namesEnabled ? <WordList entries={props.entries.words} /> : null}
+        {wordsEnabled ? <WordList entries={props.entries.words} /> : null}
       </div>
       <div class="container mx-auto max-w-3xl px-8" onClick={onClick}>
         <DatabaseStatus
