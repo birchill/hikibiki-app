@@ -23,9 +23,9 @@ function renderHeading(result: WordResult): JSX.Element {
 
   return (
     <div lang="ja">
-      <span class="font-bold mr-8">{renderListWithMatches(result.k)}</span>
+      <span class="font-bold mr-4">{renderListWithMatches(result.k)}</span>
       <span class="text-gray-700 text-lg">
-        {renderListWithMatches(result.r)}
+        【{renderListWithMatches(result.r)}】
       </span>
     </div>
   );
@@ -109,7 +109,16 @@ function renderInfo(info: KanjiInfo | ReadingInfo) {
 }
 
 function renderSenses(senses: WordResult['s']) {
-  return <ol class="ml-8">{senses.map(renderSense)}</ol>;
+  if (senses.length === 1) {
+    return (
+      <p class="ml-8" lang={senses[0].lang || 'en'}>
+        {senses[0].g.map((g) => g.str).join('; ')}
+      </p>
+    );
+  }
+  return (
+    <ol class="ml-8 list-circled list-inside">{senses.map(renderSense)}</ol>
+  );
 }
 
 function renderSense(sense: WordResult['s'][0]) {

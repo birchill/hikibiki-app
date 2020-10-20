@@ -8,3 +8,29 @@
 
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+@layer utilities {
+  .list-circled {
+    list-style-type: decimal;
+  }
+  .list-circled li::marker {
+    @apply text-gray-700;
+  }
+  /*
+   * If the browser supports @counter-style then we also make the marker
+   * a bit lighter.
+   */
+  @supports (list-style-type: circled) {
+    @counter-style circled {
+      system: extends decimal;
+      prefix: '(';
+      suffix: ')\00a0\00a0';
+    }
+    .list-circled {
+      list-style-type: circled;
+    }
+    .list-circled li::marker {
+      @apply text-gray-500;
+    }
+  }
+}
