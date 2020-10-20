@@ -79,33 +79,71 @@ function renderHeadwordAnnotations(
   );
 }
 
-const kanjiInfoMeta: {
-  [key in KanjiInfo | ReadingInfo]: { label: string; descr?: string };
+const headwordInfo: {
+  [key in KanjiInfo | ReadingInfo]: {
+    icon: string;
+    styles: string;
+    descr?: string;
+  };
 } = {
-  ateji: { label: 'ateji', descr: 'Kanji chosen to represent sounds' },
-  io: { label: 'irr. okurigana', descr: 'Irregular okurigana (trailing kana)' },
-  iK: { label: 'irr. kanji', descr: 'Irregular kanji' },
-  ik: { label: 'irr. kana', descr: 'Irregular kana' },
-  ok: { label: 'out-dated kana' },
-  oK: { label: 'out-dated kanji' },
+  ateji: {
+    icon: 'ateji',
+    styles: 'text-orange-500 bg-orange-100',
+    descr: 'ateji: Kanji chosen to represent sounds',
+  },
+  io: {
+    icon: 'irr-okurigana',
+    styles: 'text-purple-500 bg-purple-200',
+    descr: 'Irregular okurigana (trailing kana)',
+  },
+  iK: {
+    icon: 'irr-kanji',
+    styles: 'text-purple-500 bg-purple-200',
+    descr: 'Irregular kanji',
+  },
+  ik: {
+    icon: 'irr-kana',
+    styles: 'text-purple-500 bg-purple-200',
+    descr: 'Irregular kana',
+  },
+  oK: {
+    icon: 'kanji',
+    styles: 'text-gray-600 bg-gray-200',
+    descr: 'Out-dated kanji',
+  },
+  ok: {
+    icon: 'kana',
+    styles: 'text-gray-600 bg-gray-200',
+    descr: 'Out-dated reading',
+  },
   gikun: {
-    label: 'gikun',
+    icon: 'gikun',
+    styles: 'text-orange-500 bg-orange-100',
     descr: 'gikun (meaning as reading) or jukujikun (special kanji reading)',
   },
-  uK: { label: 'usually kanji', descr: 'Usually written using kanji alone' },
+  // This old differs from oK by color, which is not great for anyone whose
+  // color-blind. However, it only applies to readings whilst oK only applies
+  // to kanji so the context should make it obvious.
+  uK: {
+    icon: 'kanji',
+    styles: 'text-orange-500 bg-orange-100',
+    descr: 'Usually written using kanji alone',
+  },
 };
 
 function renderInfo(info: KanjiInfo | ReadingInfo) {
-  const { label, descr } = kanjiInfoMeta[info];
-  if (descr) {
-    return (
-      <span title={descr} class="underline decoration-dotted">
-        {label}
-      </span>
-    );
-  } else {
-    return label;
-  }
+  const { icon, styles, descr } = headwordInfo[info];
+  return (
+    <Fragment>
+      <svg
+        class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm ${styles}`}
+        viewBox="0 0 16 16"
+      >
+        <title>{descr}</title>
+        <use width="16" height="16" href={`#${icon}`} />
+      </svg>
+    </Fragment>
+  );
 }
 
 function renderSenses(senses: WordResult['s']) {
