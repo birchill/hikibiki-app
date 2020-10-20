@@ -5,6 +5,7 @@ import {
   getKanji,
   getNames,
   getWords,
+  getWordsWithGloss,
   isMajorDataSeries,
   DataSeriesState,
   KanjiResult,
@@ -28,6 +29,7 @@ import { App } from './components/App';
 import { UnsupportedBrowser } from './components/UnsupportedBrowser';
 
 import './index.css';
+import { hasJapanese } from './japanese';
 
 (function main() {
   if (!hasReadableStreamSupport()) {
@@ -288,10 +290,19 @@ import './index.css';
 
     switch (series) {
       case 'words':
-        getWords(q, { matchType: 'startsWith', limit: 20 }).then((result) => {
-          entries = { ...entries, words: result };
-          update();
-        });
+        console.log('Looking up words');
+        if (hasJapanese(q)) {
+          getWords(q, { matchType: 'startsWith', limit: 20 }).then((result) => {
+            entries = { ...entries, words: result };
+            update();
+          });
+        } else {
+          const lang = databaseState.words.version?.lang || 'en';
+          getWordsWithGloss(q, lang, 20).then((result) => {
+            entries = { ...entries, words: result };
+            update();
+          });
+        }
         break;
 
       case 'kanji':

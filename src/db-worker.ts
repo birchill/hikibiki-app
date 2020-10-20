@@ -1,6 +1,6 @@
 import {
   DataSeries,
-  JpdictDatabase,
+  JpdictFullTextDatabase,
   toUpdateErrorState,
   UpdateErrorState,
   updateWithRetry,
@@ -63,8 +63,8 @@ const doDbStateNotification = () => {
 
 let db = initDb();
 
-function initDb(): JpdictDatabase {
-  const result = new JpdictDatabase();
+function initDb(): JpdictFullTextDatabase {
+  const result = new JpdictFullTextDatabase();
   result.addChangeListener(doDbStateNotification);
   return result;
 }
