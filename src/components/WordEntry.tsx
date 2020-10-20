@@ -1,5 +1,10 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
-import { KanjiInfo, ReadingInfo, WordResult } from '@birchill/hikibiki-data';
+import {
+  Gloss,
+  KanjiInfo,
+  ReadingInfo,
+  WordResult,
+} from '@birchill/hikibiki-data';
 
 export const WordEntry: FunctionalComponent<WordResult> = (
   props: WordResult
@@ -195,7 +200,7 @@ function renderSenses(senses: WordResult['s']) {
   if (senses.length === 1) {
     return (
       <p class="ml-8" lang={senses[0].lang || 'en'}>
-        {senses[0].g.map((g) => g.str).join('; ')}
+        {renderGlosses(senses[0].g)}
       </p>
     );
   }
@@ -205,7 +210,37 @@ function renderSenses(senses: WordResult['s']) {
 }
 
 function renderSense(sense: WordResult['s'][0]) {
-  return (
-    <li lang={sense.lang || 'en'}>{sense.g.map((g) => g.str).join('; ')}</li>
+  return <li lang={sense.lang || 'en'}>{renderGlosses(sense.g)}</li>;
+}
+
+function renderGlosses(glosses: Array<Gloss>) {
+  return glosses.map((gloss, i) =>
+    renderGloss(gloss, i === glosses.length - 1)
   );
+}
+
+function renderGloss(gloss: Gloss, last: boolean) {
+  if (gloss.matchRange) {
+    const [start, end] = gloss.matchRange;
+    const glossChars = [...gloss.str];
+    const before = glossChars.slice(0, start).join('');
+    const highlighted = glossChars.slice(start, end).join('');
+    const after = glossChars.slice(end).join('');
+
+    return (
+      <Fragment>
+        {before}
+        <span class="bg-yellow-200">{highlighted}</span>
+        {after}
+        {last ? null : '; '}
+      </Fragment>
+    );
+  } else {
+    return (
+      <Fragment>
+        {gloss.str}
+        {last ? null : '; '}
+      </Fragment>
+    );
+  }
 }

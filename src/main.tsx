@@ -290,7 +290,6 @@ import { hasJapanese } from './japanese';
 
     switch (series) {
       case 'words':
-        console.log('Looking up words');
         if (hasJapanese(q)) {
           getWords(q, { matchType: 'startsWith', limit: 20 }).then((result) => {
             entries = { ...entries, words: result };
