@@ -48,7 +48,7 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
-    "@birchill/hikibiki-data": "^6.5.1",
+    "@birchill/hikibiki-data": "^6.5.2",
     "idb-keyval": "^3.2.0",
     "preact": "^10.5.4",
     "rollbar": "^2.19.3",
