@@ -16,6 +16,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js'],
   },
   output: {
+    // Although this path is the default, it is needed by clean-webpack-plugin
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
     chunkFilename: '[name].[contenthash].js',
@@ -67,5 +68,10 @@ module.exports = {
     new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
   ],
   mode,
+  optimization: {
+    splitChunks: {
+      minChunks: 2,
+    },
+  },
   devtool: prod ? false : 'source-map',
 };
