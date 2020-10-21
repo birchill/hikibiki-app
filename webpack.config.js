@@ -67,7 +67,11 @@ module.exports = {
       excludeChunks: ['db-worker'],
     }),
     new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
-    new RelativeCiAgentWebpackPlugin(),
+    // Don't run this unless we mean to -- it corrupts the stats file so
+    // other tools can't use it.
+    process.env.RELATIVE_CI_KEY
+      ? new RelativeCiAgentWebpackPlugin()
+      : undefined,
   ],
   mode,
   optimization: {
