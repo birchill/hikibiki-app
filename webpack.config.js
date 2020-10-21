@@ -9,6 +9,28 @@ const { RelativeCiAgentWebpackPlugin } = require('@relative-ci/agent');
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
+const plugins = [
+  new CleanWebpackPlugin(),
+  new CopyWebpackPlugin({
+    patterns: [
+      { from: 'img/*', flatten: true },
+      { from: 'src/manifest.webmanifest', flatten: true },
+      { from: '_headers' },
+    ],
+  }),
+  new HtmlWebpackPlugin({
+    template: './src/index.html',
+    excludeChunks: ['db-worker'],
+  }),
+  new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
+];
+
+// Don't run the Relative CI task unless we mean to -- it corrupts the stats
+// file so other tools can't use it.
+if (process.env.RELATIVE_CI_KEY) {
+  plugins.push(new RelativeCiAgentWebpackPlugin());
+}
+
 module.exports = {
   entry: {
     hikibiki: ['./src/main.tsx'],
@@ -53,26 +75,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
-      patterns: [
-        { from: 'img/*', flatten: true },
-        { from: 'src/manifest.webmanifest', flatten: true },
-        { from: '_headers' },
-      ],
-    }),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-      excludeChunks: ['db-worker'],
-    }),
-    new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
-    // Don't run this unless we mean to -- it corrupts the stats file so
-    // other tools can't use it.
-    process.env.RELATIVE_CI_KEY
-      ? new RelativeCiAgentWebpackPlugin()
-      : undefined,
-  ],
+  plugins,
   mode,
   optimization: {
     splitChunks: {
