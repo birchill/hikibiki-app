@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { RelativeCiAgentWebpackPlugin } = require('@relative-ci/agent');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -66,6 +67,7 @@ module.exports = {
       excludeChunks: ['db-worker'],
     }),
     new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
+    new RelativeCiAgentWebpackPlugin(),
   ],
   mode,
   optimization: {
