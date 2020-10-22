@@ -33,4 +33,11 @@
       @apply text-gray-500;
     }
   }
+
+  .overline {
+    text-decoration: overline;
+  }
+  .decoration-dotted {
+    text-decoration-style: dotted;
+  }
 }

@@ -120,15 +120,6 @@ module.exports = {
         });
       });
     },
-    function ({ addUtilities }) {
-      const textDecorationUtilities = {
-        '.decoration-dotted': {
-          'text-decoration-style': 'dotted',
-        },
-      };
-
-      addUtilities(textDecorationUtilities);
-    },
   ],
   // Silence warning since we run PurgeCSS in separate postcss step
   purge: false,

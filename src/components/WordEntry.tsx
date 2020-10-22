@@ -1,11 +1,13 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import {
+  Accent,
   Gloss,
   KanjiInfo,
   PartOfSpeech,
   ReadingInfo,
   WordResult,
 } from '@birchill/hikibiki-data';
+import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 interface Props extends WordResult {
   lang?: string;
@@ -59,23 +61,111 @@ function renderListWithMatches<
 }
 
 function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
-  if (headword.matchRange) {
-    // We happen to know that we only currently do startsWith matching so the
-    // range is always going to start at zero.
-    console.assert(headword.matchRange[0] === 0, 'Range should start at 0');
-    const highlighted = [...headword.ent]
-      .slice(0, headword.matchRange[1])
-      .join('');
-    const tail = [...headword.ent].slice(headword.matchRange[1]).join('');
+  let [highlighted, tail] = getHeadwordHighlight(
+    headword.ent,
+    headword.matchRange
+  );
+
+  // Add in accent information
+  let accentClass: string | undefined, accentTitle: string | undefined;
+  if (typeof (headword as WordResult['r'][0]).a !== 'undefined') {
+    ({ highlighted, tail, accentClass, accentTitle } = getAccentInfo(
+      highlighted,
+      tail,
+      (headword as WordResult['r'][0]).a!
+    ));
+  }
+
+  if (highlighted) {
     return (
-      <Fragment>
+      <span class={accentClass} title={accentTitle}>
         <span class="bg-yellow-200">{highlighted}</span>
         {tail}
-      </Fragment>
+      </span>
     );
   } else {
-    return headword.ent;
+    return (
+      <span class={accentClass} title={accentTitle}>
+        {tail}
+      </span>
+    );
   }
+}
+
+// We happen to know that we only currently do startsWith matching, so the
+// range, if we have one, is always going to start at zero.
+//
+// As a result, we can just return the highlighted part and the (trailing)
+// non-highlighted part.
+function getHeadwordHighlight(
+  headword: string,
+  matchRange: [number, number] | undefined
+): [highlight: string, tail: string] {
+  if (!matchRange) {
+    return ['', headword];
+  }
+
+  console.assert(matchRange[0] === 0, 'Range should start at 0');
+
+  let highlighted = [...headword].slice(0, matchRange[1]).join('');
+  let tail = [...headword].slice(matchRange[1]).join('');
+
+  return [highlighted, tail];
+}
+
+function getAccentInfo(
+  highlighted: string,
+  tail: string,
+  accent: number | Array<Accent>
+): {
+  highlighted: string;
+  tail: string;
+  accentClass: string | undefined;
+  accentTitle: string;
+} {
+  const accentPos = typeof accent === 'number' ? accent : accent[0].i;
+  const highlightLength = countMora(highlighted);
+  const tailLength = countMora(tail);
+  const headwordLength = highlightLength + tailLength;
+
+  let accentClass: string | undefined;
+  let accentedHighlight = highlighted;
+  let accentedTail = tail;
+
+  // We use regular JS string offsets here (as opposed to more "correct"
+  // techniques that work with non-BMP characters) because we should only
+  // ever be annotating hiragana which is within the BMP range.
+  if (accentPos === 0) {
+    accentClass = 'overline decoration-dotted';
+  } else if (accentPos < highlightLength) {
+    accentedHighlight =
+      moraSubstring(highlighted, 0, accentPos) +
+      'ꜜ' +
+      moraSubstring(highlighted, accentPos);
+  } else {
+    const tailPos = accentPos - highlightLength;
+    accentedTail =
+      moraSubstring(tail, 0, tailPos) + 'ꜜ' + moraSubstring(tail, tailPos);
+  }
+
+  // Work out the descriptive title to use
+  let accentTitle = 'Pitch: ';
+  if (accentPos === 0) {
+    accentTitle += 'heiban';
+  } else if (accentPos === headwordLength) {
+    accentTitle += 'odaka';
+  } else if (accentPos === 1) {
+    accentTitle += 'atamadaka';
+  } else {
+    accentTitle += 'nakadaka';
+  }
+
+  return {
+    highlighted: accentedHighlight,
+    tail: accentedTail,
+    accentClass,
+    accentTitle,
+  };
 }
 
 function renderHeadwordAnnotations(
