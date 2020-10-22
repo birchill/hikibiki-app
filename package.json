@@ -68,5 +68,13 @@
     "singleQuote": true,
     "trailingComma": "es5",
     "bracketSpacing": true
+  },
+  "goodBundle": {
+    "assets": {
+      "hikibiki.js": "./dist/hikibiki.*.js",
+      "worker.js": "./dist/worker.*.js",
+      "hikibiki.css": "./dist/hikibiki.*.css"
+    },
+    "stats": "webpack-stats.json"
   }
 }
