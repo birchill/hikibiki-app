@@ -79,13 +79,19 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         return;
       }
 
+      // Check for an HTML target
+      if (!evt.target || !(evt.target instanceof HTMLElement)) {
+        return;
+      }
+
       // Check for a link click
-      if (!evt.target || !(evt.target instanceof HTMLAnchorElement)) {
+      const linkTarget = evt.target.closest('a');
+      if (!linkTarget) {
         return;
       }
 
       // Check for a local link
-      if (evt.target.hostname != window.location.hostname) {
+      if (linkTarget.hostname != window.location.hostname) {
         return;
       }
 
@@ -95,7 +101,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       }
 
       // Check for search parameters
-      const href = new URL(evt.target.href);
+      const href = new URL(linkTarget.href);
       const search = href.searchParams.get('q');
       if (!search) {
         return;

@@ -52,7 +52,7 @@ function renderListWithMatches<
   // the same shading as the preceding item.
   return array.map((item, i) => (
     <span class={item.match ? '' : 'text-gray-500 font-normal'}>
-      {renderHeadword(item)}
+      {renderHeadword(item, type)}
       {renderHeadwordAnnotations(item)}
       {renderHeadwordPriority(item, type)}
       {i < array.length - 1 ? '、' : ''}
@@ -60,7 +60,10 @@ function renderListWithMatches<
   ));
 }
 
-function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
+function renderHeadword(
+  headword: WordResult['k'][0] | WordResult['r'][0],
+  type: HeadwordType
+) {
   let [highlighted, tail] = getHeadwordHighlight(
     headword.ent,
     headword.matchRange
@@ -76,19 +79,31 @@ function renderHeadword(headword: WordResult['k'][0] | WordResult['r'][0]) {
     ));
   }
 
+  let inner;
   if (highlighted) {
-    return (
+    inner = (
       <span class={accentClass} title={accentTitle}>
         <span class="bg-yellow-200">{highlighted}</span>
         {tail}
       </span>
     );
   } else {
-    return (
+    inner = (
       <span class={accentClass} title={accentTitle}>
         {tail}
       </span>
     );
+  }
+
+  // Linkify unless it's a reading
+  if (type !== 'reading') {
+    return (
+      <a class="hover:underline" href={`?q=${headword.ent}`}>
+        {inner}
+      </a>
+    );
+  } else {
+    return inner;
   }
 }
 
