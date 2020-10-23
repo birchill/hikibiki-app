@@ -20,7 +20,7 @@ function renderJapaneseName(name: NameResult): JSX.Element {
   if (!name.k) {
     return (
       <span class="mr-10 font-bold" lang="ja">
-        {name.r.join('、')}
+        {renderLinkedNames(name.r)}
       </span>
     );
   }
@@ -28,13 +28,24 @@ function renderJapaneseName(name: NameResult): JSX.Element {
   return (
     <Fragment>
       <span class="mr-10 font-bold" lang="ja">
-        {name.k.join('、')}
+        {renderLinkedNames(name.k)}
       </span>
       <span class="mr-10 text-gray-700" lang="ja">
-        {name.r.join('、')}
+        {renderLinkedNames(name.r)}
       </span>
     </Fragment>
   );
+}
+
+function renderLinkedNames(names: Array<string>) {
+  return names.map((name, i) => (
+    <Fragment>
+      <a class="hover:underline" href={`?q=${name}`}>
+        {name}
+      </a>
+      {i < Array.length - 1 ? '、' : ''}
+    </Fragment>
+  ));
 }
 
 function renderTranslation(tr: NameTranslation): JSX.Element {
