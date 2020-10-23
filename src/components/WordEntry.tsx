@@ -82,29 +82,24 @@ function renderHeadword(
   let inner;
   if (highlighted) {
     inner = (
-      <span class={accentClass} title={accentTitle}>
+      <Fragment>
         <span class="bg-yellow-200">{highlighted}</span>
         {tail}
-      </span>
+      </Fragment>
     );
   } else {
-    inner = (
-      <span class={accentClass} title={accentTitle}>
-        {tail}
-      </span>
-    );
+    inner = tail;
   }
 
-  // Linkify unless it's a reading
-  if (type !== 'reading') {
-    return (
-      <a class="hover:underline" href={`?q=${headword.ent}`}>
-        {inner}
-      </a>
-    );
-  } else {
-    return inner;
-  }
+  return (
+    <a
+      class={`hover:underline ${accentClass}`}
+      href={`?q=${headword.ent}`}
+      title={accentTitle}
+    >
+      {inner}
+    </a>
+  );
 }
 
 // We happen to know that we only currently do startsWith matching, so the
