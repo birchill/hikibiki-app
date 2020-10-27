@@ -34,6 +34,11 @@
     }
   }
 
+  /* Consistent style for disc lists */
+  .list-disc li::marker {
+    @apply text-gray-500;
+  }
+
   .overline {
     text-decoration: overline;
   }
