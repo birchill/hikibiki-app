@@ -313,8 +313,16 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
     );
   }
 
-  const foreignSenses = senses.filter((sense) => isForeignSense(sense, lang));
   const localSenses = senses.filter((sense) => !isForeignSense(sense, lang));
+  const foreignSenses = senses.filter((sense) => isForeignSense(sense, lang));
+
+  if (lang === 'en') {
+    return (
+      <ol class="ml-8 list-circled list-inside">
+        {localSenses.map((sense) => renderSense(sense, lang))}
+      </ol>
+    );
+  }
 
   return (
     <Fragment>
