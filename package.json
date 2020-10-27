@@ -76,6 +76,14 @@
       "worker.js": "./dist/worker.*.js",
       "hikibiki.css": "./dist/hikibiki.*.css"
     },
+    "outputs": [
+      {
+        "project": "hikibiki",
+        "bucket": "bundlesize-stack-bundlestatsbucket-15h4d77z8q1hr",
+        "destDir": "hikibiki",
+        "region": "us-west-2"
+      }
+    ],
     "stats": "webpack-stats.json"
   }
 }

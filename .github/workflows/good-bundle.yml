@@ -27,10 +27,6 @@ jobs:
       - name: Record bundle stats
         uses: birchill/good-bundle@main
         with:
-          project: hikibiki
-          bucket: bundlesize-stack-bundlestatsbucket-15h4d77z8q1hr
-          destDir: hikibiki
-          region: us-west-2
-          awsAccessKey: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
