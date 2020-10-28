@@ -2,6 +2,7 @@ import { h, Fragment, FunctionalComponent } from 'preact';
 import {
   Accent,
   Gloss,
+  GlossType,
   KanjiInfo,
   PartOfSpeech,
   ReadingInfo,
@@ -546,7 +547,18 @@ function renderGlosses(glosses: Array<Gloss>) {
   );
 }
 
+const glossTypeText: { [type in GlossType]: string | undefined } = {
+  [GlossType.Expl]: '(explanation) ',
+  [GlossType.Lit]: '(literally) ',
+  [GlossType.Fig]: '(figurative) ',
+  [GlossType.None]: undefined,
+};
+
 function renderGloss(gloss: Gloss, last: boolean) {
+  let glossType = gloss.type ? glossTypeText[gloss.type] : undefined;
+  let glossText: string | JSX.Element = gloss.str;
+
+  // Highlight matched range if any
   if (gloss.matchRange) {
     const [start, end] = gloss.matchRange;
     const glossChars = [...gloss.str];
@@ -554,20 +566,20 @@ function renderGloss(gloss: Gloss, last: boolean) {
     const highlighted = glossChars.slice(start, end).join('');
     const after = glossChars.slice(end).join('');
 
-    return (
+    glossText = (
       <Fragment>
         {before}
         <span class="bg-yellow-200">{highlighted}</span>
         {after}
-        {last ? null : '; '}
-      </Fragment>
-    );
-  } else {
-    return (
-      <Fragment>
-        {gloss.str}
-        {last ? null : '; '}
       </Fragment>
     );
   }
+
+  return (
+    <Fragment>
+      {glossType}
+      {glossText}
+      {last ? null : '; '}
+    </Fragment>
+  );
 }
