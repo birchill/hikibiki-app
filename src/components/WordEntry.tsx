@@ -347,11 +347,16 @@ function isForeignSense(sense: WordResult['s'][0], lang: string | undefined) {
 }
 
 function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
+  let className = 'my-2';
+  if (isForeignSense(sense, lang)) {
+    className += ' italic';
+  }
+  if (!sense.match) {
+    className += ' text-gray-500';
+  }
+
   return (
-    <li
-      lang={sense.lang || 'en'}
-      class={isForeignSense(sense, lang) ? 'italic mb-2' : 'my-2'}
-    >
+    <li lang={sense.lang || 'en'} class={className}>
       {renderGlosses(sense.g)}
       {renderPartOfSpeech(sense.pos)}
     </li>
