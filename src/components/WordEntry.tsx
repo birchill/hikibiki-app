@@ -1,6 +1,7 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import {
   Accent,
+  FieldType,
   Gloss,
   GlossType,
   KanjiInfo,
@@ -310,6 +311,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
       <p class={className} lang={senses[0].lang || 'en'}>
         {renderGlosses(senses[0].g)}
         {renderPartOfSpeech(senses[0].pos)}
+        {renderFields(senses[0].field)}
       </p>
     );
   }
@@ -359,7 +361,51 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
     <li lang={sense.lang || 'en'} class={className}>
       {renderGlosses(sense.g)}
       {renderPartOfSpeech(sense.pos)}
+      {renderFields(sense.field)}
     </li>
+  );
+}
+
+function renderGlosses(glosses: Array<Gloss>) {
+  return glosses.map((gloss, i) =>
+    renderGloss(gloss, i === glosses.length - 1)
+  );
+}
+
+const glossTypeText: { [type in GlossType]: string | undefined } = {
+  [GlossType.Expl]: '(explanation) ',
+  [GlossType.Lit]: '(literally) ',
+  [GlossType.Fig]: '(figurative) ',
+  [GlossType.None]: undefined,
+};
+
+function renderGloss(gloss: Gloss, last: boolean) {
+  let glossType = gloss.type ? glossTypeText[gloss.type] : undefined;
+  let glossText: string | JSX.Element = gloss.str;
+
+  // Highlight matched range if any
+  if (gloss.matchRange) {
+    const [start, end] = gloss.matchRange;
+    const glossChars = [...gloss.str];
+    const before = glossChars.slice(0, start).join('');
+    const highlighted = glossChars.slice(start, end).join('');
+    const after = glossChars.slice(end).join('');
+
+    glossText = (
+      <Fragment>
+        {before}
+        <span class="bg-yellow-200">{highlighted}</span>
+        {after}
+      </Fragment>
+    );
+  }
+
+  return (
+    <Fragment>
+      {glossType}
+      {glossText}
+      {last ? null : '; '}
+    </Fragment>
   );
 }
 
@@ -546,45 +592,83 @@ function renderPartOfSpeech(pos?: Array<PartOfSpeech>) {
   });
 }
 
-function renderGlosses(glosses: Array<Gloss>) {
-  return glosses.map((gloss, i) =>
-    renderGloss(gloss, i === glosses.length - 1)
-  );
-}
-
-const glossTypeText: { [type in GlossType]: string | undefined } = {
-  [GlossType.Expl]: '(explanation) ',
-  [GlossType.Lit]: '(literally) ',
-  [GlossType.Fig]: '(figurative) ',
-  [GlossType.None]: undefined,
+const fieldLabels: { [field in FieldType]: string } = {
+  agric: 'agriculture',
+  anat: 'anatomy',
+  archeol: 'archeology',
+  archit: 'architecture',
+  art: 'art',
+  astron: 'astronomy',
+  aviat: 'aviation',
+  baseb: 'baseball',
+  biochem: 'biochemistry',
+  biol: 'biology',
+  bot: 'botany',
+  Buddh: 'Buddhism',
+  bus: 'business',
+  chem: 'chemistry',
+  Christn: 'Christianity',
+  comp: 'computing',
+  cryst: 'crystallography',
+  ecol: 'ecology',
+  econ: 'economics',
+  elec: 'electricty',
+  electr: 'electronics',
+  embryo: 'embryology',
+  engr: 'engineering',
+  ent: 'entomology',
+  finc: 'finance',
+  fish: 'fishing',
+  food: 'food',
+  gardn: 'gardening',
+  genet: 'genetics',
+  geogr: 'geography',
+  geol: 'geology',
+  geom: 'geometry',
+  go: 'go (game)',
+  golf: 'golf',
+  gramm: 'grammar',
+  grmyth: 'Greek mythology',
+  hanaf: 'hanafuda',
+  horse: 'horse-racing',
+  law: 'law',
+  ling: 'linguistics',
+  logic: 'logic',
+  MA: 'martial arts',
+  mahj: 'mahjong',
+  math: 'mathematics',
+  mech: 'mechanical engineering',
+  med: 'medicine',
+  met: 'climate, weather',
+  mil: 'military',
+  music: 'music',
+  paleo: 'paleontology',
+  pathol: 'pathology',
+  pharm: 'pharmacy',
+  phil: 'philosophy',
+  photo: 'photography',
+  physics: 'physics',
+  physiol: 'physiology',
+  print: 'printing',
+  psych: 'psychology, psychiatry',
+  Shinto: 'Shinto',
+  shogi: 'shogi',
+  sports: 'sports',
+  stat: 'statistics',
+  sumo: 'sumo',
+  telec: 'telecommunications',
+  tradem: 'trademark',
+  zool: 'zoology',
 };
 
-function renderGloss(gloss: Gloss, last: boolean) {
-  let glossType = gloss.type ? glossTypeText[gloss.type] : undefined;
-  let glossText: string | JSX.Element = gloss.str;
-
-  // Highlight matched range if any
-  if (gloss.matchRange) {
-    const [start, end] = gloss.matchRange;
-    const glossChars = [...gloss.str];
-    const before = glossChars.slice(0, start).join('');
-    const highlighted = glossChars.slice(start, end).join('');
-    const after = glossChars.slice(end).join('');
-
-    glossText = (
-      <Fragment>
-        {before}
-        <span class="bg-yellow-200">{highlighted}</span>
-        {after}
-      </Fragment>
-    );
+function renderFields(fields?: Array<FieldType>) {
+  if (!fields || !fields.length) {
+    return null;
   }
 
-  return (
-    <Fragment>
-      {glossType}
-      {glossText}
-      {last ? null : '; '}
-    </Fragment>
-  );
+  return fields.map((field) => (
+    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 mx-1 rounded-sm">
+      {fieldLabels[field]}
+    </span>
+  ));
 }
