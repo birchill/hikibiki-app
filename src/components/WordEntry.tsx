@@ -5,6 +5,7 @@ import {
   Gloss,
   GlossType,
   KanjiInfo,
+  MiscType,
   PartOfSpeech,
   ReadingInfo,
   WordResult,
@@ -312,6 +313,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
         {renderGlosses(senses[0].g)}
         {renderPartOfSpeech(senses[0].pos)}
         {renderFields(senses[0].field)}
+        {renderMisc(senses[0].misc)}
       </p>
     );
   }
@@ -362,6 +364,7 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
       {renderGlosses(sense.g)}
       {renderPartOfSpeech(sense.pos)}
       {renderFields(sense.field)}
+      {renderMisc(sense.misc)}
     </li>
   );
 }
@@ -671,4 +674,70 @@ function renderFields(fields?: Array<FieldType>) {
       {fieldLabels[field]}
     </span>
   ));
+}
+
+const miscLabels: {
+  [pos in MiscType]: string | [string, string];
+} = {
+  abbr: ['abbrev.', 'abbreviation'],
+  arch: 'archaism',
+  chn: ['children', "children's language"],
+  col: 'colloquialism',
+  company: ['company', 'company name'],
+  dated: ['old', 'dated term'],
+  derog: 'derogatory',
+  fam: ['familiar', 'familiar language'],
+  fem: ['female', 'female term or language'],
+  given: ['given name', 'given name or forename, gender not specified'],
+  hist: ['historical', 'historical term'],
+  hon: ['honorifi', 'honorific or respectful language (尊敬語)'],
+  hum: ['', 'humble language (謙譲語)'],
+  id: ['idiomatic', 'idiomatic expression'],
+  joc: ['humorous', 'jocular, humorous term'],
+  litf: ['literary', 'literary or formal term'],
+  'm-sl': ['manga', 'manga slang'],
+  male: ['male', 'male term or language'],
+  'net-sl': ['net', 'Internet slang'],
+  obs: 'obsolete',
+  obsc: 'obscure',
+  'on-mim': ['onomatopoeia', 'onomatopoeic or mimetic word'],
+  organization: ['org.', 'organization name'],
+  person: ['person', 'full name of a particular person'],
+  place: ['place', 'place name'],
+  poet: ['poetical', 'poetical term'],
+  pol: ['polite', 'polite language (丁寧語)'],
+  product: ['product', 'product name'],
+  proverb: 'proverb',
+  quote: ['quote', 'quotation'],
+  rare: 'rare',
+  sens: 'sensitive',
+  sl: 'slang',
+  station: ['station', 'railway station'],
+  surname: ['surname', 'family or surname'],
+  uk: ['kana', 'word usually written using kana alone'],
+  unclass: ['unclassified', 'unclassified name'],
+  vulg: ['vulgar', 'vulgar expression or word'],
+  work: ['work', 'work of art, literature, music, etc. name'],
+  X: ['XXX', 'rude or X-rated term (not displayed in educational software)'],
+  yoji: ['yojijukugo', 'four-character compound word (四字熟語)'],
+};
+
+function renderMisc(misc?: Array<MiscType>) {
+  if (!misc || !misc.length) {
+    return null;
+  }
+
+  return misc.map((p) => {
+    const labelData = miscLabels[p];
+    let label = Array.isArray(labelData) ? labelData[0] : labelData;
+    let descr = Array.isArray(labelData) ? labelData[1] : undefined;
+    return (
+      <span
+        class="text-xs text-red-600 bg-red-100 px-2 py-1 mx-1 rounded-sm"
+        title={descr}
+      >
+        {label}
+      </span>
+    );
+  });
 }
