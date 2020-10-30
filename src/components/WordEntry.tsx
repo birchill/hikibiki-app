@@ -714,11 +714,11 @@ const miscLabels: {
   sl: 'slang',
   station: ['station', 'railway station'],
   surname: ['surname', 'family or surname'],
-  uk: ['kana', 'word usually written using kana alone'],
+  uk: ['kana', 'usually written using kana alone'],
   unclass: ['unclassified', 'unclassified name'],
   vulg: ['vulgar', 'vulgar expression or word'],
   work: ['work', 'work of art, literature, music, etc. name'],
-  X: ['XXX', 'rude or X-rated term (not displayed in educational software)'],
+  X: ['XXX', 'rude or X-rated term'],
   yoji: ['yojijukugo', 'four-character compound word (四字熟語)'],
 };
 
