@@ -312,6 +312,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
     return (
       <p class={className} lang={senses[0].lang || 'en'}>
         {renderGlosses(senses[0].g)}
+        {renderSenseInfo(senses[0].inf)}
         {renderPartOfSpeech(senses[0].pos)}
         {renderFields(senses[0].field)}
         {renderMisc(senses[0].misc)}
@@ -364,6 +365,7 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
   return (
     <li lang={sense.lang || 'en'} class={className}>
       {renderGlosses(sense.g)}
+      {renderSenseInfo(sense.inf)}
       {renderPartOfSpeech(sense.pos)}
       {renderFields(sense.field)}
       {renderMisc(sense.misc)}
@@ -413,6 +415,10 @@ function renderGloss(gloss: Gloss, last: boolean) {
       {last ? null : '; '}
     </Fragment>
   );
+}
+
+function renderSenseInfo(inf?: string) {
+  return inf ? <span class="text-base">{` (${inf})`}</span> : null;
 }
 
 const partsOfSpeechLabels: {
