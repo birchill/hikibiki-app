@@ -42,11 +42,15 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
     [props.onUpdateSearch]
   );
 
-  // Preact has this in lower case (but the typings only recognize camelCase):
+  // Preact has onCompositionEnd in lower case (but the typings only recognize
+  // camelCase):
   //
   //   https://github.com/preactjs/preact/issues/1978
+  //
+  // Also, I failed to make Preact recognize enterKeyHint.
   const specialProps = {
     oncompositionend: onCompositionEnd,
+    enterKeyHint: 'search',
   };
 
   return (
@@ -60,7 +64,6 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
           placeholder="Search"
           value={props.search}
           onInput={onInput}
-          enterKeyHint="search"
           style={{
             backgroundImage:
               "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%208%208%22%20fill%3D%22%23B8B2A7%22%3E%3Cpath%20d%3D%22M7.7%207.7a1%201%200%200%201-1.4%200L5.13%206.56a.5.5%200%200%201%200-.68l.01-.02-.4-.41a3%203%200%201%201%20.7-.7l.4.41.01-.02a.5.5%200%200%201%20.69%200L7.71%206.3a1%201%200%200%201%200%201.42zM3%201a2%202%200%201%200%200%204%202%202%200%200%200%200-4z%22%2F%3E%3C%2Fsvg%3E%0A')",
