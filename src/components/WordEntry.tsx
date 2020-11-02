@@ -1,6 +1,7 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import {
   Accent,
+  Dialect,
   FieldType,
   Gloss,
   GlossType,
@@ -314,6 +315,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
         {renderPartOfSpeech(senses[0].pos)}
         {renderFields(senses[0].field)}
         {renderMisc(senses[0].misc)}
+        {renderDialect(senses[0].dial)}
       </p>
     );
   }
@@ -365,6 +367,7 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
       {renderPartOfSpeech(sense.pos)}
       {renderFields(sense.field)}
       {renderMisc(sense.misc)}
+      {renderDialect(sense.dial)}
     </li>
   );
 }
@@ -740,4 +743,30 @@ function renderMisc(misc?: Array<MiscType>) {
       </span>
     );
   });
+}
+
+const dialectLabels: { [dial in Dialect]: string } = {
+  ho: 'Hokkaido dialect',
+  tsug: 'Tsugaru dialect',
+  th: 'Tohoku dialect',
+  na: 'Nagano dialect',
+  kt: 'Kanto dialect',
+  ks: 'Kansai dialect',
+  ky: 'Kyoto dialect',
+  os: 'Osaka dialect',
+  ts: 'Tosa dialect',
+  '9s': 'Kyushu dialect',
+  ok: 'Ryuukyuu dialect',
+};
+
+function renderDialect(dial?: Array<Dialect>) {
+  if (!dial || !dial.length) {
+    return null;
+  }
+
+  return dial.map((dialect) => (
+    <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 mx-1 rounded-sm">
+      {dialectLabels[dialect]}
+    </span>
+  ));
 }
