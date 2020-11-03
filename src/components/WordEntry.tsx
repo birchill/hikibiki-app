@@ -6,6 +6,7 @@ import {
   Gloss,
   GlossType,
   KanjiInfo,
+  LangSource,
   MiscType,
   PartOfSpeech,
   ReadingInfo,
@@ -313,6 +314,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
       <p class={className} lang={senses[0].lang || 'en'}>
         {renderGlosses(senses[0].g)}
         {renderSenseInfo(senses[0].inf)}
+        {renderLangSource(senses[0].lsrc)}
         {renderPartOfSpeech(senses[0].pos)}
         {renderFields(senses[0].field)}
         {renderMisc(senses[0].misc)}
@@ -366,6 +368,7 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
     <li lang={sense.lang || 'en'} class={className}>
       {renderGlosses(sense.g)}
       {renderSenseInfo(sense.inf)}
+      {renderLangSource(sense.lsrc)}
       {renderPartOfSpeech(sense.pos)}
       {renderFields(sense.field)}
       {renderMisc(sense.misc)}
@@ -419,6 +422,96 @@ function renderGloss(gloss: Gloss, last: boolean) {
 
 function renderSenseInfo(inf?: string) {
   return inf ? <span class="text-base">{` (${inf})`}</span> : null;
+}
+
+const languages: { [lang: string]: string } = {
+  af: 'Afrikaans',
+  ain: 'Ainu',
+  alg: 'Algonquian',
+  am: 'Amharic',
+  ar: 'Arabic',
+  arn: 'Mapuche',
+  bg: 'Bulgarian',
+  bnt: 'Bantu',
+  bo: 'Tibetan',
+  br: 'Breton',
+  chn: 'Chinook',
+  cs: 'Czech',
+  da: 'Danish',
+  de: 'German',
+  el: 'Greek',
+  en: 'English',
+  eo: 'Esperanto',
+  es: 'Spanish',
+  et: 'Estonian',
+  fa: 'Persion',
+  fi: 'Finnish',
+  fil: 'Filipino',
+  fr: 'French',
+  gl: 'Galician',
+  grc: 'Ancient Greek',
+  haw: 'Hawaiian',
+  he: 'Hebrew',
+  hi: 'Hindi',
+  hr: 'Croatian',
+  hu: 'Hungarian',
+  id: 'Indonesian',
+  is: 'Icelandic',
+  it: 'Italian',
+  ka: 'Georgian',
+  km: 'Khmer',
+  ko: 'Korean',
+  ku: 'Kurdish',
+  la: 'Latin',
+  mi: 'Maori',
+  ml: 'Malayalam',
+  mn: 'Mongolian',
+  mnc: 'Manchu',
+  mo: 'Moldavian',
+  ms: 'Malay',
+  my: 'Burmese',
+  nl: 'Dutch',
+  no: 'Norwegian',
+  pl: 'Polish',
+  pt: 'Portuguese',
+  ro: 'Romanian',
+  ru: 'Russian',
+  sa: 'Sanskrit',
+  sk: 'Slovak',
+  sl: 'Slovenian',
+  so: 'Somali',
+  sv: 'Swedish',
+  sw: 'Swahili',
+  ta: 'Tamil',
+  th: 'Thai',
+  tr: 'Turkish',
+  ty: 'Tahitian',
+  ur: 'Urdu',
+  vi: 'Vietnamese',
+  yi: 'Yiddish',
+  zh: 'Chinese',
+};
+
+function renderLangSource(sources: Array<LangSource> | undefined) {
+  if (!sources || !sources.length) {
+    return null;
+  }
+
+  return sources.map((lsrc) => {
+    let prefix = lsrc.wasei ? 'wasei' : undefined;
+    if (!prefix) {
+      prefix = languages[lsrc.lang || 'en'] || lsrc.lang;
+    }
+    if (prefix && lsrc.src) {
+      prefix = `${prefix}: `;
+    }
+    return (
+      <span class="text-sm text-gray-600 mx-2">
+        ({prefix}
+        {lsrc.src ? <span lang={lsrc.lang}>{lsrc.src}</span> : null})
+      </span>
+    );
+  });
 }
 
 const partsOfSpeechLabels: {
