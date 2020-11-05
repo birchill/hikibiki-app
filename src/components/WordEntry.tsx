@@ -704,6 +704,7 @@ const fieldLabels: { [field in FieldType]: string } = {
   archit: 'architecture',
   art: 'art',
   astron: 'astronomy',
+  audvid: 'audiovisual',
   aviat: 'aviation',
   baseb: 'baseball',
   biochem: 'biochemistry',
@@ -747,6 +748,7 @@ const fieldLabels: { [field in FieldType]: string } = {
   met: 'climate, weather',
   mil: 'military',
   music: 'music',
+  ornith: 'ornithology',
   paleo: 'paleontology',
   pathol: 'pathology',
   pharm: 'pharmacy',
@@ -763,6 +765,7 @@ const fieldLabels: { [field in FieldType]: string } = {
   sumo: 'sumo',
   telec: 'telecommunications',
   tradem: 'trademark',
+  vidg: 'video games',
   zool: 'zoology',
 };
 
