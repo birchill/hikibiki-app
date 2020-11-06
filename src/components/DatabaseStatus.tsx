@@ -215,7 +215,7 @@ function renderSettingsIcon({
   expanded: boolean;
   onToggleSettings: () => void;
 }) {
-  let containerStyles = !disabled && !expanded ? 'text-orange-400' : undefined;
+  let containerStyles = !disabled && !expanded ? 'text-orange-400' : '';
   containerStyles +=
     ' bg-transparent rounded-full p-6 -m-6 hover:bg-orange-100 hover:text-orange-1000 border-2 border-transparent border-dotted focus:outline-none focus:border-orange-400 focus-invisible:border-transparent';
 
