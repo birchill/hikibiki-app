@@ -1,6 +1,7 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import {
   Accent,
+  CrossReference,
   Dialect,
   FieldType,
   Gloss,
@@ -319,6 +320,7 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
         {renderFields(senses[0].field)}
         {renderMisc(senses[0].misc)}
         {renderDialect(senses[0].dial)}
+        {renderCrossReferences(senses[0].xref, senses[0].ant)}
       </p>
     );
   }
@@ -373,6 +375,7 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
       {renderFields(sense.field)}
       {renderMisc(sense.misc)}
       {renderDialect(sense.dial)}
+      {renderCrossReferences(sense.xref, sense.ant)}
     </li>
   );
 }
@@ -871,4 +874,71 @@ function renderDialect(dial?: Array<Dialect>) {
       {dialectLabels[dialect]}
     </span>
   ));
+}
+
+function renderCrossReferences(
+  xref: Array<CrossReference> | undefined,
+  ant: Array<CrossReference> | undefined
+) {
+  if (!(xref && xref.length) && !(ant && ant.length)) {
+    return null;
+  }
+
+  const seeAlso: Array<JSX.Element | string> = [];
+
+  if (xref) {
+    for (const ref of xref) {
+      if (seeAlso.length) {
+        seeAlso.push(', ');
+      }
+      seeAlso.push(renderCrossReference(ref));
+    }
+  }
+
+  if (ant) {
+    for (const ref of ant) {
+      if (seeAlso.length) {
+        seeAlso.push(', ');
+      }
+      seeAlso.push(renderCrossReference(ref));
+      seeAlso.push(' (antonym)');
+    }
+  }
+
+  return <div class="text-base italic text-gray-600">See also: {seeAlso}</div>;
+}
+
+function renderCrossReference(xref: CrossReference) {
+  const k = (xref as any).k as string | undefined;
+  const r = (xref as any).r as string | undefined;
+
+  let linkText: string;
+
+  if (k && r) {
+    linkText = `${k} (${r})`;
+  } else {
+    linkText = (k || r) as string;
+  }
+
+  if (xref.sense) {
+    linkText += ` (sense ${xref.sense})`;
+  }
+
+  const hrefParts: Array<string> = [];
+  if (k) {
+    hrefParts.push(`k=${encodeURIComponent(k)}`);
+  }
+  if (r) {
+    hrefParts.push(`r=${encodeURIComponent(r)}`);
+  }
+  if (xref.sense) {
+    hrefParts.push(`sense=${xref.sense}`);
+  }
+  const href = `?${hrefParts.join('&')}`;
+
+  return (
+    <a class="hover:underline" href={href}>
+      {linkText}
+    </a>
+  );
 }

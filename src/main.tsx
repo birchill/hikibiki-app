@@ -7,15 +7,21 @@ import {
   getWords,
   getWordsWithGloss,
   isMajorDataSeries,
+  CrossReference,
   DataSeriesState,
   KanjiResult,
   MajorDataSeries,
   NameResult,
   WordResult,
+  getWordsByCrossReference,
 } from '@birchill/hikibiki-data';
 import { get, set, Store } from 'idb-keyval';
 import Rollbar from 'rollbar';
 
+import {
+  crossReferenceFromQueryString,
+  updateQueryStringFromCrossReference,
+} from './cross-reference';
 import { DB_LANGUAGES } from './db-languages';
 import {
   CombinedDatabaseState,
@@ -291,22 +297,52 @@ import { hasJapanese } from './japanese';
 
   const params = new URL(document.location.href).searchParams;
   let q = params.get('q');
+  let xref = !q ? crossReferenceFromQueryString(params) : undefined;
 
   function runQuery({ series }: { series: MajorDataSeries }) {
-    if (!q) {
+    if (!q && !xref) {
+      return;
+    }
+
+    // Handle an actual cross-reference search first
+    if (xref && series === 'words') {
+      getWordsByCrossReference(xref).then((result) => {
+        entries = { ...entries, words: result };
+        update();
+      });
+      return;
+    }
+
+    // Do fallback for all other types
+    let search: string | undefined;
+    if (xref) {
+      const k = (xref as any).k as string | undefined;
+      const r = (xref as any).r as string | undefined;
+      if (series === 'kanji') {
+        search = k;
+      } else if (series === 'names') {
+        search = k || r;
+      }
+    } else {
+      search = q!;
+    }
+
+    if (!search) {
       return;
     }
 
     switch (series) {
       case 'words':
-        if (hasJapanese(q)) {
-          getWords(q, { matchType: 'startsWith', limit: 20 }).then((result) => {
-            entries = { ...entries, words: result };
-            update();
-          });
+        if (hasJapanese(search)) {
+          getWords(search, { matchType: 'startsWith', limit: 20 }).then(
+            (result) => {
+              entries = { ...entries, words: result };
+              update();
+            }
+          );
         } else {
           const lang = databaseState.words.version?.lang || 'en';
-          getWordsWithGloss(q, lang, 20).then((result) => {
+          getWordsWithGloss(search, lang, 20).then((result) => {
             entries = { ...entries, words: result };
             update();
           });
@@ -315,7 +351,7 @@ import { hasJapanese } from './japanese';
 
       case 'kanji':
         getKanji({
-          kanji: [...q],
+          kanji: [...search],
           lang: databaseState.kanji.version?.lang || 'en',
         }).then((result) => {
           entries = { ...entries, kanji: result };
@@ -324,7 +360,7 @@ import { hasJapanese } from './japanese';
         break;
 
       case 'names':
-        getNames(q).then((result) => {
+        getNames(search).then((result) => {
           entries = { ...entries, names: result };
           update();
         });
@@ -336,7 +372,7 @@ import { hasJapanese } from './japanese';
     search,
     historyMode = 'replace',
   }: {
-    search: string;
+    search: string | CrossReference;
     historyMode?: 'replace' | 'push' | 'skip';
   }) {
     // Ignore redundant changes since this might arise due to differences in
@@ -345,8 +381,16 @@ import { hasJapanese } from './japanese';
       return;
     }
 
-    q = search;
-    if (q) {
+    // Update local state
+    if (typeof search === 'string') {
+      q = search;
+      xref = undefined;
+    } else {
+      q = null;
+      xref = search;
+    }
+
+    if (q || xref) {
       if (
         enabledSeries.has('words') &&
         databaseState.words.state === DataSeriesState.Ok
@@ -382,10 +426,11 @@ import { hasJapanese } from './japanese';
     const url = new URL(document.location.href);
     const params = url.searchParams;
     if (q) {
-      params.set('q', search);
+      params.set('q', q);
     } else {
       params.delete('q');
     }
+    updateQueryStringFromCrossReference(xref, params);
 
     switch (historyMode) {
       case 'push':
@@ -399,18 +444,31 @@ import { hasJapanese } from './japanese';
   }
 
   window.addEventListener('popstate', (evt) => {
-    const search = new URL(document.location.href).searchParams.get('q') ?? '';
+    const params = new URL(document.location.href).searchParams;
+    let search: string | CrossReference = params.get('q') ?? '';
+    if (!search) {
+      search = crossReferenceFromQueryString(params) || '';
+    }
     onUpdateSearch({ search, historyMode: 'skip' });
   });
 
   function update() {
+    let search: string | undefined;
+    if (q) {
+      search = q;
+    } else if (xref) {
+      const k = (xref as any).k as string | undefined;
+      const r = (xref as any).r as string | undefined;
+      search = k || r || undefined;
+    }
+
     render(
       <App
         databaseState={databaseState}
         enabledSeries={enabledSeries}
         lang={getLangToUse()}
         entries={entries}
-        search={q || undefined}
+        search={search}
         onUpdateSearch={onUpdateSearch}
         onUpdateDb={updateDb}
         onCancelDbUpdate={cancelDbUpdate}

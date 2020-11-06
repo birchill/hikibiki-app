@@ -1,12 +1,14 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useCallback, useEffect } from 'preact/hooks';
 import {
+  CrossReference,
   KanjiResult,
   MajorDataSeries,
   NameResult,
   WordResult,
 } from '@birchill/hikibiki-data';
 
+import { crossReferenceFromQueryString } from '../cross-reference';
 import { CombinedDatabaseState } from '../worker-messages';
 
 import { DatabaseStatus } from './DatabaseStatus';
@@ -29,7 +31,7 @@ type Props = {
   };
   search?: string;
   onUpdateSearch?: (options: {
-    search: string;
+    search: string | CrossReference;
     historyMode?: 'replace' | 'push' | 'skip';
   }) => void;
   onUpdateDb?: (params: { series: MajorDataSeries }) => void;
@@ -102,7 +104,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
 
       // Check for search parameters
       const href = new URL(linkTarget.href);
-      const search = href.searchParams.get('q');
+      const search =
+        href.searchParams.get('q') ||
+        crossReferenceFromQueryString(href.searchParams);
       if (!search) {
         return;
       }
