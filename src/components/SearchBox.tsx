@@ -18,38 +18,16 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
 
   const onInput = useCallback(
     (evt: JSX.TargetedEvent<HTMLInputElement, InputEvent>) => {
-      if (props.onUpdateSearch && !evt.isComposing) {
+      if (props.onUpdateSearch) {
         props.onUpdateSearch({ search: evt.currentTarget?.value ?? '' });
       }
     },
     [props.onUpdateSearch]
   );
 
-  // InputEvent.isComposing never goes false at the end of a composition in
-  // Chrome. See:
-  //
-  //   https://github.com/w3c/uievents/issues/202
-  //
-  // As a result, we need to also watch for compositionend events.
-  const onCompositionEnd = useCallback(
-    (evt: InputEvent) => {
-      if (props.onUpdateSearch) {
-        props.onUpdateSearch({
-          search: (evt.target as HTMLInputElement).value || '',
-        });
-      }
-    },
-    [props.onUpdateSearch]
-  );
-
-  // Preact has onCompositionEnd in lower case (but the typings only recognize
-  // camelCase):
-  //
-  //   https://github.com/preactjs/preact/issues/1978
-  //
-  // Also, I failed to make Preact recognize enterKeyHint.
+  // I failed to make Preact recognize enterKeyHint.
+  // Succeeded with React. Who knows.
   const specialProps = {
-    oncompositionend: onCompositionEnd,
     enterKeyHint: 'search',
   };
 
