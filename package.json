@@ -77,7 +77,7 @@
       "hikibiki.css": "./dist/hikibiki.*.css"
     },
     "output": {
-      "formats": [
+      "format": [
         "csv",
         "json"
       ],
