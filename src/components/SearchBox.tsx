@@ -1,5 +1,5 @@
 import { h, FunctionalComponent, JSX } from 'preact';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useRef } from 'preact/hooks';
 
 type Props = {
   search?: string;
@@ -9,18 +9,64 @@ type Props = {
   }) => void;
 };
 
+// We update history when either:
+//
+// a) The user submits the data (e.g. presses Enter, but not when simply
+//    committing the input being composed)
+//
+// b) A suitable delay expires without any input.
+//
+// To make this behave naturally, we don't actually want to commit the history
+// entry until the _next_ input. Otherwise, we'll end up with duplicate history
+// entries since the "current" history entry will also have the same data
+// and pressing back will appear to not work.
+//
+// That means we have three states:
+//
+// 1) No URL to commit, no timer running
+// 2) URL to commit on next input, no timer running
+// 3) Timer running (current URL will be queued)
+type HistoryUpdateState = null | string | number;
+
 export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
+  const historyUpdateState = useRef<HistoryUpdateState>();
+
+  const queueHistoryUpdate = () => {
+    if (typeof historyUpdateState.current === 'number') {
+      self.clearTimeout(historyUpdateState.current);
+    }
+    historyUpdateState.current = document.location.href;
+  };
+
+  const clearHistoryUpdate = () => {
+    if (typeof historyUpdateState.current === 'number') {
+      self.clearTimeout(historyUpdateState.current);
+    }
+    historyUpdateState.current = null;
+  };
+
   const onSubmit = useCallback((evt: JSX.TargetedEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    queueHistoryUpdate();
     // Hide the on-screen keyboard
     document.documentElement.focus();
   }, []);
 
   const onInput = useCallback(
     (evt: JSX.TargetedEvent<HTMLInputElement, InputEvent>) => {
-      if (props.onUpdateSearch) {
-        props.onUpdateSearch({ search: evt.currentTarget?.value ?? '' });
+      // Commit any pending history update
+      if (typeof historyUpdateState.current === 'string') {
+        history.pushState({}, '', historyUpdateState.current);
       }
+      clearHistoryUpdate();
+
+      const search = evt.currentTarget?.value ?? '';
+      if (props.onUpdateSearch) {
+        props.onUpdateSearch({ search });
+      }
+
+      // Reset history update timer
+      historyUpdateState.current = self.setTimeout(queueHistoryUpdate, 3000);
     },
     [props.onUpdateSearch]
   );
@@ -40,7 +86,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
           name="q"
           autofocus={!props.search}
           placeholder="Search"
-          value={props.search}
+          value={props.search || ''}
           onInput={onInput}
           style={{
             backgroundImage:
