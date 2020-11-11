@@ -322,7 +322,7 @@ function renderBinaryPitch(
   }
 
   let highlightEnd = 'border-dotted border-l-2 border-t-2';
-  if (accentPos === highlightLength) {
+  if (accentPos <= highlightLength) {
     highlightEnd += ' border-r-2';
   }
   const accentedHighlight = (
