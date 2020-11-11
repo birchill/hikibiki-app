@@ -1,11 +1,13 @@
 import { h, FunctionalComponent } from 'preact';
 import { WordResult } from '@birchill/hikibiki-data';
 
+import { AccentDisplayType } from './WordDisplayConfig';
 import { WordEntry } from './WordEntry';
 
 type Props = {
   entries: Array<WordResult>;
   lang?: string;
+  accentDisplay: AccentDisplayType;
 };
 
 export const WordList: FunctionalComponent<Props> = (props: Props) => {
@@ -19,6 +21,7 @@ export const WordList: FunctionalComponent<Props> = (props: Props) => {
         WordEntry({
           ...entry,
           lang: props.lang,
+          accentDisplay: props.accentDisplay,
         })
       )}
     </div>

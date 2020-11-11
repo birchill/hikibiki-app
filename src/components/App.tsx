@@ -18,7 +18,9 @@ import { LanguageSelector } from './LanguageSelector';
 import { ReferencesConfig } from './ReferencesConfig';
 import { SearchBox } from './SearchBox';
 import { useStoredToggleList } from './hooks/useStoredToggleList';
+import { useStoredValue } from './hooks/useStoredValue';
 import { WordList } from './WordList';
+import { AccentDisplayType, WordDisplayConfig } from './WordDisplayConfig';
 
 type Props = {
   databaseState: CombinedDatabaseState;
@@ -118,6 +120,13 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     [props.onUpdateSearch]
   );
 
+  const { value: accentDisplay, setValue: setAccentDisplay } = useStoredValue<
+    AccentDisplayType
+  >({
+    key: 'accent-display',
+    defaultValue: 'binary',
+  });
+
   // References and links
   const {
     enabledItems: enabledReferences,
@@ -126,6 +135,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     key: 'kanji-references',
     initialValues: ['kanken'],
   });
+
   const {
     enabledItems: enabledLinks,
     toggleItem: onToggleLink,
@@ -158,11 +168,17 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           onUpdate={props.onUpdateDb}
           onCancel={props.onCancelDbUpdate}
           onToggleActive={toggleWordsEnabled}
-        />
+        >
+          <WordDisplayConfig
+            accentDisplay={accentDisplay}
+            onChangeAccentDisplay={setAccentDisplay}
+          />
+        </DatabaseStatus>
         {wordsEnabled ? (
           <WordList
             entries={props.entries.words}
             lang={props.databaseState.words.version?.lang}
+            accentDisplay={accentDisplay}
           />
         ) : null}
       </div>

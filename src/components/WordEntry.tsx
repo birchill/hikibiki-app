@@ -15,24 +15,30 @@ import {
 } from '@birchill/hikibiki-data';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
+import { AccentDisplayType } from './WordDisplayConfig';
+
 interface Props extends WordResult {
   lang?: string;
+  accentDisplay: AccentDisplayType;
 }
 
 export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div class="word-entry text-xl mt-8 mb-8" id={`word-${props.id}`}>
-      {renderHeading(props)}
+      {renderHeading(props, props.accentDisplay)}
       {renderSenses(props.s, props.lang)}
     </div>
   );
 };
 
-function renderHeading(result: WordResult): JSX.Element {
+function renderHeading(
+  result: WordResult,
+  accentDisplay: AccentDisplayType
+): JSX.Element {
   if (!result.k || !result.k.length) {
     return (
       <div class="font-bold" lang="ja">
-        {renderListWithMatches(result.r, 'kana')}
+        {renderListWithMatches(result.r, 'kana', accentDisplay)}
       </div>
     );
   }
@@ -40,10 +46,10 @@ function renderHeading(result: WordResult): JSX.Element {
   return (
     <div lang="ja">
       <span class="font-bold mr-4">
-        {renderListWithMatches(result.k, 'kanji')}
+        {renderListWithMatches(result.k, 'kanji', accentDisplay)}
       </span>
       <span class="text-gray-700 text-lg">
-        【{renderListWithMatches(result.r, 'reading')}】
+        【{renderListWithMatches(result.r, 'reading', accentDisplay)}】
       </span>
     </div>
   );
@@ -53,12 +59,12 @@ type HeadwordType = 'kanji' | 'kana' | 'reading';
 
 function renderListWithMatches<
   T extends WordResult['k'][0] | WordResult['r'][0]
->(array: Array<T>, type: HeadwordType) {
+>(array: Array<T>, type: HeadwordType, accentDisplay: AccentDisplayType) {
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.
   return array.map((item, i) => (
     <span class={item.match ? '' : 'text-gray-500 font-normal'}>
-      {renderHeadword(item, type)}
+      {renderHeadword(item, accentDisplay)}
       {renderHeadwordAnnotations(item)}
       {renderHeadwordPriority(item, type)}
       {i < array.length - 1 ? '、' : ''}
@@ -68,20 +74,23 @@ function renderListWithMatches<
 
 function renderHeadword(
   headword: WordResult['k'][0] | WordResult['r'][0],
-  type: HeadwordType
+  accentDisplay: AccentDisplayType
 ) {
-  let [highlighted, tail] = getHeadwordHighlight(
-    headword.ent,
-    headword.matchRange
-  );
+  let highlighted: string | JSX.Element;
+  let tail: string | JSX.Element;
+  [highlighted, tail] = getHeadwordHighlight(headword.ent, headword.matchRange);
 
   // Add in accent information
   let accentClass: string | undefined, accentTitle: string | undefined;
-  if (typeof (headword as WordResult['r'][0]).a !== 'undefined') {
+  if (
+    accentDisplay !== 'none' &&
+    typeof (headword as WordResult['r'][0]).a !== 'undefined'
+  ) {
     ({ highlighted, tail, accentClass, accentTitle } = getAccentInfo(
       highlighted,
       tail,
-      (headword as WordResult['r'][0]).a!
+      (headword as WordResult['r'][0]).a!,
+      accentDisplay
     ));
   }
 
@@ -132,10 +141,11 @@ function getHeadwordHighlight(
 function getAccentInfo(
   highlighted: string,
   tail: string,
-  accent: number | Array<Accent>
+  accent: number | Array<Accent>,
+  accentDisplay: 'downstep' | 'binary'
 ): {
-  highlighted: string;
-  tail: string;
+  highlighted: string | JSX.Element;
+  tail: string | JSX.Element;
   accentClass: string | undefined;
   accentTitle: string;
 } {
@@ -145,23 +155,30 @@ function getAccentInfo(
   const headwordLength = highlightLength + tailLength;
 
   let accentClass: string | undefined;
-  let accentedHighlight = highlighted;
-  let accentedTail = tail;
+  let accentedHighlight: string | JSX.Element = highlighted;
+  let accentedTail: string | JSX.Element = tail;
 
-  // We use regular JS string offsets here (as opposed to more "correct"
-  // techniques that work with non-BMP characters) because we should only
-  // ever be annotating hiragana which is within the BMP range.
-  if (accentPos === 0) {
-    accentClass = 'overline decoration-dotted';
-  } else if (accentPos < highlightLength) {
-    accentedHighlight =
-      moraSubstring(highlighted, 0, accentPos) +
-      'ꜜ' +
-      moraSubstring(highlighted, accentPos);
+  if (accentDisplay === 'downstep') {
+    if (accentPos === 0) {
+      accentClass = 'overline decoration-dotted';
+    } else if (accentPos < highlightLength) {
+      accentedHighlight =
+        moraSubstring(highlighted, 0, accentPos) +
+        'ꜜ' +
+        moraSubstring(highlighted, accentPos);
+    } else {
+      const tailPos = accentPos - highlightLength;
+      accentedTail =
+        moraSubstring(tail, 0, tailPos) + 'ꜜ' + moraSubstring(tail, tailPos);
+    }
   } else {
-    const tailPos = accentPos - highlightLength;
-    accentedTail =
-      moraSubstring(tail, 0, tailPos) + 'ꜜ' + moraSubstring(tail, tailPos);
+    ({ highlighted: accentedHighlight, tail: accentedTail } = renderBinaryPitch(
+      highlighted,
+      highlightLength,
+      tail,
+      tailLength,
+      accentPos
+    ));
   }
 
   // Work out the descriptive title to use
@@ -181,6 +198,166 @@ function getAccentInfo(
     tail: accentedTail,
     accentClass,
     accentTitle,
+  };
+}
+
+// The following is monstrous.
+//
+// We really should have just generated an array of characters with highlight
+// and H/L annotations applied, then walked the array to generate the
+// appropriate spans, but instead, out of laziness, we generated this
+// monstrousity. Well done me.
+function renderBinaryPitch(
+  highlighted: string,
+  highlightLength: number,
+  tail: string,
+  tailLength: number,
+  accentPos: number
+): {
+  highlighted: string | JSX.Element;
+  tail: string | JSX.Element;
+} {
+  const headwordLength = highlightLength + tailLength;
+
+  // Deal with the entirely empty-string case up-front so we can assume we have
+  // some content below.
+  if (!headwordLength) {
+    return { highlighted: '', tail: '' };
+  }
+
+  // Heiban (0) means LHHHHHHH while atamadaka (1) means HLLLL
+  //
+  // These are sufficiently similar that we handle them together
+  if (accentPos === 0 || accentPos === 1) {
+    const before =
+      accentPos === 0 ? 'border-dotted border-b-2' : 'border-dotted border-t-2';
+    const after =
+      accentPos === 0
+        ? 'border-dotted border-l-2 border-t-2'
+        : 'border-dotted border-l-2 border-b-2';
+    const afterCont =
+      accentPos === 0 ? 'border-dotted border-t-2' : 'border-dotted border-b-2';
+    if (!highlightLength) {
+      const accentedTail = (
+        <Fragment>
+          <span class={before}>{moraSubstring(tail, 0, 1)}</span>
+          {tailLength ? (
+            <span class={after}>{moraSubstring(tail, 1)}</span>
+          ) : null}
+        </Fragment>
+      );
+      return {
+        highlighted: '',
+        tail: accentedTail,
+      };
+    } else if (highlightLength === 1) {
+      const accentedHighlight = <span class={before}>{highlighted}</span>;
+      const accentedTail = tailLength ? <span class={after}>{tail}</span> : '';
+      return {
+        highlighted: accentedHighlight,
+        tail: accentedTail,
+      };
+    } else {
+      const accentedHighlight = (
+        <Fragment>
+          <span class={before}>{moraSubstring(highlighted, 0, 1)}</span>
+          <span class={after}>{moraSubstring(highlighted, 1)}</span>
+        </Fragment>
+      );
+      const accentedTail = <span class={afterCont}>{tail}</span>;
+      return {
+        highlighted: accentedHighlight,
+        tail: accentedTail,
+      };
+    }
+  }
+
+  // The remainder are nakadaka (LHHHHL) or odaka (LHHHH)
+  //
+  // The difference between odaka and heiban is that we make the line go down
+  // at the end of the last mora for odaka.
+  if (!highlightLength) {
+    // tailLength must be at least 2 meaning we have two cases: LH*L or LH*
+    const accentedTail = (
+      <Fragment>
+        <span class="border-dotted border-b-2">
+          {moraSubstring(tail, 0, 1)}
+        </span>
+        <span class="border-dotted border-l-2 border-t-2 border-r-2">
+          {moraSubstring(tail, 1, accentPos)}
+        </span>
+        {accentPos < headwordLength ? (
+          <span class="border-dotted border-b-2">
+            {moraSubstring(tail, accentPos)}
+          </span>
+        ) : null}
+      </Fragment>
+    );
+    return {
+      highlighted: '',
+      tail: accentedTail,
+    };
+  }
+
+  if (highlightLength === 1) {
+    const accentedHighlight = (
+      <span class="border-dotted border-b-2">{highlighted}</span>
+    );
+    const accentedTail = (
+      <Fragment>
+        <span class="border-dotted border-l-2 border-t-2 border-r-2">
+          {moraSubstring(tail, 0, accentPos - 1)}
+        </span>
+        {accentPos < headwordLength ? (
+          <span class="border-dotted border-b-2">
+            {moraSubstring(tail, accentPos - 1)}
+          </span>
+        ) : null}
+      </Fragment>
+    );
+    return {
+      highlighted: accentedHighlight,
+      tail: accentedTail,
+    };
+  }
+
+  let highlightEnd = 'border-dotted border-l-2 border-t-2';
+  if (accentPos === highlightLength) {
+    highlightEnd += ' border-r-2';
+  }
+  const accentedHighlight = (
+    <Fragment>
+      <span class="border-dotted border-b-2">
+        {moraSubstring(highlighted, 0, 1)}
+      </span>
+      <span class={highlightEnd}>
+        {moraSubstring(highlighted, 1, accentPos)}
+      </span>
+      {accentPos < highlightLength ? (
+        <span class="border-dotted border-b-2">
+          {moraSubstring(highlighted, accentPos)}
+        </span>
+      ) : null}
+    </Fragment>
+  );
+  const accentedTail = (
+    <Fragment>
+      {accentPos > highlightLength ? (
+        <span class="border-dotted border-t-2 border-r-2">
+          {moraSubstring(tail, 0, accentPos - highlightLength)}
+        </span>
+      ) : null}
+      {headwordLength > accentPos ? (
+        <span class="border-dotted border-b-2">
+          {moraSubstring(tail, accentPos - highlightLength)}
+        </span>
+      ) : null}
+    </Fragment>
+  );
+
+  return {
+    highlighted: accentedHighlight,
+    tail: accentedTail,
   };
 }
 
