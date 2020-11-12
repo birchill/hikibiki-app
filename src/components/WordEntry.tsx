@@ -229,19 +229,20 @@ function renderBinaryPitch(
   //
   // These are sufficiently similar that we handle them together
   if (accentPos === 0 || accentPos === 1) {
-    const before =
-      accentPos === 0 ? 'border-dotted border-b-2' : 'border-dotted border-t-2';
+    const before = accentPos
+      ? 'border-dotted border-t-2 border-r-2'
+      : headwordLength > 1
+      ? 'border-dotted border-b-2 border-r-2'
+      : 'border-dotted border-t-2';
     const after =
-      accentPos === 0
-        ? 'border-dotted border-l-2 border-t-2'
-        : 'border-dotted border-l-2 border-b-2';
+      accentPos === 0 ? 'border-dotted border-t-2' : 'border-dotted border-b-2';
     const afterCont =
       accentPos === 0 ? 'border-dotted border-t-2' : 'border-dotted border-b-2';
     if (!highlightLength) {
       const accentedTail = (
         <Fragment>
           <span class={before}>{moraSubstring(tail, 0, 1)}</span>
-          {tailLength ? (
+          {tailLength > 1 ? (
             <span class={after}>{moraSubstring(tail, 1)}</span>
           ) : null}
         </Fragment>
