@@ -43,7 +43,7 @@ function renderLinkedNames(names: Array<string>) {
       <a class="hover:underline" href={`?q=${name}`}>
         {name}
       </a>
-      {i < Array.length - 1 ? '、' : ''}
+      {i < names.length - 1 ? '、' : ''}
     </Fragment>
   ));
 }
@@ -58,9 +58,19 @@ function renderTranslation(tr: NameTranslation): JSX.Element {
 }
 
 function renderType(type: NameType): JSX.Element {
+  let title: string;
+  let emoji: string;
+
+  if (typeMeta.hasOwnProperty(type)) {
+    ({ long: title, emoji } = typeMeta[type]);
+  } else {
+    title = `Unrecognized name type: ${type}`;
+    emoji = `(${type})`;
+  }
+
   return (
-    <span class="trans-type mr-2" title={typeMeta[type].long}>
-      {typeMeta[type].emoji}
+    <span class="trans-type mr-2" title={title}>
+      {emoji}
     </span>
   );
 }
@@ -72,69 +82,119 @@ type TypeDescription = {
 };
 
 const typeMeta: { [type in NameType]: TypeDescription } = {
-  surname: {
-    short: 'surname',
-    long: 'Family or surname',
-    emoji: '👪',
-  },
-  place: {
-    short: 'place',
-    long: 'Place name',
-    emoji: '🗺️',
-  },
-  unclass: {
-    short: 'unclassified',
-    long: 'Unclassified name',
-    emoji: '🚫',
+  char: {
+    short: 'character',
+    long: 'Character',
+    emoji: '🎭',
   },
   company: {
     short: 'company',
     long: 'Company name',
     emoji: '🏢',
   },
-  product: {
-    short: 'product',
-    long: 'Product name',
-    emoji: '🧴',
+  creat: {
+    short: 'creature',
+    long: 'Living creature',
+    emoji: '🐍',
   },
-  work: {
-    short: 'work',
-    long: 'Work of art, literature, music, etc.',
-    emoji: '🖼️',
+  dei: {
+    short: 'deity',
+    long: 'Deity',
+    emoji: '🔱',
   },
-  masc: {
-    short: 'male',
-    long: 'Male given name',
-    emoji: '🧔',
+  ev: {
+    short: 'event',
+    long: 'Event',
+    emoji: '🎟️',
   },
   fem: {
     short: 'female',
     long: 'Female given name',
     emoji: '👩',
   },
-  person: {
-    short: 'person',
-    long: 'Full name of a particular person',
-    emoji: '🧍',
+  fict: {
+    short: 'fiction',
+    long: 'A work of fiction',
+    emoji: '📖',
   },
   given: {
     short: 'given',
     long: 'Given name, gender not specified',
     emoji: '📛',
   },
-  station: {
-    short: 'station',
-    long: 'Railway station',
-    emoji: '🚉',
+  leg: {
+    short: 'legend',
+    long: 'Legend',
+    emoji: '🐲',
+  },
+  masc: {
+    short: 'male',
+    long: 'Male given name',
+    emoji: '🧔',
+  },
+  myth: {
+    short: 'myth',
+    long: 'Myth',
+    emoji: '🦄',
+  },
+  obj: {
+    short: 'object',
+    long: 'Object',
+    emoji: '🧱',
   },
   org: {
     short: 'organization',
     long: 'Organization name',
     emoji: '🏘️',
   },
-  ok: {
-    short: 'old',
-    long: 'Old or irregular kana form',
-    emoji: '👴',
+  oth: {
+    short: 'other',
+    long: 'Other',
+    emoji: '他',
+  },
+  person: {
+    short: 'person',
+    long: 'Full name of a particular person',
+    emoji: '🧍',
+  },
+  place: {
+    short: 'place',
+    long: 'Place name',
+    emoji: '🗺️',
+  },
+  product: {
+    short: 'product',
+    long: 'Product name',
+    emoji: '🧴',
+  },
+  relig: {
+    short: 'religion',
+    long: 'Religion',
+    emoji: '㊪',
+  },
+  serv: {
+    short: 'service',
+    long: 'Service',
+    emoji: '🈂️',
+  },
+  station: {
+    short: 'station',
+    long: 'Railway station',
+    emoji: '🚉',
+  },
+  surname: {
+    short: 'surname',
+    long: 'Family or surname',
+    emoji: '👪',
+  },
+  unclass: {
+    short: 'unclassified',
+    long: 'Unclassified name',
+    emoji: '🚫',
+  },
+  work: {
+    short: 'work',
+    long: 'Work of art, literature, music, etc.',
+    emoji: '🖼️',
   },
 };
