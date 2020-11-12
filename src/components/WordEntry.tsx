@@ -957,7 +957,7 @@ function renderFields(fields?: Array<FieldType>) {
 
   return fields.map((field) => (
     <span class="text-xs text-green-600 bg-green-100 px-2 py-1 mx-1 rounded-sm">
-      {fieldLabels[field]}
+      {fieldLabels[field] || field}
     </span>
   ));
 }
