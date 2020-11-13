@@ -977,7 +977,7 @@ const miscLabels: {
   given: ['given name', 'given name or forename, gender not specified'],
   hist: ['historical', 'historical term'],
   hon: ['honorific', 'honorific or respectful language (尊敬語)'],
-  hum: ['', 'humble language (謙譲語)'],
+  hum: ['humble', 'humble language (謙譲語)'],
   id: ['idiomatic', 'idiomatic expression'],
   joc: ['humorous', 'jocular, humorous term'],
   litf: ['literary', 'literary or formal term'],
