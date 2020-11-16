@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import { h, JSX, FunctionalComponent } from 'preact';
 import { DataVersion, MajorDataSeries } from '@birchill/hikibiki-data';
 
 type Props = {
@@ -24,7 +24,7 @@ export const LicenseInfo: FunctionalComponent<Props> = ({
 }: Props) => {
   const linkStyles = {
     class: 'text-orange-800 visited:text-orange-800 underline',
-    style: { 'text-decoration-style': 'dotted' },
+    style: { textDecorationStyle: 'dotted' } as JSX.CSSProperties,
   };
 
   let versionInformation = '';
