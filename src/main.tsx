@@ -299,6 +299,24 @@ import { hasJapanese } from './japanese';
   let q = params.get('q');
   let xref = !q ? crossReferenceFromQueryString(params) : undefined;
 
+  function getSearchTerm({ series }: { series: MajorDataSeries }) {
+    let result: string | undefined;
+
+    if (xref) {
+      const k = (xref as any).k as string | undefined;
+      const r = (xref as any).r as string | undefined;
+      if (series === 'kanji') {
+        result = k;
+      } else if (series === 'names') {
+        result = k || r;
+      }
+    } else {
+      result = q!;
+    }
+
+    return result;
+  }
+
   function runQuery({ series }: { series: MajorDataSeries }) {
     if (!q && !xref) {
       return;
@@ -314,19 +332,7 @@ import { hasJapanese } from './japanese';
     }
 
     // Do fallback for all other types
-    let search: string | undefined;
-    if (xref) {
-      const k = (xref as any).k as string | undefined;
-      const r = (xref as any).r as string | undefined;
-      if (series === 'kanji') {
-        search = k;
-      } else if (series === 'names') {
-        search = k || r;
-      }
-    } else {
-      search = q!;
-    }
-
+    const search = getSearchTerm({ series });
     if (!search) {
       return;
     }
@@ -336,6 +342,11 @@ import { hasJapanese } from './japanese';
         if (hasJapanese(search)) {
           getWords(search, { matchType: 'startsWith', limit: 20 }).then(
             (result) => {
+              // Check for overlapping queries (which can happen when the user
+              // types quickly)
+              if (search !== getSearchTerm({ series })) {
+                return;
+              }
               entries = { ...entries, words: result };
               update();
             }
@@ -343,6 +354,9 @@ import { hasJapanese } from './japanese';
         } else {
           const lang = databaseState.words.version?.lang || 'en';
           getWordsWithGloss(search, lang, 20).then((result) => {
+            if (search !== getSearchTerm({ series })) {
+              return;
+            }
             entries = { ...entries, words: result };
             update();
           });
@@ -354,6 +368,9 @@ import { hasJapanese } from './japanese';
           kanji: [...search],
           lang: databaseState.kanji.version?.lang || 'en',
         }).then((result) => {
+          if (search !== getSearchTerm({ series })) {
+            return;
+          }
           entries = { ...entries, kanji: result };
           update();
         });
@@ -361,6 +378,9 @@ import { hasJapanese } from './japanese';
 
       case 'names':
         getNames(search).then((result) => {
+          if (search !== getSearchTerm({ series })) {
+            return;
+          }
           entries = { ...entries, names: result };
           update();
         });
