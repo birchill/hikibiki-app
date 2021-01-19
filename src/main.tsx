@@ -15,7 +15,7 @@ import {
   WordResult,
   getWordsByCrossReference,
 } from '@birchill/hikibiki-data';
-import { get, set, Store } from 'idb-keyval';
+import { get, set, createStore } from 'idb-keyval';
 import Rollbar from 'rollbar';
 
 import {
@@ -73,7 +73,7 @@ import { hasJapanese } from './japanese';
     names: { ...initialDataSeriesState },
   };
 
-  const settingsStore = new Store('hikibiki', 'settings');
+  const settingsStore = createStore('hikibiki', 'settings');
 
   // Enabled series
   const enabledSeries: Set<MajorDataSeries> = new Set(['words', 'kanji']);
