@@ -30,9 +30,10 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "build:stats": "cross-env NODE_ENV=production webpack --json > webpack-stats.json",
+    "build:storybook": "build-storybook -c .storybook -s dist",
+    "postinstall": "husky install",
     "start": "webpack serve --content-base dist",
-    "storybook": "start-storybook -p 9001 -c .storybook -s dist",
-    "build:storybook": "build-storybook -c .storybook -s dist"
+    "storybook": "start-storybook -p 9001 -c .storybook -s dist"
   },
   "repository": {
     "type": "git",
@@ -54,11 +55,6 @@
     "preact": "^10.5.12",
     "rollbar": "^2.20.0",
     "tailwindcss": "^1.9.6"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css}": [
