@@ -49,7 +49,7 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
-    "@birchill/hikibiki-data": "^7.0.1",
+    "@birchill/hikibiki-data": "^7.0.3",
     "@birchill/normal-jp": "^1.2.1",
     "idb-keyval": "^5.0.2",
     "preact": "^10.5.12",
