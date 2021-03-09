@@ -13,7 +13,7 @@ const plugins = [
   new CleanWebpackPlugin(),
   new CopyWebpackPlugin({
     patterns: [
-      { from: 'img/*', to: '[name].[ext]' },
+      { from: 'img/*', to: '[name][ext]' },
       { from: 'src/manifest.webmanifest', to: 'manifest.webmanifest' },
       { from: '_headers' },
     ],
