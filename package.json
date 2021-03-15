@@ -52,7 +52,7 @@
     "@birchill/hikibiki-data": "^7.0.3",
     "@birchill/normal-jp": "^1.2.1",
     "idb-keyval": "^5.0.4",
-    "preact": "^10.5.12",
+    "preact": "^10.5.13",
     "rollbar": "^2.21.0",
     "tailwindcss": "^1.9.6"
   },
