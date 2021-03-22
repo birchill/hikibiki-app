@@ -8451,10 +8451,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rollbar@^2.21.0:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/rollbar/-/rollbar-2.21.0.tgz#1debfdca46b6d6df651e77a3bfd7cf63cafb7512"
-  integrity sha512-xFCZYL2YeLoWvsSD0GUJMn9R/ZX/BMCEy5Kv8WXOXj27mZOfY7r9tPRjxXezmKOQly/NIttY/sGxTvd0b99I+A==
+rollbar@^2.21.1:
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/rollbar/-/rollbar-2.21.1.tgz#482c3b2ea0d65e774352da3e89eeaf4679ee9970"
+  integrity sha512-HROzV6rV0BYxzZpOlDKUSV/RdyHMuCm9gknIGk+FYPVAUwbXCrwZeiYwuc5n3MLnX+IPBVzatzJsiNOJzngNGg==
   dependencies:
     async "~1.2.1"
     console-polyfill "0.3.0"
