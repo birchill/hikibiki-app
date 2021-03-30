@@ -1078,10 +1078,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.1.0.tgz#4f7f81fa277e02619a20c262c76198c583f078ba"
-  integrity sha512-ta4twP8+H9sKsBsUJyLzIT5YL+6/R8ouMrRdnqHvMbuvRRF1rl4tirVw0RgpSabzj6ByyUKe5wXlXH/Sei3p7A==
+"@birchill/hikibiki-data@^7.1.2":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.1.2.tgz#e8f4174c69b26b88a6339f501fa65cd54e695e22"
+  integrity sha512-uJW+Yiqng3jfRnzkKGKJqg+FhWagtBE5lLI2gGskBYLjjRgSk8ztV3LpBTlDFlBarcv/zvRppiIXBb6Y+ViKOw==
   dependencies:
     "@birchill/json-equalish" "^1.0.1"
     "@birchill/normal-jp" "^1.1.3"
