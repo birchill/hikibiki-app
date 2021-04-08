@@ -14,6 +14,7 @@ import {
   NameResult,
   WordResult,
   getWordsByCrossReference,
+  DataVersion,
 } from '@birchill/hikibiki-data';
 import { get, set, createStore } from 'idb-keyval';
 import Rollbar from 'rollbar';
@@ -192,8 +193,8 @@ import { hasJapanese } from './japanese';
       case 'dbstateupdated':
         const { state } = evt.data;
 
-        // Check if we need to update any query results as a
-        // result of databases become available or unavailable.
+        // Check if we need to update any query results as a result of databases
+        // becoming available or unavailable or updating their version.
         const queriesToRun: Array<MajorDataSeries> = [];
         for (const series of allMajorDataSeries) {
           const wasOk =
@@ -207,7 +208,17 @@ import { hasJapanese } from './japanese';
                 state.radicals.state === DataSeriesState.Ok
               : state[series].state === DataSeriesState.Ok;
 
-          if (!wasOk && isOk) {
+          const versionAsString = (version: DataVersion | null) =>
+            version
+              ? `${version.major}.${version.minor}.${version.patch}:${version.lang}`
+              : `null`;
+          const prevVersion = versionAsString(databaseState[series].version);
+          const newVersion = versionAsString(state[series].version);
+
+          if (
+            (!wasOk && isOk) ||
+            (wasOk && isOk && prevVersion !== newVersion)
+          ) {
             // Defer this until after we've updated databaseState
             queriesToRun.push(series);
           } else if (entries[series].length && !isOk) {
