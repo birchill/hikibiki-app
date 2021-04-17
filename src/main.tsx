@@ -59,6 +59,12 @@ import { hasJapanese } from './japanese';
     },
   });
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch((error) => {
+      console.log('Service worker registration failed:', error);
+    });
+  }
+
   const initialDataSeriesState: DataSeriesInfo = {
     state: DataSeriesState.Initializing,
     version: null,

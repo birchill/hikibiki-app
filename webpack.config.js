@@ -1,15 +1,21 @@
 const path = require('path');
+const crypto = require('crypto');
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { RelativeCiAgentWebpackPlugin } = require('@relative-ci/agent');
+const { InjectManifest } = require('workbox-webpack-plugin');
+const webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
 const plugins = [
+  new webpack.DefinePlugin({
+    __BUILD_ID__: `'${getUniqueBuildId()}'`,
+  }),
   new CleanWebpackPlugin(),
   new CopyWebpackPlugin({
     patterns: [
@@ -21,6 +27,9 @@ const plugins = [
   new HtmlWebpackPlugin({
     template: './src/index.html',
     excludeChunks: ['db-worker'],
+  }),
+  new InjectManifest({
+    swSrc: './src/sw.ts',
   }),
   new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
 ];
@@ -79,3 +88,30 @@ module.exports = {
   },
   devtool: prod ? false : 'source-map',
 };
+
+function getUniqueBuildId() {
+  const EPOCH_START = Date.UTC(2020, 0, 1);
+  const RANDOM_COMPONENT_LENGTH = 8;
+
+  const timeStamp = Date.now() - EPOCH_START;
+
+  // Random component
+  const buffer = new Uint8Array(RANDOM_COMPONENT_LENGTH);
+  crypto.randomFillSync(buffer);
+  const max = Math.pow(2, 8);
+  let randomComponent = 0;
+  for (let i = 0; i < buffer.length; i++) {
+    randomComponent *= 36;
+    randomComponent += Math.round((buffer[i] / max) * 35);
+  }
+
+  return (
+    // Take the timestamp, convert to base 36, and zero-pad it so it
+    // collates correctly for at least 50 years...
+    `0${timeStamp.toString(36)}`.slice(-8) +
+    // ...then add the random component, also suitably zero-padded
+    `${'0'.repeat(RANDOM_COMPONENT_LENGTH)}${randomComponent.toString(
+      36
+    )}`.slice(-RANDOM_COMPONENT_LENGTH)
+  );
+}
