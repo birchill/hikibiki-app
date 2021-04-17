@@ -54,6 +54,16 @@ self.addEventListener('fetch', (evt: FetchEvent) => {
     return;
   }
 
+  // Fix console error that occurs when using Lighthouse in Chrome
+  //
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=823392
+  if (
+    evt.request.cache === 'only-if-cached' &&
+    evt.request.mode !== 'same-origin'
+  ) {
+    return;
+  }
+
   // In fact, only return things in our cache
   //
   // It's really tempting to try and update cache items but we'd break version
