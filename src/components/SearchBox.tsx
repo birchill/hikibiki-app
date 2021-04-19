@@ -81,7 +81,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
     <nav class="container mx-auto max-w-3xl -mt-half-input-text-2xl-py-6 mb-12 sm:mb-20 px-12">
       <form action="/" method="get" onSubmit={onSubmit}>
         <input
-          class="rounded-full w-full pl-32 sm:pl-40 pr-12 py-6 bg-white text-gray-700 placeholder-gray-700 font-medium text-2xl tracking-wide bg-no-repeat outline-none shadow-search-default"
+          class="rounded-full w-full pl-32 sm:pl-40 pr-12 py-6 bg-white text-gray-700 placeholder-gray-700 placeholder-opacity-50 font-medium text-2xl tracking-wide bg-no-repeat outline-none shadow-search-default"
           type="search"
           name="q"
           autofocus={!props.search}

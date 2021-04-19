@@ -16,7 +16,7 @@ export const WordList: FunctionalComponent<Props> = (props: Props) => {
   }
 
   return (
-    <div class="word-list bg-white rounded-lg border-gray-300 border px-10 sm:px-20 py-10 mb-12 leading-normal">
+    <div class="word-list bg-white rounded-lg border-gray-300 border px-10 sm:px-20 py-10 mb-12">
       {props.entries.map((entry) =>
         WordEntry({
           ...entry,

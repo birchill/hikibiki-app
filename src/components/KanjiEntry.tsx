@@ -327,7 +327,7 @@ function renderReferences(props: Props) {
       <div class="flex-grow">
         {referenceData.map((data) => (
           <div
-            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-100 font-medium text-blue-800"
+            class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-50 font-medium text-blue-800"
             lang={data.startsWith('漢検') ? 'ja' : undefined}
           >
             {data}
@@ -421,7 +421,7 @@ function renderLinks(props: Props) {
       <div class="flex-grow">
         {linkData.map(({ label, href }) => (
           <a
-            class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-100 font-medium text-green-800 underline focus:outline-none border-2 border-dotted border-transparent focus:border-green-800 focus-invisible:border-transparent"
+            class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-50 font-medium text-green-800 underline focus:outline-none border-2 border-dotted border-transparent focus:border-green-800 focus-invisible:border-transparent"
             href={href}
             target="_blank"
             rel="noreferrer noopener"

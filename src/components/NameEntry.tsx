@@ -7,7 +7,7 @@ interface Props extends NameResult {
 
 export const NameEntry: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div class="name-entry text-xl mt-2 mb-2">
+    <div class="name-entry text-xl leading-normal mt-2 mb-2">
       {renderJapaneseName(props)}
       <span class="text-gray-500 text-lg text-light" lang={props.lang}>
         {props.tr.map(renderTranslation)}

@@ -24,7 +24,10 @@ interface Props extends WordResult {
 
 export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
   return (
-    <div class="word-entry text-xl mt-8 mb-8" id={`word-${props.id}`}>
+    <div
+      class="word-entry text-xl leading-normal mt-8 mb-8"
+      id={`word-${props.id}`}
+    >
       {renderHeading(props, props.accentDisplay)}
       {renderSenses(props.s, props.lang)}
     </div>
@@ -98,7 +101,7 @@ function renderHeadword(
   if (highlighted) {
     inner = (
       <Fragment>
-        <span class="bg-yellow-200">{highlighted}</span>
+        <span class="bg-yellow-100">{highlighted}</span>
         {tail}
       </Fragment>
     );
@@ -470,7 +473,7 @@ function renderHeadwordPriority(
 
   return (
     <svg
-      class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm text-yellow-600 bg-yellow-100`}
+      class={`inline-block w-10 h-10 p-2 mb-2 mr-2 rounded-sm text-yellow-600 bg-yellow-50`}
       viewBox="0 0 16 16"
     >
       <title>{title}</title>
@@ -586,7 +589,7 @@ function renderGloss(gloss: Gloss, last: boolean) {
     glossText = (
       <Fragment>
         {before}
-        <span class="bg-yellow-200">{highlighted}</span>
+        <span class="bg-yellow-100">{highlighted}</span>
         {after}
       </Fragment>
     );
@@ -869,7 +872,7 @@ function renderPartOfSpeech(pos?: Array<PartOfSpeech>) {
     let descr = Array.isArray(labelData) ? labelData[1] : undefined;
     return (
       <span
-        class="text-xs text-blue-600 bg-blue-100 px-2 py-1 mx-1 rounded-sm"
+        class="text-xs text-blue-800 bg-blue-50 px-2 py-1 mx-1 rounded-sm"
         title={descr}
       >
         {label}
@@ -956,7 +959,7 @@ function renderFields(fields?: Array<FieldType>) {
   }
 
   return fields.map((field) => (
-    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 mx-1 rounded-sm">
+    <span class="text-xs text-green-800 bg-green-50 px-2 py-1 mx-1 rounded-sm">
       {fieldLabels[field] || field}
     </span>
   ));

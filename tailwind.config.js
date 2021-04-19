@@ -1,22 +1,18 @@
-const { boxShadow, fontSize, margin } = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
+const { fontSize } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
     extend: {
       colors: {
         // TODO: See if we can use hsl colours here
-        black: '#27241D',
+        black: colors.warmGray[800],
         gray: {
-          100: 'hsl(40, 23.1%, 97.5%)',
-          200: 'hsl(42.9, 13.2%, 89.6%)',
-          300: '#D3CEC4',
-          400: '#B8B2A7',
-          500: '#A39E93',
-          600: '#857F72',
-          700: '#625D52',
-          800: '#504A40',
-          900: '#423D33',
+          ...colors.warmGray,
+          500: '#817974',
         },
+        yellow: colors.yellow,
+        blue: colors.lightBlue,
         orange: {
           50: 'hsl(24, 100%, 95%)',
           100: 'hsl(24, 100%, 93%)',
@@ -61,12 +57,11 @@ module.exports = {
       borderRadius: {
         none: '0',
         sm: '0.25rem',
-        default: '0.5rem',
+        DEFAULT: '0.5rem',
         lg: '1rem',
         full: '9999px',
       },
       boxShadow: {
-        ...boxShadow,
         'orange-default':
           '0 1px 1px -1px hsl(6, 59%, 75%), 0 2px 4px -1px hsla(6, 59%, 75%, 0.5)',
         'search-default': '2px 4px 3px hsla(8, 92.2%, 22%, 10%)',
@@ -88,15 +83,13 @@ module.exports = {
         ],
       },
       fontSize: {
-        ...fontSize,
         kanjixl: '6rem',
       },
       gridTemplateColumns: {
         seealso: '3em minmax(50px, max-content) minmax(120px, max-content)',
       },
       margin: {
-        ...margin,
-        '-half-input-text-2xl-py-6': `calc(-1 * (1.5 * 0.5 * ${fontSize['2xl']} + 12px))`,
+        '-half-input-text-2xl-py-6': `calc(-1 * (1.5 * 0.5 * ${fontSize['2xl'][0]} + 12px))`,
       },
     },
   },
@@ -123,10 +116,4 @@ module.exports = {
   ],
   // Silence warning since we run PurgeCSS in separate postcss step
   purge: false,
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-    standardFontWeights: true,
-    defaultLineHeights: true,
-  },
 };
