@@ -24,7 +24,7 @@ self.addEventListener('install', (evt: ExtendableEvent) => {
       cache.addAll(
         bundledAssets
           .filter((asset) => asset.url !== '_headers')
-          .map((asset) => `/${asset.url}`)
+          .map((asset) => (asset.url === 'index.html' ? '/' : `/${asset.url}`))
       );
     })
   );
@@ -87,7 +87,7 @@ self.addEventListener('fetch', (evt: FetchEvent) => {
   evt.respondWith(
     (async () => {
       const cache = await caches.open(APP_CACHE);
-      const response = await cache.match(evt.request);
+      const response = await cache.match(evt.request, { ignoreSearch: true });
       return response || fetch(evt.request);
     })()
   );
