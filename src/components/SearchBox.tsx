@@ -96,6 +96,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
             backgroundPositionY: 'center',
             backgroundSize: '1em 1em',
           }}
+          aria-label="Search"
           {...specialProps}
         />
       </form>

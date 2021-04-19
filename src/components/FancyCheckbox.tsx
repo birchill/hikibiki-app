@@ -28,6 +28,7 @@ export const FancyCheckbox: FunctionalComponent<Props> = (props: Props) => {
       <svg
         class="tick inline-block absolute left-0 w-10 h-10 m-1 pointer-events-none"
         viewBox="0 0 16 16"
+        role="presentation"
       >
         <use width="16" height="16" href="#tick" />
       </svg>

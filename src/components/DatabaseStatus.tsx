@@ -108,12 +108,14 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
           onChange={onToggleActive}
           theme={disabled ? 'gray' : 'orange'}
         />
-        <h2
-          className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer select-none"
-          onClick={onToggleActive}
-        >
-          {heading}
-        </h2>
+        <label for={`${series}-enabled`} className="contents">
+          <h2
+            className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer select-none"
+            onClick={onToggleActive}
+          >
+            {heading}
+          </h2>
+        </label>
         {renderSettingsIcon({
           disabled,
           expanded,
@@ -224,7 +226,12 @@ function renderSettingsIcon({
   }
 
   return (
-    <button class={containerStyles} type="button" onClick={onToggleSettings}>
+    <button
+      class={containerStyles}
+      type="button"
+      onClick={onToggleSettings}
+      aria-label="Show settings"
+    >
       <svg class="w-10 h-10" viewBox="0 0 16 16">
         <title>Settings</title>
         <use width="16" height="16" href="#cog" />
