@@ -230,7 +230,7 @@ function renderSettingsIcon({
       class={containerStyles}
       type="button"
       onClick={onToggleSettings}
-      aria-label="Show settings"
+      aria-label={expanded ? 'Hide settings' : 'Show settings'}
     >
       <svg class="w-10 h-10" viewBox="0 0 16 16">
         <title>Settings</title>
