@@ -1,5 +1,6 @@
 import { h, Fragment, FunctionalComponent } from 'preact';
 import {
+  groupSenses,
   Accent,
   CrossReference,
   Dialect,
@@ -494,41 +495,77 @@ function renderSenses(senses: WordResult['s'], lang: string | undefined) {
     }
     return (
       <p class={className} lang={senses[0].lang || 'en'}>
-        {renderGlosses(senses[0].g)}
-        {renderSenseInfo(senses[0].inf)}
-        {renderLangSource(senses[0].lsrc)}
         {renderPartOfSpeech(senses[0].pos)}
         {renderFields(senses[0].field)}
         {renderMisc(senses[0].misc)}
         {renderDialect(senses[0].dial)}
+        {renderGlosses(senses[0].g)}
+        {renderSenseInfo(senses[0].inf)}
+        {renderLangSource(senses[0].lsrc)}
         {renderCrossReferences(senses[0].xref, senses[0].ant)}
       </p>
     );
   }
 
-  const localSenses = senses.filter((sense) => !isForeignSense(sense, lang));
-  const foreignSenses = senses.filter((sense) => isForeignSense(sense, lang));
+  // Split the senses into native senses (which we show as a bulleted list)
+  // and English senses (which we show as a numbered list since the
+  // cross-references refer to the specific order of the English senses).
+  const nativeSenses = senses.filter(
+    (sense) => sense.lang && sense.lang !== 'en'
+  );
+  const renderedNativeSenses = nativeSenses.length ? (
+    <ul class="ml-8 list-disc list-inside">
+      {nativeSenses.map((sense) => renderSense(sense, lang))}
+    </ul>
+  ) : null;
 
-  if (lang === 'en') {
-    return (
+  // Try to group the English senses by part-of-speech.
+  const enSenses = senses.filter((sense) => !sense.lang || sense.lang === 'en');
+  const posGroups = groupSenses(enSenses);
+  // We'll use groups unless it makes the result more than 50% longer.
+  const linesWithGrouping = posGroups.length + enSenses.length;
+  const linesWithoutGrouping = enSenses.length;
+  const useGroups =
+    posGroups.length && linesWithGrouping / linesWithoutGrouping <= 1.5;
+
+  // Render using the appropriate strategy
+  let renderedEnSenses: JSX.Element | null = null;
+  if (useGroups && enSenses.length) {
+    let start = 1;
+    renderedEnSenses = (
+      <Fragment>
+        {posGroups.map((group) => {
+          const renderedGroup = (
+            <Fragment>
+              <p>
+                {renderPartOfSpeech(group.pos)}
+                {renderMisc(group.misc)}
+                {!group.pos.length && !group.misc.length ? (
+                  <span class="text-xs px-2 py-1">-</span>
+                ) : null}
+              </p>
+              <ol class="ml-8 list-circled list-inside" start={start}>
+                {group.senses.map((sense) => renderSense(sense, lang))}
+              </ol>
+            </Fragment>
+          );
+          start += group.senses.length;
+          return renderedGroup;
+        })}
+      </Fragment>
+    );
+  } else if (enSenses.length) {
+    renderedEnSenses = (
       <ol class="ml-8 list-circled list-inside">
-        {localSenses.map((sense) => renderSense(sense, lang))}
+        {enSenses.map((sense) => renderSense(sense, lang))}
       </ol>
     );
   }
 
   return (
     <Fragment>
-      {localSenses ? (
-        <ul class="ml-8 list-disc list-inside">
-          {localSenses.map((sense) => renderSense(sense, lang))}
-        </ul>
-      ) : null}
-      {foreignSenses ? (
-        <ol class="ml-8 list-circled list-inside">
-          {foreignSenses.map((sense) => renderSense(sense, lang))}
-        </ol>
-      ) : null}
+      {renderedNativeSenses}
+      {renderedEnSenses}
     </Fragment>
   );
 }
@@ -549,13 +586,13 @@ function renderSense(sense: WordResult['s'][0], lang: string | undefined) {
 
   return (
     <li lang={sense.lang || 'en'} class={className}>
-      {renderGlosses(sense.g)}
-      {renderSenseInfo(sense.inf)}
-      {renderLangSource(sense.lsrc)}
       {renderPartOfSpeech(sense.pos)}
       {renderFields(sense.field)}
       {renderMisc(sense.misc)}
       {renderDialect(sense.dial)}
+      {renderGlosses(sense.g)}
+      {renderSenseInfo(sense.inf)}
+      {renderLangSource(sense.lsrc)}
       {renderCrossReferences(sense.xref, sense.ant)}
     </li>
   );
@@ -884,7 +921,7 @@ function renderPartOfSpeech(pos?: Array<PartOfSpeech>) {
     let descr = Array.isArray(labelData) ? labelData[1] : undefined;
     return (
       <span
-        class="text-xs text-blue-800 bg-blue-50 px-2 py-1 mx-1 rounded-sm"
+        class="text-xs text-blue-800 bg-blue-50 px-2 py-1 mr-2 rounded-sm"
         title={descr}
       >
         {label}
@@ -971,7 +1008,7 @@ function renderFields(fields?: Array<FieldType>) {
   }
 
   return fields.map((field) => (
-    <span class="text-xs text-green-800 bg-green-50 px-2 py-1 mx-1 rounded-sm">
+    <span class="text-xs text-green-800 bg-green-50 px-2 py-1 mr-2 rounded-sm">
       {fieldLabels[field] || field}
     </span>
   ));
@@ -1034,7 +1071,7 @@ function renderMisc(misc?: Array<MiscType>) {
     let descr = Array.isArray(labelData) ? labelData[1] : undefined;
     return (
       <span
-        class="text-xs text-red-600 bg-red-100 px-2 py-1 mx-1 rounded-sm"
+        class="text-xs text-red-600 bg-red-100 px-2 py-1 mr-2 rounded-sm"
         title={descr}
       >
         {label}
@@ -1063,7 +1100,7 @@ function renderDialect(dial?: Array<Dialect>) {
   }
 
   return dial.map((dialect) => (
-    <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 mx-1 rounded-sm">
+    <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 mr-2 rounded-sm">
       {dialectLabels[dialect]}
     </span>
   ));
