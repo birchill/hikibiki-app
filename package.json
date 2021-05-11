@@ -51,7 +51,7 @@
   "homepage": "https://hikibiki.app/",
   "dependencies": {
     "@birchill/hikibiki-data": "^7.3.0",
-    "@birchill/normal-jp": "^1.2.1",
+    "@birchill/normal-jp": "^1.2.2",
     "idb-keyval": "^5.0.5",
     "postcss": "^8.2.13",
     "preact": "^10.5.13",
