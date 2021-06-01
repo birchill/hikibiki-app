@@ -6,7 +6,7 @@
   "devDependencies": {
     "@babel/core": "^7.14.3",
     "@fullhuman/postcss-purgecss": "^4.0.3",
-    "@relative-ci/agent": "^1.6.1",
+    "@relative-ci/agent": "^2.0.0",
     "@storybook/preact": "~6.2.9",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^3.0.0",
