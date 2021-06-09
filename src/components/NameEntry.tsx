@@ -97,6 +97,11 @@ const typeMeta: { [type in NameType]: TypeDescription } = {
     long: 'Living creature',
     emoji: '🐍',
   },
+  doc: {
+    short: 'document',
+    long: 'Document',
+    emoji: '📄',
+  },
   dei: {
     short: 'deity',
     long: 'Deity',
@@ -121,6 +126,11 @@ const typeMeta: { [type in NameType]: TypeDescription } = {
     short: 'given',
     long: 'Given name, gender not specified',
     emoji: '📛',
+  },
+  group: {
+    short: 'group',
+    long: 'Group (music group, band etc.)',
+    emoji: '🎺',
   },
   leg: {
     short: 'legend',
