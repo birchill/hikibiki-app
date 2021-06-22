@@ -12,7 +12,7 @@ module.exports = {
           500: '#817974',
         },
         yellow: colors.yellow,
-        blue: colors.lightBlue,
+        blue: colors.sky,
         orange: {
           50: 'hsl(24, 100%, 95%)',
           100: 'hsl(24, 100%, 93%)',
