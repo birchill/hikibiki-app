@@ -23,7 +23,7 @@ const linkStyles = 'hover:underline';
 export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
   const commonReadings = getCommonReadings(props.r);
 
-  const clipboardCopiedLabel = useRef<HTMLDivElement | null>(null);
+  const clipboardCopiedLabel = useRef<HTMLDivElement>(null);
   const clipboardEnabled =
     navigator.clipboard && typeof navigator.clipboard.writeText === 'function';
 
