@@ -6233,10 +6233,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-idb-keyval@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-5.1.0.tgz#2f98f922c2ecde735f75f6c3926bf9cf34194ce0"
-  integrity sha512-2hvhK8CZ3dG3S9Esfuq9Gxjtjdq7XLRiBVDPLe/+CzDe4X9g7Mr3peQn+/9Xz19M/Dtyjc2lEMNVxQFvV/0BtQ==
+idb-keyval@^5.1.3:
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-5.1.3.tgz#6ef5dff371897c23f144322dc6374eadd6a345d9"
+  integrity sha512-N9HbCK/FaXSRVI+k6Xq4QgWxbcZRUv+SfG1y7HJ28JdV8yEJu6k+C/YLea7npGckX2DQJeEVuMc4bKOBeU/2LQ==
   dependencies:
     safari-14-idb-fix "^1.0.4"
 
