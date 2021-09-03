@@ -30,6 +30,9 @@ const plugins = [
   }),
   new InjectManifest({
     swSrc: './src/sw.ts',
+    // Don't cache CSS files in development because the Tailwind CSS files
+    // won't be minimized then (and we'll get warnings about it).
+    exclude: process.env.NODE_ENV === 'production' ? [] : [/.css$/],
   }),
   new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
 ];
@@ -87,6 +90,11 @@ module.exports = {
     },
   },
   devtool: prod ? false : 'source-map',
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
+  },
 };
 
 function getUniqueBuildId() {

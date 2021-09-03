@@ -33,7 +33,7 @@
     "build:stats": "cross-env NODE_ENV=production webpack --json > webpack-stats.json",
     "build:storybook": "build-storybook -c .storybook -s dist",
     "postinstall": "husky install",
-    "start": "webpack serve --content-base dist",
+    "start": "webpack serve",
     "storybook": "start-storybook -p 9001 -c .storybook -s dist"
   },
   "repository": {
