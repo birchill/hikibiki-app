@@ -7,7 +7,7 @@
     "@babel/core": "^7.15.8",
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@relative-ci/agent": "^2.1.0",
-    "@storybook/preact": "~6.3.10",
+    "@storybook/preact": "~6.3.12",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^9.0.1",
