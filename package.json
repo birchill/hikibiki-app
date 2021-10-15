@@ -54,7 +54,7 @@
     "@birchill/normal-jp": "^1.4.0",
     "idb-keyval": "^6.0.2",
     "postcss": "^8.3.9",
-    "preact": "^10.5.14",
+    "preact": "^10.5.15",
     "rollbar": "^2.24.0",
     "tailwindcss": "^2.2.17"
   },
