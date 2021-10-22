@@ -16,7 +16,7 @@
     "html-webpack-plugin": "^5.3.2",
     "husky": "^7.0.2",
     "lint-staged": "^11.2.3",
-    "mini-css-extract-plugin": "^2.4.2",
+    "mini-css-extract-plugin": "^2.4.3",
     "postcss-import": "^14.0.2",
     "postcss-loader": "^6.2.0",
     "prettier": "^2.4.1",
