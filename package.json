@@ -4,7 +4,7 @@
   "description": "Look up words and stuff",
   "main": "src/main.tsx",
   "devDependencies": {
-    "@babel/core": "^7.15.8",
+    "@babel/core": "^7.16.0",
     "@fullhuman/postcss-purgecss": "^4.0.3",
     "@relative-ci/agent": "^3.0.0",
     "@storybook/preact": "~6.3.12",
