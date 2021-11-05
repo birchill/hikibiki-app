@@ -56,7 +56,7 @@
     "postcss": "^8.3.11",
     "preact": "^10.5.15",
     "rollbar": "^2.24.0",
-    "tailwindcss": "^2.2.17"
+    "tailwindcss": "^2.2.19"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,css}": [
