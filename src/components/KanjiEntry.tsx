@@ -58,7 +58,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
     <div class="kanji-entry bg-white rounded-lg border-gray-300 border px-10 sm:px-20 py-10 mb-12 leading-normal">
       <div class="top-part flex mb-6">
         <div
-          class="mr-10 text-kanjixl leading-none flex-grow"
+          class="mr-10 text-kanjixl leading-none grow"
           lang="ja"
           style={{ maxWidth: '1.5em' }}
         >
@@ -166,7 +166,7 @@ function renderComponents(props: Props): JSX.Element {
     : null;
 
   return (
-    <div class="components font-light mt-4 flex-grow">
+    <div class="components font-light mt-4 grow">
       <table>
         {forcedRadicalRow}
         {props.comp.map((comp) => {
@@ -223,7 +223,7 @@ function renderMisc(props: Props) {
 
   return (
     <div class="misc flex mb-8">
-      <div class="strokes flex-grow flex items-center">
+      <div class="strokes grow flex items-center">
         <svg
           class="inline-block mr-8 w-10 h-10 text-gray-300"
           viewBox="0 0 16 16"
@@ -236,7 +236,7 @@ function renderMisc(props: Props) {
           {props.misc.sc === 1 ? ' stroke' : ' strokes'}
         </span>
       </div>
-      <div class="popularity flex-grow flex items-center">
+      <div class="popularity grow flex items-center">
         <svg
           class="inline-block mr-8 w-10 h-10 text-gray-300 fill-current"
           viewBox="0 0 8 8"
@@ -283,7 +283,7 @@ function renderMisc(props: Props) {
           <span class="text-sm"> / 2,500</span>
         </span>
       </div>
-      <div class="grade flex-grow flex items-center">
+      <div class="grade grow flex items-center">
         <svg
           class="inline-block mr-8 w-10 h-10 text-gray-300"
           viewBox="0 0 16 16"
@@ -319,12 +319,12 @@ function renderReferences(props: Props) {
   return (
     <div class="refs flex mb-2">
       <svg
-        class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+        class="w-10 h-10 shrink-0 text-gray-300 mr-8 mt-3"
         viewBox="0 0 16 16"
       >
         <use width="16" height="16" href="#book" />
       </svg>
-      <div class="flex-grow">
+      <div class="grow">
         {referenceData.map((data) => (
           <div
             class="inline-block rounded-full px-8 py-3 pr-10 mb-4 mr-4 bg-blue-50 font-medium text-blue-800"
@@ -413,12 +413,12 @@ function renderLinks(props: Props) {
   return (
     <div class="links flex -mb-4">
       <svg
-        class="w-10 h-10 flex-shrink-0 text-gray-300 mr-8 mt-3"
+        class="w-10 h-10 shrink-0 text-gray-300 mr-8 mt-3"
         viewBox="0 0 16 16"
       >
         <use width="16" height="16" href="#link" />
       </svg>
-      <div class="flex-grow">
+      <div class="grow">
         {linkData.map(({ label, href }) => (
           <a
             class="inline-flex items-baseline rounded-full px-8 py-3 mb-4 mr-4 bg-green-50 font-medium text-green-800 underline focus:outline-none border-2 border-dotted border-transparent focus:border-green-800 focus-invisible:border-transparent"

@@ -5,7 +5,7 @@ const purgecss = require('@fullhuman/postcss-purgecss')({
     path.join(__dirname, 'src', 'index.html'),
     path.join(__dirname, 'src', 'components', '*.tsx'),
   ],
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+  defaultExtractor: (content) => content.match(/[\w-/:[\]]+(?<!:)/g) || [],
 });
 
 module.exports = {

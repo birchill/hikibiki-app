@@ -110,7 +110,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
         />
         <label for={`${series}-enabled`} className="contents">
           <h2
-            className="flex-grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer select-none"
+            className="grow text-lg tracking-tight text-center text-lg font-semibold cursor-pointer select-none"
             onClick={onToggleActive}
           >
             {heading}
@@ -289,7 +289,7 @@ function renderDatabaseStatus({
     case 'checking':
       return (
         <div class="flex">
-          <div class="flex-grow mr-8 italic">Checking for updates&hellip;</div>
+          <div class="grow mr-8 italic">Checking for updates&hellip;</div>
           <button class={buttonStyles} type="button" onClick={onCancel}>
             Cancel
           </button>
@@ -306,7 +306,7 @@ function renderDatabaseStatus({
       )}%)`;
       return (
         <div class="flex">
-          <div class="flex-grow mr-8">
+          <div class="grow mr-8">
             <ProgressBar
               id="update-progress"
               max={100}
@@ -331,7 +331,7 @@ function renderDatabaseStatus({
       )}%)`;
       return (
         <div class="flex">
-          <div class="flex-grow mr-8">
+          <div class="grow mr-8">
             <ProgressBar
               id="update-progress"
               max={100}
@@ -363,7 +363,7 @@ function renderIdleDatabaseStatus({
   if (updateError && updateError.name === 'OfflineError') {
     return (
       <div class="flex error bg-orange-100 p-8 rounded border border-orange-1000">
-        <div class="flex-grow mr-8">
+        <div class="grow mr-8">
           Could not check for updates because this device is currently offline.
           An update will be performed once the device is online again.
         </div>
@@ -375,7 +375,7 @@ function renderIdleDatabaseStatus({
   if (updateError) {
     return (
       <div class="flex error bg-red-100 p-8 rounded border border-orange-1000">
-        <div class="flex-grow mr-8">
+        <div class="grow mr-8">
           Update failed: {updateError.message}
           {updateError.nextRetry ? (
             <Fragment>
@@ -416,7 +416,7 @@ function renderIdleDatabaseStatus({
 
   return (
     <div class="flex mb-10">
-      <div class="flex-grow mr-8 italic">{status}</div>
+      <div class="grow mr-8 italic">{status}</div>
       <div class="self-end">
         <button class={buttonStyles} type="button" onClick={onUpdate}>
           {state === DataSeriesState.Unavailable

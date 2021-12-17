@@ -21,7 +21,7 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
     <div class="mt-10 -mb-4">
       <div class="flex">
         <svg
-          class="w-10 h-10 flex-shrink-0 fill-current mr-8 mt-3"
+          class="w-10 h-10 shrink-0 fill-current mr-8 mt-3"
           viewBox="0 0 16 16"
         >
           <use width="16" height="16" href="#book" />
@@ -43,7 +43,7 @@ export const ReferencesConfig: FunctionalComponent<Props> = (props: Props) => {
       </div>
       <div class="flex mt-8">
         <svg
-          class="w-10 h-10 flex-shrink-0 fill-current mr-8 mt-3"
+          class="w-10 h-10 shrink-0 fill-current mr-8 mt-3"
           viewBox="0 0 16 16"
         >
           <use width="16" height="16" href="#link" />
