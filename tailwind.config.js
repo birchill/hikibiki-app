@@ -6,9 +6,9 @@ module.exports = {
     extend: {
       colors: {
         // TODO: See if we can use hsl colours here
-        black: colors.warmGray[800],
+        black: colors.stone[800],
         gray: {
-          ...colors.warmGray,
+          ...colors.stone,
           500: '#817974',
         },
         yellow: colors.yellow,
@@ -93,16 +93,6 @@ module.exports = {
       },
     },
   },
-  variants: {
-    textColor: ['responsive', 'hover', 'focus', 'visited'],
-    borderColor: [
-      'responsive',
-      'hover',
-      'focus',
-      'focus-within',
-      'focus-invisible',
-    ],
-  },
   plugins: [
     function ({ addVariant, e }) {
       addVariant('focus-invisible', ({ modifySelectors, separator }) => {
@@ -114,6 +104,5 @@ module.exports = {
       });
     },
   ],
-  // Silence warning since we run PurgeCSS in separate postcss step
-  purge: false,
+  content: ['./src/**/*.{html,ts,tsx}'],
 };
