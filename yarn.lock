@@ -1637,21 +1637,22 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.9.2.tgz#adea7b6953cbb34651766b0548468e743c6a2353"
   integrity sha512-VZMYa7+fXHdwIq1TDhSXoVmSPEGM/aa+6Aiq3nVVJ9bXr24zScr+NlKFKC3iPljA7ho/GAZr+d2jOf5GIRC30Q==
 
-"@relative-ci/agent@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-3.0.0.tgz#2146a41ad063309a33d9e3eb811c68b18b4f3335"
-  integrity sha512-UIDRc0XM4Xy3J7yUjXXiPjn3XCuXtglzUCfrwkLOixpFc07pwru4nhEMxXhRdbGWFKmJP0Tz13h0xR7UQq9rfg==
+"@relative-ci/agent@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-3.1.0.tgz#e374c07503b03b6610dba051f16979b5f61ef5e2"
+  integrity sha512-ybksrmyxfvHBTBWF88QvkTdktZuF37o8J3AhBFcAg4ebQGRoaxFRwJxC4/rnGyz4kdQFUwHzYbv9KoMs3BLIHg==
   dependencies:
     "@bundle-stats/plugin-webpack-filter" "^3.1.3"
     "@bundle-stats/plugin-webpack-validate" "^3.1.3"
     core-js "^3.6.4"
     cosmiconfig "^7.0.0"
     debug "^4.1.1"
-    dotenv "^10.0.0"
-    env-ci "^5.3.3"
+    dotenv "^14.1.0"
+    env-ci "^7.0.0"
     fs-extra "^10.0.0"
     isomorphic-fetch "^3.0.0"
     lodash "^4.17.15"
+    webpack4 "npm:webpack@^4.46.0"
     yargs "^17.1.1"
 
 "@rollup/plugin-babel@^5.2.0":
@@ -4881,10 +4882,10 @@ dotenv-expand@^5.1.0:
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
 
-dotenv@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
-  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+dotenv@^14.1.0:
+  version "14.3.2"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-14.3.2.tgz#7c30b3a5f777c79a3429cb2db358eef6751e8369"
+  integrity sha512-vwEppIphpFdvaMCaHfCEv9IgwcxMljMw2TnAQBB4VWPvzXQLTb82jwmdOKzlEVUL3gNFT4l4TPKO+Bn+sqcrVQ==
 
 dotenv@^8.0.0:
   version "8.2.0"
@@ -5016,10 +5017,10 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.1.0.tgz#992d3129cf7df6870b96c57858c249a120f8b8b5"
   integrity sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==
 
-env-ci@^5.3.3:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-5.4.0.tgz#e632d9b9dc27d65b071dcab35968990a4d7f3a6e"
-  integrity sha512-6Bq7gq+2QCZjCwe2vUXTcecIsjfh71kyNds5nBrpyuyPjgYgGEHlgjkrKSH6LFwJ5PSEwH3r7KXioGreJKcuHA==
+env-ci@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-7.0.0.tgz#5ba18dc1a43af78330f5f2dd59806c99d5e548a5"
+  integrity sha512-yR6deDT5+6I4i009Vqc2INpO7UWzqgB5sIrEUUcePGnQL6dwxNGDFeBMe8B/wD7FW6cJl/fXYtQwMdfkBII3OA==
   dependencies:
     execa "^5.0.0"
     fromentries "^1.3.2"
@@ -10995,7 +10996,7 @@ webpack-virtual-modules@^0.2.2:
   dependencies:
     debug "^3.0.0"
 
-webpack@4:
+"webpack4@npm:webpack@^4.46.0", webpack@4:
   version "4.46.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.46.0.tgz#bf9b4404ea20a073605e0a011d188d77cb6ad542"
   integrity sha512-6jJuJjg8znb/xRItk7bkT0+Q7AHCYjjFnvKIWQPkNIOyRqoCGvkOs0ipeQzrqz4l5FtN5ZI/ukEHroeX/o1/5Q==
