@@ -58,7 +58,7 @@ import { hasJapanese } from './japanese';
     },
   });
 
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
     navigator.serviceWorker.register('/sw.js').catch((error) => {
       console.log('Service worker registration failed:', error);
     });
