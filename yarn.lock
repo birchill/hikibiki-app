@@ -1559,22 +1559,23 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@birchill/hikibiki-data@^7.5.1":
-  version "7.5.1"
-  resolved "https://registry.yarnpkg.com/@birchill/hikibiki-data/-/hikibiki-data-7.5.1.tgz#20eacd79b4e9da9360be063c5a2a2681faafcf7c"
-  integrity sha512-MUujssAmLiDQehIZDvFCmqadUf5T1o+o1m09VJXx7ZKFmw5GbiiffOQO7kxNvXquuPxN48TP0KxmSj8WjNgF7A==
+"@birchill/jpdict-idb@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-0.0.3.tgz#a4d394676c1c4e51e3fb82c3c10b0e169f978b53"
+  integrity sha512-TkFczLsF3yP34cTM87czTn5oEF+ngpnIcAINMkqSj1BuI+8ZCoSlRWPiMD5JuIGycdn+QIymT64bRtvCIeV+zw==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
-    "@birchill/normal-jp" "^1.2.2"
-    idb "^6.0.0"
-    safari-14-idb-fix "^1.0.3"
+    "@birchill/normal-jp" "^1.4.0"
+    idb "^7.0.1"
+    safari-14-idb-fix "^3.0.0"
+    superstruct "^0.15.4"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@^1.2.2", "@birchill/normal-jp@^1.4.0":
+"@birchill/normal-jp@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
@@ -6642,15 +6643,15 @@ idb-keyval@^6.1.0:
   dependencies:
     safari-14-idb-fix "^3.0.0"
 
-idb@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/idb/-/idb-6.0.0.tgz#00d6092b948138cf9bebc9dcddc4df8bf60bf0ac"
-  integrity sha512-+M367poGtpzAylX4pwcrZIa7cFQLfNkAOlMMLN2kw/2jGfJP6h+TB/unQNSVYwNtP8XqkLYrfuiVnxLQNP1tjA==
-
 idb@^6.1.4:
   version "6.1.5"
   resolved "https://registry.yarnpkg.com/idb/-/idb-6.1.5.tgz#dbc53e7adf1ac7c59f9b2bf56e00b4ea4fce8c7b"
   integrity sha512-IJtugpKkiVXQn5Y+LteyBCNk1N8xpGV3wWZk9EVtZWH8DYkjBn0bX1XnGP9RkyZF0sAcywa6unHqSWKe7q4LGw==
+
+idb@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
+  integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
 
 ieee754@^1.1.4:
   version "1.1.13"
@@ -9642,11 +9643,6 @@ rxjs@^7.5.2:
   dependencies:
     tslib "^2.1.0"
 
-safari-14-idb-fix@^1.0.3:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-1.0.4.tgz#5c68ba63e2a8ae0d89a0aa1e13fe89e3aef7da19"
-  integrity sha512-4+Y2baQdgJpzu84d0QjySl70Kyygzf0pepVg8NVg4NnQEPpfC91fAn0baNvtStlCjUUxxiu0BOMiafa98fRRuA==
-
 safari-14-idb-fix@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/safari-14-idb-fix/-/safari-14-idb-fix-3.0.0.tgz#450fc049b996ec7f3fd9ca2f89d32e0761583440"
@@ -10476,6 +10472,11 @@ superstruct@0.8.3:
   dependencies:
     kind-of "^6.0.2"
     tiny-invariant "^1.0.6"
+
+superstruct@^0.15.4:
+  version "0.15.4"
+  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.15.4.tgz#e3381dd84ca07e704e19f69eda74eee1a5efb1f9"
+  integrity sha512-eOoMeSbP9ZJChNOm/9RYjE+F36rYR966AAqeG3xhQB02j2sfAUXDp4EQ/7bAOqnlJnuFDB8yvOu50SocvKpUEw==
 
 supports-color@^5.3.0:
   version "5.5.0"

@@ -6,7 +6,7 @@ import {
   MajorDataSeries,
   NameResult,
   WordResult,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 import { crossReferenceFromQueryString } from '../cross-reference';
 import { CombinedDatabaseState } from '../worker-messages';
@@ -120,30 +120,24 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
     [props.onUpdateSearch]
   );
 
-  const {
-    value: accentDisplay,
-    setValue: setAccentDisplay,
-  } = useStoredValue<AccentDisplayType>({
-    key: 'accent-display',
-    defaultValue: 'binary',
-  });
+  const { value: accentDisplay, setValue: setAccentDisplay } =
+    useStoredValue<AccentDisplayType>({
+      key: 'accent-display',
+      defaultValue: 'binary',
+    });
 
   // References and links
-  const {
-    enabledItems: enabledReferences,
-    toggleItem: onToggleReference,
-  } = useStoredToggleList({
-    key: 'kanji-references',
-    initialValues: ['kanken'],
-  });
+  const { enabledItems: enabledReferences, toggleItem: onToggleReference } =
+    useStoredToggleList({
+      key: 'kanji-references',
+      initialValues: ['kanken'],
+    });
 
-  const {
-    enabledItems: enabledLinks,
-    toggleItem: onToggleLink,
-  } = useStoredToggleList({
-    key: 'kanji-links',
-    initialValues: ['kanjialive', 'wiktionary'],
-  });
+  const { enabledItems: enabledLinks, toggleItem: onToggleLink } =
+    useStoredToggleList({
+      key: 'kanji-links',
+      initialValues: ['kanjialive', 'wiktionary'],
+    });
 
   return (
     <Fragment>

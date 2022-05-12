@@ -1,6 +1,6 @@
 import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import { useRef } from 'preact/hooks';
-import { KanjiResult } from '@birchill/hikibiki-data';
+import { KanjiResult } from '@birchill/jpdict-idb';
 
 import { getReferenceLabels, ReferenceId } from '../references';
 import { LinkLabels } from '../links';

@@ -1,4 +1,4 @@
-import { CrossReference } from '@birchill/hikibiki-data';
+import { CrossReference } from '@birchill/jpdict-idb';
 
 export function crossReferenceFromQueryString(
   params: URLSearchParams

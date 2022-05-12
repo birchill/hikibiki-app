@@ -12,7 +12,7 @@ import {
   DataSeriesState,
   MajorDataSeries,
   UpdateState,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 import { DataSeriesInfo } from '../worker-messages';
 
@@ -73,15 +73,14 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
   // If the database is empty and we're still downloading it, we should let the
   // user know we're doing something if the panel is collapsed.
   let heading = headings[series];
-  if (!expanded && dataState.state === DataSeriesState.Empty) {
-    switch (dataState.updateState.state) {
+  if (!expanded && dataState.state === 'empty') {
+    switch (dataState.updateState.type) {
       case 'checking':
-      case 'downloading':
-        heading += ' (downloading…)';
+        heading += ' (checking…)';
         break;
 
-      case 'updatingdb':
-        heading += ' (updating…)';
+      case 'updating':
+        heading += ' (downloading…)';
         break;
 
       default:
@@ -93,7 +92,7 @@ export const DatabaseStatus: FunctionalComponent<Props> = (
         }
         break;
     }
-  } else if (!expanded && dataState.state === DataSeriesState.Unavailable) {
+  } else if (!expanded && dataState.state === 'unavailable') {
     heading += ' (💔)';
   }
 
@@ -161,9 +160,9 @@ function getCombinedDataState({
 
   // If any of the series are initializing, empty, unavailable, the whole series
   // is.
-  let state: DataSeriesState = DataSeriesState.Ok;
+  let state: DataSeriesState = 'ok';
   for (const series of definedSeries(data)) {
-    if (data[series]!.state !== DataSeriesState.Ok) {
+    if (data[series]!.state !== 'ok') {
       state = data[series]!.state;
       break;
     }
@@ -182,7 +181,7 @@ function getCombinedDataState({
   let updateState: UpdateState = data[series]!.updateState;
   for (const series of definedSeries(data)) {
     const thisUpdateState = data[series]!.updateState;
-    if (thisUpdateState.state !== 'idle') {
+    if (thisUpdateState.type !== 'idle') {
       updateState = thisUpdateState;
       break;
     }
@@ -253,7 +252,7 @@ function renderBody({
   onUpdate: () => void;
   onCancel: () => void;
 }) {
-  if (dataState.state === DataSeriesState.Initializing) {
+  if (dataState.state === 'init') {
     return 'Initializing…';
   }
 
@@ -261,7 +260,7 @@ function renderBody({
     <Fragment>
       <LicenseInfo series={series} version={dataState.version} />
       {renderDatabaseStatus({ dataState, onUpdate, onCancel })}
-      {dataState.state !== DataSeriesState.Empty ? children : null}
+      {dataState.state !== 'empty' ? children : null}
     </Fragment>
   );
 }
@@ -279,10 +278,8 @@ function renderDatabaseStatus({
 
   const buttonStyles =
     'bg-orange-100 font-semibold text-center px-10 py-6 self-end leading-none rounded border-2 border-dotted border-transparent focus:outline-none focus:border-orange-800 shadow-orange-default hover:bg-orange-50';
-  const disabledButtonStyles =
-    'bg-gray-100 text-gray-600 font-semibold text-center px-10 py-6 self-end leading-none rounded focus:outline-none border-2 shadow cursor-default';
 
-  switch (updateState.state) {
+  switch (updateState.type) {
     case 'idle':
       return renderIdleDatabaseStatus({ dataState, buttonStyles, onUpdate });
 
@@ -296,9 +293,9 @@ function renderDatabaseStatus({
         </div>
       );
 
-    case 'downloading': {
-      const { major, minor, patch } = updateState.downloadVersion;
-      const { progress } = updateState;
+    case 'updating': {
+      const { major, minor, patch } = updateState.version;
+      const { totalProgress: progress } = updateState;
 
       const dbLabel = dataLabels[updateState.series];
       const label = `Downloading ${dbLabel} data version ${major}.${minor}.${patch} (${Math.round(
@@ -315,31 +312,6 @@ function renderDatabaseStatus({
             />
           </div>
           <button class={buttonStyles} type="button" onClick={onCancel}>
-            Cancel
-          </button>
-        </div>
-      );
-    }
-
-    case 'updatingdb': {
-      const { major, minor, patch } = updateState.downloadVersion;
-      const { progress } = updateState;
-
-      const dbLabel = dataLabels[updateState.series];
-      const label = `Updating ${dbLabel} database to version ${major}.${minor}.${patch} (${Math.round(
-        progress * 100
-      )}%)`;
-      return (
-        <div class="flex">
-          <div class="grow mr-8">
-            <ProgressBar
-              id="update-progress"
-              max={100}
-              value={progress * 100}
-              label={`${label}…`}
-            />
-          </div>
-          <button class={disabledButtonStyles} type="button" disabled>
             Cancel
           </button>
         </div>
@@ -396,9 +368,9 @@ function renderIdleDatabaseStatus({
   const { state, updateState, version } = dataState;
 
   let status: string | JSX.Element;
-  if (state === DataSeriesState.Empty) {
+  if (state === 'empty') {
     status = 'No database';
-  } else if (state === DataSeriesState.Unavailable) {
+  } else if (state === 'unavailable') {
     status = 'Database storage unavailable';
   } else {
     const { major, minor, patch } = version!;
@@ -419,9 +391,7 @@ function renderIdleDatabaseStatus({
       <div class="grow mr-8 italic">{status}</div>
       <div class="self-end">
         <button class={buttonStyles} type="button" onClick={onUpdate}>
-          {state === DataSeriesState.Unavailable
-            ? 'Retry'
-            : 'Check for updates'}
+          {state === 'unavailable' ? 'Retry' : 'Check for updates'}
         </button>
       </div>
     </div>

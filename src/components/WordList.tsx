@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { WordResult } from '@birchill/hikibiki-data';
+import { WordResult } from '@birchill/jpdict-idb';
 
 import { AccentDisplayType } from './WordDisplayConfig';
 import { WordEntry } from './WordEntry';

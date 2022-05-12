@@ -4,7 +4,7 @@ import {
   MajorDataSeries,
   UpdateErrorState,
   UpdateState,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 export const updateDb = ({
   series,
@@ -13,34 +13,22 @@ export const updateDb = ({
   series: MajorDataSeries;
   lang: string;
 }) => ({
-  type: 'update',
-  series,
-  lang,
-});
-
-export const forceUpdateDb = ({
-  series,
-  lang,
-}: {
-  series: MajorDataSeries;
-  lang: string;
-}) => ({
-  type: 'forceupdate',
+  type: 'update' as const,
   series,
   lang,
 });
 
 export const cancelDbUpdate = ({ series }: { series: MajorDataSeries }) => ({
-  type: 'cancelupdate',
+  type: 'cancelupdate' as const,
   series,
 });
 
 export const destroyDb = () => ({
-  type: 'destroy',
+  type: 'destroy' as const,
 });
 
 export const rebuildDb = () => ({
-  type: 'rebuild',
+  type: 'rebuild' as const,
 });
 
 export interface DataSeriesInfo {
@@ -58,7 +46,7 @@ export interface CombinedDatabaseState {
 }
 
 export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
-  type: 'dbstateupdated',
+  type: 'dbstateupdated' as const,
   state,
 });
 

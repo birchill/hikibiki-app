@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/preact';
-import { DataSeriesState, DownloadErrorCode } from '@birchill/hikibiki-data';
 
 import { DatabaseStatus } from './DatabaseStatus';
 
@@ -10,9 +9,9 @@ storiesOf('Components|DatabaseStatus', module)
       series="kanji"
       dataState={{
         kanji: {
-          state: DataSeriesState.Initializing,
+          state: 'init',
           version: null,
-          updateState: { state: 'idle', lastCheck: null },
+          updateState: { type: 'idle', lastCheck: null },
         },
       }}
       initiallyExpanded
@@ -24,9 +23,9 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: { state: 'idle', lastCheck: null },
+            updateState: { type: 'idle', lastCheck: null },
           },
         }}
         initiallyExpanded
@@ -35,13 +34,9 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: {
-              state: 'checking',
-              series: 'kanji',
-              lastCheck: null,
-            },
+            updateState: { type: 'checking', series: 'kanji', lastCheck: null },
           },
         }}
         initiallyExpanded
@@ -50,13 +45,12 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
             updateState: {
-              state: 'downloading',
-              progress: 0,
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -64,6 +58,8 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
+              fileProgress: 0,
+              totalProgress: 0,
               lastCheck: null,
             },
           },
@@ -74,13 +70,12 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
             updateState: {
-              state: 'downloading',
-              progress: 0.8523452,
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -88,6 +83,8 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
+              fileProgress: 0.2,
+              totalProgress: 0.8523452,
               lastCheck: null,
             },
           },
@@ -98,12 +95,12 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
             updateState: {
-              state: 'updatingdb',
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -111,7 +108,8 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
-              progress: 0.5,
+              fileProgress: 0.0,
+              totalProgress: 0.5,
               lastCheck: null,
             },
           },
@@ -122,16 +120,13 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: {
-              state: 'idle',
-              lastCheck: null,
-            },
+            updateState: { type: 'idle', lastCheck: null },
             updateError: {
               name: 'DownloadError',
               message: 'Could not parse JSON in database file: #$%&#$%&',
-              code: DownloadErrorCode.DatabaseFileInvalidJSON,
+              code: 'DatabaseFileInvalidJSON',
               nextRetry: new Date(new Date().getTime() + 30 * 1000),
               retryCount: 0,
             },
@@ -143,16 +138,10 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: {
-              state: 'idle',
-              lastCheck: null,
-            },
-            updateError: {
-              name: 'OfflineError',
-              message: '',
-            },
+            updateState: { type: 'idle', lastCheck: null },
+            updateError: { name: 'OfflineError', message: '' },
           },
         }}
         initiallyExpanded
@@ -165,7 +154,37 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: { type: 'idle', lastCheck: new Date() },
+          },
+          radicals: {
+            state: 'ok',
+            version: {
+              major: 1,
+              minor: 0,
+              patch: 0,
+              databaseVersion: '2019-197',
+              dateOfCreation: '2019-07-16',
+              lang: 'en',
+            },
+            updateState: { type: 'idle', lastCheck: new Date() },
+          },
+        }}
+        initiallyExpanded
+      />
+      <DatabaseStatus
+        series="kanji"
+        dataState={{
+          kanji: {
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -175,12 +194,13 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'idle',
+              type: 'checking',
+              series: 'kanji',
               lastCheck: new Date(),
             },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -190,7 +210,7 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'idle',
+              type: 'idle',
               lastCheck: new Date(),
             },
           },
@@ -201,7 +221,7 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -211,47 +231,9 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'checking',
+              type: 'updating',
               series: 'kanji',
-              lastCheck: new Date(),
-            },
-          },
-          radicals: {
-            state: DataSeriesState.Ok,
-            version: {
-              major: 1,
-              minor: 0,
-              patch: 0,
-              databaseVersion: '2019-197',
-              dateOfCreation: '2019-07-16',
-              lang: 'en',
-            },
-            updateState: {
-              state: 'idle',
-              lastCheck: new Date(),
-            },
-          },
-        }}
-        initiallyExpanded
-      />
-      <DatabaseStatus
-        series="kanji"
-        dataState={{
-          kanji: {
-            state: DataSeriesState.Ok,
-            version: {
-              major: 1,
-              minor: 0,
-              patch: 0,
-              databaseVersion: '2019-197',
-              dateOfCreation: '2019-07-16',
-              lang: 'en',
-            },
-            updateState: {
-              state: 'downloading',
-              progress: 0,
-              series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -259,11 +241,13 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
+              fileProgress: 0,
+              totalProgress: 0,
               lastCheck: new Date(),
             },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -272,10 +256,7 @@ storiesOf('Components|DatabaseStatus', module)
               dateOfCreation: '2019-07-16',
               lang: 'en',
             },
-            updateState: {
-              state: 'idle',
-              lastCheck: new Date(),
-            },
+            updateState: { type: 'idle', lastCheck: new Date() },
           },
         }}
         initiallyExpanded
@@ -284,7 +265,7 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -294,10 +275,9 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'downloading',
-              progress: 0.8523452,
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -305,11 +285,13 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
+              fileProgress: 0.8,
+              totalProgress: 0.8523452,
               lastCheck: new Date(),
             },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -319,7 +301,7 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'idle',
+              type: 'idle',
               lastCheck: new Date(),
             },
           },
@@ -330,7 +312,7 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -340,9 +322,9 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'updatingdb',
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -350,12 +332,13 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
-              progress: 0.5,
+              fileProgress: 0.9,
+              totalProgress: 0.5,
               lastCheck: new Date(),
             },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -364,10 +347,7 @@ storiesOf('Components|DatabaseStatus', module)
               dateOfCreation: '2019-07-16',
               lang: 'en',
             },
-            updateState: {
-              state: 'idle',
-              lastCheck: new Date(),
-            },
+            updateState: { type: 'idle', lastCheck: new Date() },
           },
         }}
         initiallyExpanded
@@ -376,7 +356,7 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -386,19 +366,19 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'idle',
+              type: 'idle',
               lastCheck: new Date(),
             },
             updateError: {
               name: 'DownloadError',
               message: 'Could not parse JSON in database file: #$%&#$%&',
-              code: DownloadErrorCode.DatabaseFileInvalidJSON,
+              code: 'DatabaseFileInvalidJSON',
               nextRetry: new Date(new Date().getTime() + 30 * 1000),
               retryCount: 0,
             },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -407,10 +387,7 @@ storiesOf('Components|DatabaseStatus', module)
               dateOfCreation: '2019-07-16',
               lang: 'en',
             },
-            updateState: {
-              state: 'idle',
-              lastCheck: new Date(),
-            },
+            updateState: { type: 'idle', lastCheck: new Date() },
           },
         }}
         initiallyExpanded
@@ -419,7 +396,7 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -428,17 +405,11 @@ storiesOf('Components|DatabaseStatus', module)
               dateOfCreation: '2019-07-16',
               lang: 'en',
             },
-            updateState: {
-              state: 'idle',
-              lastCheck: new Date(),
-            },
-            updateError: {
-              name: 'OfflineError',
-              message: '',
-            },
+            updateState: { type: 'idle', lastCheck: new Date() },
+            updateError: { name: 'OfflineError', message: '' },
           },
           radicals: {
-            state: DataSeriesState.Ok,
+            state: 'ok',
             version: {
               major: 1,
               minor: 0,
@@ -448,7 +419,7 @@ storiesOf('Components|DatabaseStatus', module)
               lang: 'en',
             },
             updateState: {
-              state: 'idle',
+              type: 'idle',
               lastCheck: new Date(),
             },
           },
@@ -462,9 +433,9 @@ storiesOf('Components|DatabaseStatus', module)
       series="kanji"
       dataState={{
         kanji: {
-          state: DataSeriesState.Unavailable,
+          state: 'unavailable',
           version: null,
-          updateState: { state: 'idle', lastCheck: null },
+          updateState: { type: 'idle', lastCheck: null },
         },
       }}
       initiallyExpanded
@@ -476,9 +447,9 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: { state: 'idle', lastCheck: null },
+            updateState: { type: 'idle', lastCheck: null },
           },
         }}
       />
@@ -486,13 +457,9 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: {
-              state: 'checking',
-              series: 'kanji',
-              lastCheck: null,
-            },
+            updateState: { type: 'checking', series: 'kanji', lastCheck: null },
           },
         }}
       />
@@ -500,13 +467,12 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
             updateState: {
-              state: 'downloading',
-              progress: 0,
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -514,6 +480,8 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
+              fileProgress: 0,
+              totalProgress: 0,
               lastCheck: null,
             },
           },
@@ -523,12 +491,12 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
             updateState: {
-              state: 'updatingdb',
+              type: 'updating',
               series: 'kanji',
-              downloadVersion: {
+              version: {
                 major: 1,
                 minor: 0,
                 patch: 0,
@@ -536,7 +504,8 @@ storiesOf('Components|DatabaseStatus', module)
                 dateOfCreation: '2019-07-16',
                 lang: 'en',
               },
-              progress: 0.5,
+              fileProgress: 0.9,
+              totalProgress: 0.5,
               lastCheck: null,
             },
           },
@@ -546,16 +515,13 @@ storiesOf('Components|DatabaseStatus', module)
         series="kanji"
         dataState={{
           kanji: {
-            state: DataSeriesState.Empty,
+            state: 'empty',
             version: null,
-            updateState: {
-              state: 'idle',
-              lastCheck: null,
-            },
+            updateState: { type: 'idle', lastCheck: null },
             updateError: {
               name: 'Bad error',
               message: 'Something went wrong',
-              code: DownloadErrorCode.DatabaseFileInvalidJSON,
+              code: 'DatabaseFileInvalidJSON',
               nextRetry: new Date(new Date().getTime() + 30 * 1000),
               retryCount: 0,
             },
@@ -569,9 +535,9 @@ storiesOf('Components|DatabaseStatus', module)
       series="kanji"
       dataState={{
         kanji: {
-          state: DataSeriesState.Empty,
+          state: 'empty',
           version: null,
-          updateState: { state: 'idle', lastCheck: null },
+          updateState: { type: 'idle', lastCheck: null },
         },
       }}
       disabled

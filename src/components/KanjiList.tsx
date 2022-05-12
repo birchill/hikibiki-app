@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { KanjiResult } from '@birchill/hikibiki-data';
+import { KanjiResult } from '@birchill/jpdict-idb';
 
 import { KanjiEntry } from './KanjiEntry';
 
@@ -13,7 +13,7 @@ type Props = {
 export const KanjiList: FunctionalComponent<Props> = (props: Props) => {
   return (
     <div class="kanji-list">
-      {props.entries.map(entry =>
+      {props.entries.map((entry) =>
         KanjiEntry({
           ...entry,
           lang: props.lang,

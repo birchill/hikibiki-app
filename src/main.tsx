@@ -8,14 +8,13 @@ import {
   getWordsWithGloss,
   isMajorDataSeries,
   CrossReference,
-  DataSeriesState,
   KanjiResult,
   MajorDataSeries,
   NameResult,
   WordResult,
   getWordsByCrossReference,
   DataVersion,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { get, set, createStore } from 'idb-keyval';
 import Rollbar from 'rollbar';
 
@@ -66,10 +65,10 @@ import { hasJapanese } from './japanese';
   }
 
   const initialDataSeriesState: DataSeriesInfo = {
-    state: DataSeriesState.Initializing,
+    state: 'init',
     version: null,
     updateState: {
-      state: 'idle',
+      type: 'idle',
       lastCheck: null,
     },
   };
@@ -113,7 +112,7 @@ import { hasJapanese } from './japanese';
     set('series', [...enabledSeries].join(','), settingsStore);
 
     // If we enabled something, run an update if there's no data available.
-    if (enabled && databaseState[series].state === DataSeriesState.Empty) {
+    if (enabled && databaseState[series].state === 'empty') {
       updateDb({ series });
     }
 
@@ -144,13 +143,13 @@ import { hasJapanese } from './japanese';
     // Otherwise check if we have downloaded some particular language.
     // (The words database supports the largest range of languages so use
     // that first).
-    if (databaseState.words.state === DataSeriesState.Ok) {
+    if (databaseState.words.state === 'ok') {
       return databaseState.words.version!.lang;
     }
 
     // However, we shipped support for the kanji database first so try that
     // next.
-    if (databaseState.kanji.state === DataSeriesState.Ok) {
+    if (databaseState.kanji.state === 'ok') {
       return databaseState.kanji.version!.lang;
     }
 
@@ -205,14 +204,13 @@ import { hasJapanese } from './japanese';
         for (const series of allMajorDataSeries) {
           const wasOk =
             series === 'kanji'
-              ? databaseState.kanji.state === DataSeriesState.Ok &&
-                databaseState.radicals.state === DataSeriesState.Ok
-              : databaseState[series].state === DataSeriesState.Ok;
+              ? databaseState.kanji.state === 'ok' &&
+                databaseState.radicals.state === 'ok'
+              : databaseState[series].state === 'ok';
           const isOk =
             series === 'kanji'
-              ? state.kanji.state === DataSeriesState.Ok &&
-                state.radicals.state === DataSeriesState.Ok
-              : state[series].state === DataSeriesState.Ok;
+              ? state.kanji.state === 'ok' && state.radicals.state === 'ok'
+              : state[series].state === 'ok';
 
           const versionAsString = (version: DataVersion | null) =>
             version
@@ -254,8 +252,7 @@ import { hasJapanese } from './japanese';
         // Generally if one data series is unavailable, they are all
         // unavailable, but if at least one is available, run the update.
         const hasAvailableData = allDataSeries.some(
-          (series) =>
-            databaseState[series].state !== DataSeriesState.Unavailable
+          (series) => databaseState[series].state !== 'unavailable'
         );
         if (hasAvailableData) {
           runInitialDbUpdate();
@@ -290,7 +287,7 @@ import { hasJapanese } from './japanese';
     // We use this same callback to trigger re-building the database when it is
     // unavailable.
     const isUnavailable = allDataSeries.some(
-      (series) => databaseState[series].state === DataSeriesState.Unavailable
+      (series) => databaseState[series].state === 'unavailable'
     );
     if (isUnavailable) {
       dbWorker.postMessage(messages.rebuildDb());
@@ -300,10 +297,10 @@ import { hasJapanese } from './japanese';
     const lang = getLangToUse();
 
     if (series) {
-      dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
+      dbWorker.postMessage(messages.updateDb({ series, lang }));
     } else {
       for (const series of [...enabledSeries]) {
-        dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
+        dbWorker.postMessage(messages.updateDb({ series, lang }));
       }
     }
   };
@@ -428,22 +425,13 @@ import { hasJapanese } from './japanese';
     }
 
     if (q || xref) {
-      if (
-        enabledSeries.has('words') &&
-        databaseState.words.state === DataSeriesState.Ok
-      ) {
+      if (enabledSeries.has('words') && databaseState.words.state === 'ok') {
         runQuery({ series: 'words' });
       }
-      if (
-        enabledSeries.has('kanji') &&
-        databaseState.kanji.state === DataSeriesState.Ok
-      ) {
+      if (enabledSeries.has('kanji') && databaseState.kanji.state === 'ok') {
         runQuery({ series: 'kanji' });
       }
-      if (
-        enabledSeries.has('names') &&
-        databaseState.names.state === DataSeriesState.Ok
-      ) {
+      if (enabledSeries.has('names') && databaseState.names.state === 'ok') {
         runQuery({ series: 'names' });
       }
     } else {

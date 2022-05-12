@@ -4,7 +4,7 @@ import {
   toUpdateErrorState,
   UpdateErrorState,
   updateWithRetry,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 
 import {
   notifyDbStateUpdated,
@@ -76,32 +76,22 @@ onmessage = (evt: MessageEvent) => {
     return;
   }
 
-  switch ((evt.data as WorkerMessage).type) {
+  const message: WorkerMessage = evt.data;
+
+  switch (message.type) {
     case 'update':
       updateWithRetry({
         db,
-        series: evt.data.series,
-        lang: evt.data.lang,
-        onUpdateComplete: () => onUpdateComplete({ series: evt.data.series }),
+        series: message.series,
+        lang: message.lang,
+        onUpdateComplete: () => onUpdateComplete({ series: message.series }),
         onUpdateError: (params) =>
-          onUpdateError({ ...params, series: evt.data.series }),
-      });
-      break;
-
-    case 'forceupdate':
-      updateWithRetry({
-        db,
-        series: evt.data.series,
-        lang: evt.data.lang,
-        forceUpdate: true,
-        onUpdateComplete: () => onUpdateComplete({ series: evt.data.series }),
-        onUpdateError: (params) =>
-          onUpdateError({ ...params, series: evt.data.series }),
+          onUpdateError({ ...params, series: message.series }),
       });
       break;
 
     case 'cancelupdate':
-      db.cancelUpdate({ series: evt.data.series });
+      db.cancelUpdate(message.series);
       break;
 
     case 'destroy':

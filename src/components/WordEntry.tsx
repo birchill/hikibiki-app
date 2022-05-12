@@ -13,7 +13,7 @@ import {
   PartOfSpeech,
   ReadingInfo,
   WordResult,
-} from '@birchill/hikibiki-data';
+} from '@birchill/jpdict-idb';
 import { countMora, moraSubstring } from '@birchill/normal-jp';
 
 import { AccentDisplayType } from './WordDisplayConfig';
@@ -916,13 +916,16 @@ const partsOfSpeechLabels: {
   ],
 };
 
-function renderPartOfSpeech(pos?: Array<PartOfSpeech>) {
+function renderPartOfSpeech(pos?: Array<string>) {
   if (!pos || !pos.length) {
     return null;
   }
 
   return pos.map((p) => {
-    const labelData = partsOfSpeechLabels[p];
+    const labelData =
+      p in partsOfSpeechLabels
+        ? partsOfSpeechLabels[p as PartOfSpeech]
+        : undefined;
     let label = Array.isArray(labelData) ? labelData[0] : labelData;
     let descr = Array.isArray(labelData) ? labelData[1] : undefined;
     return (
@@ -1011,14 +1014,14 @@ const fieldLabels: { [field in FieldType]: string } = {
   zool: 'zoology',
 };
 
-function renderFields(fields?: Array<FieldType>) {
+function renderFields(fields?: Array<string>) {
   if (!fields || !fields.length) {
     return null;
   }
 
   return fields.map((field) => (
     <span class="text-xs text-green-800 bg-green-50 px-2 py-1 mr-2 rounded-sm">
-      {fieldLabels[field] || field}
+      {fieldLabels[field as FieldType] || field}
     </span>
   ));
 }
@@ -1082,13 +1085,13 @@ const miscLabels: {
   yoji: ['yojijukugo', 'four-character compound word (四字熟語)'],
 };
 
-function renderMisc(misc?: Array<MiscType>) {
+function renderMisc(misc?: Array<string>) {
   if (!misc || !misc.length) {
     return null;
   }
 
   return misc.map((p) => {
-    const labelData = miscLabels[p];
+    const labelData = p in miscLabels ? miscLabels[p as MiscType] : undefined;
     let label = Array.isArray(labelData) ? labelData[0] : labelData;
     let descr = Array.isArray(labelData) ? labelData[1] : undefined;
     return (
@@ -1117,14 +1120,14 @@ const dialectLabels: { [dial in Dialect]: string } = {
   ok: 'Ryuukyuu dialect',
 };
 
-function renderDialect(dial?: Array<Dialect>) {
+function renderDialect(dial?: Array<string>) {
   if (!dial || !dial.length) {
     return null;
   }
 
   return dial.map((dialect) => (
     <span class="text-xs text-purple-600 bg-purple-100 px-2 py-1 mr-2 rounded-sm">
-      {dialectLabels[dialect]}
+      {dialectLabels[dialect as Dialect] || dialect}
     </span>
   ));
 }

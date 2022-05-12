@@ -1,5 +1,5 @@
 import { h, JSX, FunctionalComponent } from 'preact';
-import { DataVersion, MajorDataSeries } from '@birchill/hikibiki-data';
+import { DataVersion, MajorDataSeries } from '@birchill/jpdict-idb';
 
 type Props = {
   series: MajorDataSeries;

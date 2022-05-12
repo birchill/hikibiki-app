@@ -1,5 +1,5 @@
 import { h, FunctionalComponent } from 'preact';
-import { NameResult } from '@birchill/hikibiki-data';
+import { NameResult } from '@birchill/jpdict-idb';
 
 import { NameEntry } from './NameEntry';
 

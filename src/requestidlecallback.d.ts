@@ -1,5 +1,3 @@
-type IdleRequestCallback = (deadline: IdleDeadline) => void;
-
 interface IdleDeadline {
   timeRemaining: () => number;
   readonly didTimeout: boolean;
