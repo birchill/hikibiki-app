@@ -55,7 +55,7 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
-    "@birchill/jpdict-idb": "^0.0.4",
+    "@birchill/jpdict-idb": "^1.0.0",
     "@birchill/normal-jp": "^1.4.0",
     "idb-keyval": "^6.1.0",
     "preact": "^10.7.2",
