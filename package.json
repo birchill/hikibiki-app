@@ -58,7 +58,7 @@
     "@birchill/jpdict-idb": "^0.0.4",
     "@birchill/normal-jp": "^1.4.0",
     "idb-keyval": "^6.1.0",
-    "preact": "^10.6.6",
+    "preact": "^10.7.2",
     "rollbar": "^2.24.1",
     "tailwindcss": "^3.0.23"
   },
