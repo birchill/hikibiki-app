@@ -8733,7 +8733,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rollbar@^2.24.1:
+rollbar@^2.25.0:
   version "2.25.0"
   resolved "https://registry.yarnpkg.com/rollbar/-/rollbar-2.25.0.tgz#af95e56b7f78666a3b60549bc2e0fd9c07ccdc9a"
   integrity sha512-mytaGBKAeDkqb/sKXFLQ5eWWw9zzpFRGfPruUWN84AJF+Nwgo8BdGC0CVaHclvHzGImp+seLoKk1NQprU96c4w==
