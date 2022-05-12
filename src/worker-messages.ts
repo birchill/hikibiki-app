@@ -18,6 +18,18 @@ export const updateDb = ({
   lang,
 });
 
+export const forceUpdateDb = ({
+  series,
+  lang,
+}: {
+  series: MajorDataSeries;
+  lang: string;
+}) => ({
+  type: 'forceupdate' as const,
+  series,
+  lang,
+});
+
 export const cancelDbUpdate = ({ series }: { series: MajorDataSeries }) => ({
   type: 'cancelupdate' as const,
   series,
@@ -52,6 +64,7 @@ export const notifyDbStateUpdated = (state: CombinedDatabaseState) => ({
 
 export type WorkerMessage =
   | ReturnType<typeof updateDb>
+  | ReturnType<typeof forceUpdateDb>
   | ReturnType<typeof cancelDbUpdate>
   | ReturnType<typeof destroyDb>
   | ReturnType<typeof rebuildDb>

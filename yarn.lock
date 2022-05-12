@@ -1559,10 +1559,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@birchill/jpdict-idb@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-0.0.3.tgz#a4d394676c1c4e51e3fb82c3c10b0e169f978b53"
-  integrity sha512-TkFczLsF3yP34cTM87czTn5oEF+ngpnIcAINMkqSj1BuI+8ZCoSlRWPiMD5JuIGycdn+QIymT64bRtvCIeV+zw==
+"@birchill/jpdict-idb@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-0.0.4.tgz#61244d0e20c2f953436c2837caf9ac1818eecc7b"
+  integrity sha512-o6lWqrea6bixfjtYqnnChgH5VxmmWsuKD5b+dxnVDOpDO2y3/Nr4MnldEVsani5+xxgnDjkWvCJ/XD/E6oO0Gg==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"

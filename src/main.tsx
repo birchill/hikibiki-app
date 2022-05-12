@@ -297,10 +297,10 @@ import { hasJapanese } from './japanese';
     const lang = getLangToUse();
 
     if (series) {
-      dbWorker.postMessage(messages.updateDb({ series, lang }));
+      dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
     } else {
       for (const series of [...enabledSeries]) {
-        dbWorker.postMessage(messages.updateDb({ series, lang }));
+        dbWorker.postMessage(messages.forceUpdateDb({ series, lang }));
       }
     }
   };

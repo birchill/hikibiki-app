@@ -1,4 +1,5 @@
 import {
+  clearCachedVersionInfo,
   DataSeries,
   JpdictFullTextDatabase,
   toUpdateErrorState,
@@ -79,6 +80,10 @@ onmessage = (evt: MessageEvent) => {
   const message: WorkerMessage = evt.data;
 
   switch (message.type) {
+    case 'forceupdate':
+      clearCachedVersionInfo();
+    // fallthrough
+
     case 'update':
       updateWithRetry({
         db,
