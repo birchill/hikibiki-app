@@ -7,6 +7,9 @@
     "@babel/core": "7.17.10",
     "@fullhuman/postcss-purgecss": "4.1.3",
     "@relative-ci/agent": "3.1.3",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/manager-webpack5": "^6.4.22",
     "@storybook/preact": "6.4.22",
     "autoprefixer": "10.4.7",
     "babel-loader": "8.2.5",
@@ -18,7 +21,8 @@
     "husky": "8.0.1",
     "lint-staged": "12.4.1",
     "mini-css-extract-plugin": "2.6.0",
-    "postcss-import": "14.1.0",
+    "postcss": "8.4.13",
+    "postcss-import": "12.0.1",
     "postcss-loader": "6.2.1",
     "prettier": "2.6.2",
     "style-loader": "3.3.1",
@@ -32,10 +36,10 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "build:stats": "cross-env NODE_ENV=production webpack --json > webpack-stats.json",
-    "build:storybook": "build-storybook -c .storybook -s dist",
+    "build:storybook": "build-storybook -c .storybook",
     "postinstall": "husky install",
     "start": "webpack serve",
-    "storybook": "start-storybook -p 9001 -c .storybook -s dist"
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "repository": {
     "type": "git",
@@ -54,7 +58,6 @@
     "@birchill/jpdict-idb": "^0.0.4",
     "@birchill/normal-jp": "^1.4.0",
     "idb-keyval": "^6.1.0",
-    "postcss": "^8.4.12",
     "preact": "^10.6.6",
     "rollbar": "^2.24.1",
     "tailwindcss": "^3.0.23"

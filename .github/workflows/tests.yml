@@ -6,13 +6,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3.1.1
-      with:
-        node-version: 16
-    - name: Verify build
-      run: |
-        yarn install
-        yarn build
-      env:
-        RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.1.1
+        with:
+          node-version: 16
+      - name: Verify build
+        run: |
+          yarn install
+          yarn build
+        env:
+          RELATIVE_CI_KEY: ${{ secrets.RELATIVE_CI_KEY }}
+      - name: Verify storybook build
+        run: |
+          yarn build:storybook
