@@ -66,9 +66,7 @@ export const KanjiEntry: FunctionalComponent<Props> = (props: Props) => {
         </div>
         {renderComponents(props)}
         <div
-          class={
-            clipboardEnabled ? 'hidden sm:block relative ml-10 mt-4' : 'hidden'
-          }
+          class={clipboardEnabled ? 'relative ml-10 mt-4' : 'hidden'}
           hidden={!clipboardEnabled}
         >
           <button
