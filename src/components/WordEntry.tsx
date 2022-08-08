@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent } from 'preact';
+import { h, Fragment, FunctionalComponent, JSX } from 'preact';
 import {
   groupSenses,
   Accent,
@@ -35,10 +35,7 @@ export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
   );
 };
 
-function renderHeading(
-  result: WordResult,
-  accentDisplay: AccentDisplayType
-): JSX.Element {
+function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
   if (!result.k || !result.k.length) {
     return (
       <div class="font-bold" lang="ja">

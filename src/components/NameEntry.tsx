@@ -16,7 +16,7 @@ export const NameEntry: FunctionalComponent<Props> = (props: Props) => {
   );
 };
 
-function renderJapaneseName(name: NameResult): JSX.Element {
+function renderJapaneseName(name: NameResult) {
   if (!name.k) {
     return (
       <span class="mr-10 font-bold" lang="ja">
@@ -48,7 +48,7 @@ function renderLinkedNames(names: Array<string>) {
   ));
 }
 
-function renderTranslation(tr: NameTranslation): JSX.Element {
+function renderTranslation(tr: NameTranslation) {
   return (
     <span class="translation mr-10">
       {tr.type?.map(renderType)}
@@ -57,7 +57,7 @@ function renderTranslation(tr: NameTranslation): JSX.Element {
   );
 }
 
-function renderType(type: NameType): JSX.Element {
+function renderType(type: NameType) {
   let title: string;
   let emoji: string;
 
