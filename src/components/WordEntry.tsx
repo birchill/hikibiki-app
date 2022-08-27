@@ -36,10 +36,17 @@ export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
 };
 
 function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
-  if (!result.k || !result.k.length) {
+  const filteredKanji = result.k
+    ? result.k.filter((k) => !k.i || !k.i.includes('sK'))
+    : [];
+  const filteredKana = result.r
+    ? result.r.filter((r) => !r.i || !r.i.includes('sk'))
+    : [];
+
+  if (!filteredKanji.length) {
     return (
       <div class="font-bold" lang="ja">
-        {renderListWithMatches(result.r, 'kana', accentDisplay)}
+        {renderListWithMatches(filteredKana, 'kana', accentDisplay)}
       </div>
     );
   }
@@ -47,10 +54,10 @@ function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
   return (
     <div lang="ja">
       <span class="font-bold mr-4">
-        {renderListWithMatches(result.k, 'kanji', accentDisplay)}
+        {renderListWithMatches(filteredKanji, 'kanji', accentDisplay)}
       </span>
       <span class="text-gray-700 text-lg">
-        【{renderListWithMatches(result.r, 'reading', accentDisplay)}】
+        【{renderListWithMatches(filteredKana, 'reading', accentDisplay)}】
       </span>
     </div>
   );
@@ -432,6 +439,10 @@ const headwordInfo: {
 };
 
 function renderInfo(info: KanjiInfo | ReadingInfo) {
+  if (!(info in headwordInfo)) {
+    return;
+  }
+
   const { icon, styles, descr } = headwordInfo[info];
   return (
     <svg
