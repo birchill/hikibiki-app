@@ -187,6 +187,11 @@ const typeMeta: { [type in NameType]: TypeDescription } = {
     long: 'Service',
     emoji: '🈂️',
   },
+  ship: {
+    short: 'ship',
+    long: 'Ship',
+    emoji: '🚢',
+  },
   station: {
     short: 'station',
     long: 'Railway station',

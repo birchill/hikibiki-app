@@ -1357,16 +1357,16 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
-"@birchill/jpdict-idb@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.0.0.tgz#ea52151ee9e5d369df797648be42ec6a087af6f0"
-  integrity sha512-RArvdYd7Y1+qg3QprRz3h+UwD6OGf/YUUWYPcTSzYNEVlHy1GJtYcwHqPY0QEGoJhXg6DgEq4bMaEaJVDOTSjw==
+"@birchill/jpdict-idb@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-1.2.2.tgz#03944103905adcf740e6e75f696e57158cb6cba8"
+  integrity sha512-OXi8iAFUsCSZleJwa0CY7hhDbTYK/2phpJ/6qIt9mWN0KzdPAgVpCc6j/B4iGPnlFGITOGA++qpG7NLg2CfOvQ==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"
-    idb "^7.0.1"
+    idb "^7.0.2"
     safari-14-idb-fix "^3.0.0"
-    superstruct "^0.15.4"
+    superstruct "^0.16.0"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
@@ -6055,6 +6055,11 @@ idb@^7.0.1:
   resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.1.tgz#d2875b3a2f205d854ee307f6d196f246fea590a7"
   integrity sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==
 
+idb@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/idb/-/idb-7.0.2.tgz#7a067e20dd16539938e456814b7d714ba8db3892"
+  integrity sha512-jjKrT1EnyZewQ/gCBb/eyiYrhGzws2FeY92Yx8qT9S9GeQAmo4JFVIiWRIfKW/6Ob9A+UDAOW9j9jn58fy2HIg==
+
 ieee754@^1.1.4:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ieee754/-/ieee754-1.2.1.tgz#8eb7a10a63fff25d15a57b001586d177d1b0d352"
@@ -9633,15 +9638,10 @@ style-to-object@0.3.0, style-to-object@^0.3.0:
   dependencies:
     inline-style-parser "0.1.1"
 
-superstruct@0.16.0:
+superstruct@0.16.0, superstruct@^0.16.0:
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.16.0.tgz#9af5e059acd08e774789ad8880962427ef68dace"
   integrity sha512-IDQtwnnlaan1NhuHqyD/U11lROYvCQ79JyfwlFU9xEVHzqV/Ys/RrwmHPCG0CVH/1g0BuodEjH1msxK2UHxehA==
-
-superstruct@^0.15.4:
-  version "0.15.4"
-  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-0.15.4.tgz#e3381dd84ca07e704e19f69eda74eee1a5efb1f9"
-  integrity sha512-eOoMeSbP9ZJChNOm/9RYjE+F36rYR966AAqeG3xhQB02j2sfAUXDp4EQ/7bAOqnlJnuFDB8yvOu50SocvKpUEw==
 
 supports-color@^5.3.0:
   version "5.5.0"
