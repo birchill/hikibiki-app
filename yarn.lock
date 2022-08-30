@@ -1378,15 +1378,15 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
-"@bundle-stats/plugin-webpack-filter@4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.0.1.tgz#af749a5061f033c8efe6382363d9cf075f4a7b27"
-  integrity sha512-aSgfCthIEjK/1FZVvmKjgZ/RmRRpwwurnyh4zUv3RvY4vncGjFrBvUMzLFTbnykL4uB/dcDI0SZ2t/UfnUD+UQ==
+"@bundle-stats/plugin-webpack-filter@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.0.6.tgz#a4618218dfdcf9df79ac6c40be40249e033458b6"
+  integrity sha512-1oJB3Eo0uavDGWgwgI1y7GYBJ40IFt8eDPatcyBjGJKyTsHJ/VPIZlKiWZBuoYPZdk7zHa0q7LHM7h1Rcaj81Q==
 
-"@bundle-stats/plugin-webpack-validate@4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.0.1.tgz#eb0af2f91e1558043cf2d49fd1f3fb16e4489649"
-  integrity sha512-sbv4eWp1FGi6qIpO52FVsHQOuhGRWTYQkbK6xo23mN3vR/jRyWgTF9UeeD80Bi3b4sFJMnhbigLx2F3nFH+39A==
+"@bundle-stats/plugin-webpack-validate@4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.0.6.tgz#b09d4b7ca5a1abc461ac74b5db45938347d7d971"
+  integrity sha512-+S/ZhKhVxnJsKL1kYwkk8TySBiXRxf/8lybJePmDn6fV1gJNg4cifHeSp6BHBYofljNwIfmlfwSLG6x8Qw62gg==
   dependencies:
     superstruct "0.16.0"
 
@@ -1542,17 +1542,17 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@relative-ci/agent@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.0.0.tgz#ea0cc0a4b1b56cf74af1a917016e837b5b28902f"
-  integrity sha512-g+dU2k1DU9hprXduyeptIJ9WTR+O3atfkfoAZ/k/v7ZqdwxGGLPhRio9JTDXcvhM6VV17AxCG+t3zokR9fvh4Q==
+"@relative-ci/agent@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.1.0.tgz#726f58ef839599a6b6b3a3aebce4ea4accafafd3"
+  integrity sha512-00YnvRaY5Bd4El3zeJ4lFjEHcNG/+qPBfKJw0W8iJrZgXPRzbLP2H6sD9Jnn9EHFnx1ZyjLECYeT2U0+Hbm9fg==
   dependencies:
-    "@bundle-stats/plugin-webpack-filter" "4.0.1"
-    "@bundle-stats/plugin-webpack-validate" "4.0.1"
-    core-js "3.23.5"
+    "@bundle-stats/plugin-webpack-filter" "4.0.6"
+    "@bundle-stats/plugin-webpack-validate" "4.0.6"
+    core-js "3.25.0"
     cosmiconfig "7.0.1"
     debug "4.3.4"
-    dotenv "16.0.1"
+    dotenv "16.0.2"
     env-ci "7.3.0"
     fs-extra "10.1.0"
     isomorphic-fetch "3.0.0"
@@ -4194,10 +4194,10 @@ core-js-compat@^3.21.0, core-js-compat@^3.22.1, core-js-compat@^3.8.1:
     browserslist "^4.20.3"
     semver "7.0.0"
 
-core-js@3.23.5:
-  version "3.23.5"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.23.5.tgz#1f82b0de5eece800827a2f59d597509c67650475"
-  integrity sha512-7Vh11tujtAZy82da4duVreQysIoO2EvVrur7y6IzZkH1IHPSekuDi8Vuw1+YKjkbfWLRD7Nc9ICQ/sIUDutcyg==
+core-js@3.25.0:
+  version "3.25.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.25.0.tgz#be71d9e0dd648ffd70c44a7ec2319d039357eceb"
+  integrity sha512-CVU1xvJEfJGhyCpBrzzzU1kjCfgsGUxhEvwUV2e/cOedYWHdmluamx+knDnmhqALddMG16fZvIqvs9aijsHHaA==
 
 core-js@^3.0.4, core-js@^3.6.5, core-js@^3.8.2:
   version "3.22.5"
@@ -4693,10 +4693,10 @@ dotenv-expand@^5.1.0:
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
 
-dotenv@16.0.1:
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.1.tgz#8f8f9d94876c35dac989876a5d3a82a267fdce1d"
-  integrity sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==
+dotenv@16.0.2:
+  version "16.0.2"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.2.tgz#0b0f8652c016a3858ef795024508cddc4bffc5bf"
+  integrity sha512-JvpYKUmzQhYoIFgK2MOnF3bciIZoItIIoryihy0rIA+H4Jy0FmgyKYAHCTN98P5ybGSJcIFbh6QKeJdtZd1qhA==
 
 dotenv@^8.0.0:
   version "8.6.0"
