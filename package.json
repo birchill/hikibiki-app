@@ -22,7 +22,7 @@
     "lint-staged": "13.0.3",
     "mini-css-extract-plugin": "2.6.1",
     "postcss": "8.4.16",
-    "postcss-import": "14.1.0",
+    "postcss-import": "15.0.0",
     "postcss-loader": "7.0.1",
     "prettier": "2.7.1",
     "style-loader": "3.3.1",
