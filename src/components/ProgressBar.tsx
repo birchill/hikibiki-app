@@ -23,7 +23,7 @@ export const ProgressBar: FunctionalComponent<Props> = ({
       class="progress-bar relative flex flex-col justify-center w-full h-20 rounded-sm border border-red-900 bg-red-100"
       role="progressbar"
       aria-valuenow={value}
-      aria-valuemin="0"
+      aria-valuemin={0}
       aria-valuemax={max}
     >
       <div class="bar h-full rounded-sm" style={{ width }} id={id} />
