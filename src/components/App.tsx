@@ -147,7 +147,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
           width="25em"
           viewBox="0 0 430 148"
           role="heading"
-          aria-level="1"
+          aria-level={1}
         >
           <title>hiki Biki</title>
           <use width="430" height="148" href="#header" />
