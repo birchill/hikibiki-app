@@ -1,10 +1,17 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/preact';
+import type { Meta, StoryObj } from '@storybook/preact';
 
 import { DatabaseStatus } from './DatabaseStatus';
 
-storiesOf('Components|DatabaseStatus', module)
-  .add('initializing', () => (
+const meta: Meta<typeof DatabaseStatus> = {
+  title: 'Components/DatabaseStatus',
+  component: DatabaseStatus,
+};
+
+export default meta;
+
+export const initializing: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <DatabaseStatus
       series="kanji"
       dataState={{
@@ -16,8 +23,11 @@ storiesOf('Components|DatabaseStatus', module)
       }}
       initiallyExpanded
     />
-  ))
-  .add('empty', () => (
+  ),
+};
+
+export const empty: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -147,8 +157,11 @@ storiesOf('Components|DatabaseStatus', module)
         initiallyExpanded
       />
     </div>
-  ))
-  .add('ok', () => (
+  ),
+};
+
+export const ok: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -427,8 +440,11 @@ storiesOf('Components|DatabaseStatus', module)
         initiallyExpanded
       />
     </div>
-  ))
-  .add('unavailable', () => (
+  ),
+};
+
+export const unavailable: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <DatabaseStatus
       series="kanji"
       dataState={{
@@ -440,8 +456,11 @@ storiesOf('Components|DatabaseStatus', module)
       }}
       initiallyExpanded
     />
-  ))
-  .add('collapsed', () => (
+  ),
+};
+
+export const collapsed: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -529,8 +548,11 @@ storiesOf('Components|DatabaseStatus', module)
         }}
       />
     </div>
-  ))
-  .add('disabled', () => (
+  ),
+};
+
+export const disabled: StoryObj<typeof DatabaseStatus> = {
+  render: () => (
     <DatabaseStatus
       series="kanji"
       dataState={{
@@ -542,4 +564,5 @@ storiesOf('Components|DatabaseStatus', module)
       }}
       disabled
     />
-  ));
+  ),
+};

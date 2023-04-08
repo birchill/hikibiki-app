@@ -16,10 +16,10 @@ module.exports = {
       },
     },
   ],
-  core: {
-    builder: 'webpack5',
+  framework: {
+    name: '@storybook/preact-webpack5',
+    options: {},
   },
-  framework: '@storybook/preact',
   staticDirs: ['../dist'],
   stories: ['../src/components/**/*.stories.tsx'],
   webpackFinal: async (config) => {
@@ -36,7 +36,9 @@ module.exports = {
       test: /\.css?$/,
       include: path.resolve(__dirname, '../src'),
     });
-
     return config;
+  },
+  docs: {
+    autodocs: true,
   },
 };
