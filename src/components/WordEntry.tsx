@@ -1110,6 +1110,7 @@ const miscLabels: {
   relig: 'religion',
   sens: 'sensitive',
   serv: 'service',
+  ship: 'ship name',
   sl: 'slang',
   station: ['station', 'railway station'],
   surname: ['surname', 'family or surname'],
