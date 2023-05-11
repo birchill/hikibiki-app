@@ -7,7 +7,7 @@
     "@babel/core": "7.21.8",
     "@fullhuman/postcss-purgecss": "5.0.0",
     "@relative-ci/agent": "4.1.4",
-    "@storybook/addon-postcss": "2.0.0",
+    "@storybook/addon-styling": "^1.0.6",
     "@storybook/preact": "7.0.10",
     "@storybook/preact-webpack5": "7.0.10",
     "autoprefixer": "10.4.14",

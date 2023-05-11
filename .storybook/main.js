@@ -4,13 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   addons: [
     {
-      name: '@storybook/addon-postcss',
+      name: '@storybook/addon-styling',
       options: {
-        cssLoaderOptions: {
-          url: false,
-          importLoaders: 1,
-        },
-        postcssLoaderOptions: {
+        postCss: {
           implementation: require('postcss'),
         },
       },
