@@ -22,7 +22,7 @@
     "mini-css-extract-plugin": "2.7.6",
     "postcss": "8.4.23",
     "postcss-import": "15.1.0",
-    "postcss-loader": "7.3.0",
+    "postcss-loader": "7.3.1",
     "prettier": "2.8.8",
     "storybook": "7.0.17",
     "style-loader": "3.3.3",
