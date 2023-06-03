@@ -631,11 +631,11 @@ function renderGlosses(glosses: Array<Gloss>) {
 }
 
 const glossTypeText: { [type in GlossType]: string | undefined } = {
-  [GlossType.Expl]: '(explanation) ',
-  [GlossType.Lit]: '(literally) ',
-  [GlossType.Fig]: '(figurative) ',
-  [GlossType.Tm]: '(trademark) ',
-  [GlossType.None]: undefined,
+  expl: '(explanation) ',
+  lit: '(literally) ',
+  fig: '(figurative) ',
+  tm: '(trademark) ',
+  none: undefined,
 };
 
 function renderGloss(gloss: Gloss, last: boolean) {
