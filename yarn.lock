@@ -1240,15 +1240,15 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
-"@bundle-stats/plugin-webpack-filter@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.3.3.tgz#ad8f953270f08dc5f706f803244f022382790f31"
-  integrity sha512-8zix4yzzHa3/JyrMEGFPTDtB+uST1gspIkxgsgPlZQ6UGhm0yFvwYIKD47GnslXiGV/s/tio9XbsoamlfV8fRA==
+"@bundle-stats/plugin-webpack-filter@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.4.2.tgz#01449c5758c06d0b35874f583c02d541a8634ba3"
+  integrity sha512-qWtRE7vHPbu3yFFkK/qnD79B2mzmnH29lqGYAhKQhxEJKeIdLWKi2RNvd8mBspSaaCxLI6bq/SCZ8I0S9VbD3g==
 
-"@bundle-stats/plugin-webpack-validate@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.3.3.tgz#120a0522107d51ac883b0f5fa299b97defb87694"
-  integrity sha512-sv2AVnugf99eED09apmTl/sTLtrNyQfRFSgcD788tu8Qhw5yEWdyhkaT6RNKP6ZGy21+eiOgmP2COqeLZaOxXQ==
+"@bundle-stats/plugin-webpack-validate@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.4.2.tgz#8ad00a355c17226649da7128dce4bd4a46569a2a"
+  integrity sha512-vdujMY0OkW1ook6blqFYgb+kW8amH41kA9ukixL0fuM3NFpbQEEv5mi7mnTG14zcz56hkF5+uJz8Q7ie+4/X0Q==
   dependencies:
     lodash "4.17.21"
     superstruct "1.0.3"
@@ -1475,22 +1475,22 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@relative-ci/agent@4.1.4":
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.1.4.tgz#508160c739b1a7f266c2d50d8f12cc3ae533d590"
-  integrity sha512-3p7IexKUHHrTvHUAM8ZvrywMfMRj9ulTb9hJcGJ63EAULjGBngi8dcniX4ESg52bmbvip0QBdsAH6H+UOC1pxA==
+"@relative-ci/agent@4.1.5":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.1.5.tgz#80f02d90f2cb66ea3ae866926951b10bd1a612b4"
+  integrity sha512-SXYXWFTVEyCWZo9slhmrOheucN/HKkg91D2qjRNCbmBL0lA4/tu0FQ1Yu7qvHKjo1iBalO+zTHqp1++mKDtx8w==
   dependencies:
-    "@bundle-stats/plugin-webpack-filter" "4.3.3"
-    "@bundle-stats/plugin-webpack-validate" "4.3.3"
-    core-js "3.30.1"
-    cosmiconfig "8.1.3"
+    "@bundle-stats/plugin-webpack-filter" "4.4.2"
+    "@bundle-stats/plugin-webpack-validate" "4.4.2"
+    core-js "3.31.0"
+    cosmiconfig "8.2.0"
     debug "4.3.4"
-    dotenv "16.0.3"
+    dotenv "16.3.1"
     env-ci "7.3.0"
     fs-extra "11.1.1"
     isomorphic-fetch "3.0.0"
     lodash "4.17.21"
-    yargs "17.7.1"
+    yargs "17.7.2"
 
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
@@ -3621,20 +3621,20 @@ core-js-compat@^3.25.1:
   dependencies:
     browserslist "^4.21.5"
 
-core-js@3.30.1:
-  version "3.30.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.30.1.tgz#fc9c5adcc541d8e9fa3e381179433cbf795628ba"
-  integrity sha512-ZNS5nbiSwDTq4hFosEDqm65izl2CWmLz0hARJMyNQBgkUZMIF51cQiMvIQKA6hvuaeWxQDP3hEedM1JZIgTldQ==
+core-js@3.31.0:
+  version "3.31.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.0.tgz#4471dd33e366c79d8c0977ed2d940821719db344"
+  integrity sha512-NIp2TQSGfR6ba5aalZD+ZQ1fSxGhDo/s1w0nx3RYzf2pnJxt7YynxFlFScP6eV7+GZsKO95NSjGxyJsU3DZgeQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
-cosmiconfig@8.1.3:
-  version "8.1.3"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.1.3.tgz#0e614a118fcc2d9e5afc2f87d53cd09931015689"
-  integrity sha512-/UkO2JKI18b5jVMJUp0lvKFMpa/Gye+ZgZjKD+DGEN9y7NRcf/nK1A0sp67ONmKtnDCNMS44E6jrk0Yc3bDuUw==
+cosmiconfig@8.2.0, cosmiconfig@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.2.0.tgz#f7d17c56a590856cd1e7cee98734dca272b0d8fd"
+  integrity sha512-3rTMnFJA1tCOPwRxtgF4wd7Ab2qvDbL8jX+3smjIbS4HlZBagTlpERbdN7iAbWlrfxE3M8c27kTwTawQ7st+OQ==
   dependencies:
     import-fresh "^3.2.1"
     js-yaml "^4.1.0"
@@ -3651,16 +3651,6 @@ cosmiconfig@^7.0.1:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
-
-cosmiconfig@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.2.0.tgz#f7d17c56a590856cd1e7cee98734dca272b0d8fd"
-  integrity sha512-3rTMnFJA1tCOPwRxtgF4wd7Ab2qvDbL8jX+3smjIbS4HlZBagTlpERbdN7iAbWlrfxE3M8c27kTwTawQ7st+OQ==
-  dependencies:
-    import-fresh "^3.2.1"
-    js-yaml "^4.1.0"
-    parse-json "^5.0.0"
-    path-type "^4.0.0"
 
 cross-env@7.0.3:
   version "7.0.3"
@@ -3959,10 +3949,10 @@ dotenv-expand@^10.0.0:
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-10.0.0.tgz#12605d00fb0af6d0a592e6558585784032e4ef37"
   integrity sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==
 
-dotenv@16.0.3:
-  version "16.0.3"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
-  integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
+dotenv@16.3.1:
+  version "16.3.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
+  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
 dotenv@^16.0.0:
   version "16.1.4"
@@ -8564,10 +8554,10 @@ yargs-parser@^21.1.1:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-21.1.1.tgz#9096bceebf990d21bb31fa9516e0ede294a77d35"
   integrity sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==
 
-yargs@17.7.1:
-  version "17.7.1"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.1.tgz#34a77645201d1a8fc5213ace787c220eabbd0967"
-  integrity sha512-cwiTb08Xuv5fqF4AovYacTFNxk62th7LKJ6BL9IGUpTJrWoU7/7WdQGTP2SjKf1dUNBGzDd28p/Yfs/GI6JrLw==
+yargs@17.7.2:
+  version "17.7.2"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
+  integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==
   dependencies:
     cliui "^8.0.1"
     escalade "^3.1.1"
