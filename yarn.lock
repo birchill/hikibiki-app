@@ -1906,15 +1906,15 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
   integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
 
-"@bundle-stats/plugin-webpack-filter@4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.4.2.tgz#01449c5758c06d0b35874f583c02d541a8634ba3"
-  integrity sha512-qWtRE7vHPbu3yFFkK/qnD79B2mzmnH29lqGYAhKQhxEJKeIdLWKi2RNvd8mBspSaaCxLI6bq/SCZ8I0S9VbD3g==
+"@bundle-stats/plugin-webpack-filter@4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.5.2.tgz#3639d36e1980ba4ce9e13a3612f199b9a3b56ca4"
+  integrity sha512-M2I8/CGtGgVML4GIJ7AroRhwifQjuXKxNBPmXycjKQ26Uc5UW8u+TwtkTh0/tA71qTsAAblfdowWs2EyKu77AQ==
 
-"@bundle-stats/plugin-webpack-validate@4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.4.2.tgz#8ad00a355c17226649da7128dce4bd4a46569a2a"
-  integrity sha512-vdujMY0OkW1ook6blqFYgb+kW8amH41kA9ukixL0fuM3NFpbQEEv5mi7mnTG14zcz56hkF5+uJz8Q7ie+4/X0Q==
+"@bundle-stats/plugin-webpack-validate@4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.5.2.tgz#bc6064ce4b2091cb3cde5ea64a07139a13744958"
+  integrity sha512-KiuXd1kcEw4qtx01EvaoV2t3tv8jwhyRoDlPnghRUMpCQd+KEYusL4LZMdlkDpNMle1Zg3OAOVcduFFg1h9BHQ==
   dependencies:
     lodash "4.17.21"
     superstruct "1.0.3"
@@ -2273,14 +2273,14 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@relative-ci/agent@4.1.5":
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.1.5.tgz#80f02d90f2cb66ea3ae866926951b10bd1a612b4"
-  integrity sha512-SXYXWFTVEyCWZo9slhmrOheucN/HKkg91D2qjRNCbmBL0lA4/tu0FQ1Yu7qvHKjo1iBalO+zTHqp1++mKDtx8w==
+"@relative-ci/agent@4.1.6":
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.1.6.tgz#60b3871a8b79ec8217f45b56c49676b9bdf41505"
+  integrity sha512-4kycHnO0YDVoz/WaIgVGVBYmOluALfPM7PW1X+TI6OcXWPyWfPgPmteS/zkSRHvLGDVGTwjFug9TKudq/pi68A==
   dependencies:
-    "@bundle-stats/plugin-webpack-filter" "4.4.2"
-    "@bundle-stats/plugin-webpack-validate" "4.4.2"
-    core-js "3.31.0"
+    "@bundle-stats/plugin-webpack-filter" "4.5.2"
+    "@bundle-stats/plugin-webpack-validate" "4.5.2"
+    core-js "3.31.1"
     cosmiconfig "8.2.0"
     debug "4.3.4"
     dotenv "16.3.1"
@@ -4565,10 +4565,10 @@ core-js-compat@^3.31.0:
   dependencies:
     browserslist "^4.21.9"
 
-core-js@3.31.0:
-  version "3.31.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.0.tgz#4471dd33e366c79d8c0977ed2d940821719db344"
-  integrity sha512-NIp2TQSGfR6ba5aalZD+ZQ1fSxGhDo/s1w0nx3RYzf2pnJxt7YynxFlFScP6eV7+GZsKO95NSjGxyJsU3DZgeQ==
+core-js@3.31.1:
+  version "3.31.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.1.tgz#f2b0eea9be9da0def2c5fece71064a7e5d687653"
+  integrity sha512-2sKLtfq1eFST7l7v62zaqXacPc7uG8ZAya8ogijLhTtaKNcpzpB4TMoTw2Si+8GYKRwFPMMtUT0263QFWFfqyQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
