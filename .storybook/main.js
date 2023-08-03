@@ -36,5 +36,6 @@ module.exports = {
   },
   docs: {
     autodocs: true,
+    defaultName: 'Documentation',
   },
 };
