@@ -56,5 +56,6 @@
       "type": "image/svg+xml",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "edge_side_panel": {}
 }
