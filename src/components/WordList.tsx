@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import type { FunctionalComponent } from 'preact';
 import { WordResult } from '@birchill/jpdict-idb';
 
 import { AccentDisplayType } from './WordDisplayConfig';

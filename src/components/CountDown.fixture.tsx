@@ -1,17 +1,9 @@
-import { h } from 'preact';
-import type { Meta, StoryObj } from '@storybook/preact';
-
 import { CountDown } from './CountDown';
 
-const meta: Meta<typeof CountDown> = {
-  title: 'Components/CountDown',
-  component: CountDown,
-};
+import '../index.css';
 
-export default meta;
-
-export const Default: StoryObj<typeof CountDown> = {
-  render: () => (
+export default {
+  default: (
     <div>
       Now: <CountDown deadline={new Date()} />
       <br />

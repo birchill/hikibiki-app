@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import type { FunctionalComponent } from 'preact';
 
 type Props = {
   missingFeatures: Array<string>;

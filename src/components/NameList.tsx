@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import type { FunctionalComponent } from 'preact';
 import { NameResult } from '@birchill/jpdict-idb';
 
 import { NameEntry } from './NameEntry';

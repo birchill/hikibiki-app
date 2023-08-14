@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { Fragment, FunctionalComponent, JSX } from 'preact';
 import { useCallback, useEffect } from 'preact/hooks';
 import {
   CrossReference,

@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { Fragment, FunctionalComponent, JSX } from 'preact';
 import { useRef } from 'preact/hooks';
 import { KanjiResult } from '@birchill/jpdict-idb';
 

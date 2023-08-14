@@ -48,6 +48,11 @@ module.exports = {
     hikibiki: ['./src/main.tsx'],
   },
   resolve: {
+    alias: {
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
+    },
     extensions: ['.ts', '.tsx', '.js'],
   },
   output: {
