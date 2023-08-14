@@ -19,7 +19,7 @@ export function useStoredToggleList({
     if (storedItems !== null) {
       // Drop any empty items since ''.split(',') will give [''] but we want
       // an empty array in that case.
-      const asArray = storedItems.split(',').filter(item => item.length);
+      const asArray = storedItems.split(',').filter((item) => item.length);
       initialEnabledItems = [...new Set(asArray)];
     }
 

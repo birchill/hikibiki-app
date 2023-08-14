@@ -21,7 +21,7 @@ const ReferenceIds = [
   'unicode',
 ] as const;
 
-export type ReferenceId = typeof ReferenceIds[number];
+export type ReferenceId = (typeof ReferenceIds)[number];
 
 export const ReferenceLabels: Array<[ReferenceId, string]> = [
   ['radical', 'Radical'],
