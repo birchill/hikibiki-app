@@ -33,9 +33,11 @@ export const CountDown: FunctionalComponent<Props> = (props: Props) => {
   );
 };
 
-function toRelativeTime(
-  date: Date
-): { date: Date; asString: string; nextUpdate: number | null } {
+function toRelativeTime(date: Date): {
+  date: Date;
+  asString: string;
+  nextUpdate: number | null;
+} {
   const now = Date.now();
   const diff = date.getTime() - now;
 

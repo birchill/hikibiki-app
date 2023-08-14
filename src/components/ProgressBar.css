@@ -15,17 +15,24 @@
     ),
     linear-gradient(to top, theme('colors.red.800'), theme('colors.red.500'));
 
-  background-size: theme('spacing.40') theme('spacing.20'), 100% 100%, 100% 100%;
+  background-size:
+    theme('spacing.40') theme('spacing.20'),
+    100% 100%,
+    100% 100%;
   animation: progress-bar-animate-stripes 3s linear infinite;
 }
 
 @keyframes progress-bar-animate-stripes {
   100% {
-    background-position: calc(-4 * theme('spacing.20')) 0, 0 0, 0 0;
+    background-position:
+      calc(-4 * theme('spacing.20')) 0,
+      0 0,
+      0 0;
   }
 }
 
 .progress-bar > .label {
-  text-shadow: 0px 0px 1px theme('colors.red.800'),
+  text-shadow:
+    0px 0px 1px theme('colors.red.800'),
     0px 0px 2px theme('colors.red.700');
 }
