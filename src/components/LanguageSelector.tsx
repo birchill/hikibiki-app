@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import type { FunctionalComponent } from 'preact';
 
 import { DB_LANGUAGES, DB_LANGUAGE_NAMES } from '../db-languages';
 

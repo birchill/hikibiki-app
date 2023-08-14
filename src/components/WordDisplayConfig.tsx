@@ -1,4 +1,4 @@
-import { h, FunctionalComponent, JSX } from 'preact';
+import { FunctionalComponent, JSX } from 'preact';
 
 export type AccentDisplayType = 'downstep' | 'binary' | 'none';
 

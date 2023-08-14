@@ -2,6 +2,6 @@
 yarn-error.log
 node_modules
 dist/**
-storybook-static/**
+cosmos-export/**
 webpack-stats.json
 .vscode/**

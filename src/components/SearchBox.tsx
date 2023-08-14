@@ -1,4 +1,4 @@
-import { h, FunctionalComponent, JSX } from 'preact';
+import { FunctionalComponent, JSX } from 'preact';
 import { useCallback, useRef } from 'preact/hooks';
 
 type Props = {

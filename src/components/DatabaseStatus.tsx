@@ -1,5 +1,4 @@
 import {
-  h,
   ComponentChildren,
   Fragment,
   FunctionalComponent,
@@ -20,6 +19,8 @@ import { CountDown } from './CountDown';
 import { FancyCheckbox } from './FancyCheckbox';
 import { LicenseInfo } from './LicenseInfo';
 import { ProgressBar } from './ProgressBar';
+
+import '../index.css';
 
 const headings: { [series in MajorDataSeries]: string } = {
   words: 'Words',

@@ -1,17 +1,7 @@
-import { h } from 'preact';
-import type { Meta, StoryObj } from '@storybook/preact';
-
 import { DatabaseStatus } from './DatabaseStatus';
 
-const meta: Meta<typeof DatabaseStatus> = {
-  title: 'Components/DatabaseStatus',
-  component: DatabaseStatus,
-};
-
-export default meta;
-
-export const initializing: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+export default {
+  initializing: (
     <DatabaseStatus
       series="kanji"
       dataState={{
@@ -24,10 +14,7 @@ export const initializing: StoryObj<typeof DatabaseStatus> = {
       initiallyExpanded
     />
   ),
-};
-
-export const empty: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+  empty: (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -158,10 +145,7 @@ export const empty: StoryObj<typeof DatabaseStatus> = {
       />
     </div>
   ),
-};
-
-export const ok: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+  ok: (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -441,10 +425,7 @@ export const ok: StoryObj<typeof DatabaseStatus> = {
       />
     </div>
   ),
-};
-
-export const unavailable: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+  unavailable: (
     <DatabaseStatus
       series="kanji"
       dataState={{
@@ -457,10 +438,7 @@ export const unavailable: StoryObj<typeof DatabaseStatus> = {
       initiallyExpanded
     />
   ),
-};
-
-export const collapsed: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+  collapsed: (
     <div>
       <DatabaseStatus
         series="kanji"
@@ -549,10 +527,7 @@ export const collapsed: StoryObj<typeof DatabaseStatus> = {
       />
     </div>
   ),
-};
-
-export const disabled: StoryObj<typeof DatabaseStatus> = {
-  render: () => (
+  disabled: (
     <DatabaseStatus
       series="kanji"
       dataState={{

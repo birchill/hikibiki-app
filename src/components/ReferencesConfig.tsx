@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import { FunctionalComponent } from 'preact';
 
 import { TogglePill } from './TogglePill';
 import { getReferenceLabels } from '../references';

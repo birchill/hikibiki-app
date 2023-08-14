@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent } from 'preact';
+import { Fragment, type FunctionalComponent } from 'preact';
 import { NameResult, NameTranslation, NameType } from '@birchill/jpdict-idb';
 
 interface Props extends NameResult {

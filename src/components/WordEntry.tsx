@@ -1,4 +1,4 @@
-import { h, Fragment, FunctionalComponent, JSX } from 'preact';
+import { Fragment, FunctionalComponent, JSX } from 'preact';
 import {
   groupSenses,
   Accent,
@@ -66,7 +66,7 @@ function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
 type HeadwordType = 'kanji' | 'kana' | 'reading';
 
 function renderListWithMatches<
-  T extends WordResult['k'][0] | WordResult['r'][0]
+  T extends WordResult['k'][0] | WordResult['r'][0],
 >(array: Array<T>, type: HeadwordType, accentDisplay: AccentDisplayType) {
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.

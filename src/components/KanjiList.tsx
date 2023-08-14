@@ -1,4 +1,4 @@
-import { h, FunctionalComponent } from 'preact';
+import type { FunctionalComponent } from 'preact';
 import { KanjiResult } from '@birchill/jpdict-idb';
 
 import { KanjiEntry } from './KanjiEntry';
