@@ -1,3 +1,4 @@
+/// <reference path="./constants.d.ts" />
 declare var self: ServiceWorkerGlobalScope;
 
 type AssetInfo = {
@@ -13,7 +14,6 @@ declare global {
 
 const bundledAssets = self.__WB_MANIFEST;
 
-declare const __BUILD_ID__: string;
 const APP_CACHE = __BUILD_ID__;
 
 self.addEventListener('install', (evt: ExtendableEvent) => {

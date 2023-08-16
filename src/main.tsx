@@ -1,4 +1,52 @@
+/// <reference path="./constants.d.ts" />
 import { render } from 'preact';
+
+import Bugsnag, {
+  appDuration,
+  browserContext,
+  browserNotifyUnhandledExceptions,
+  browserNotifyUnhandledRejections,
+  consoleBreadcrumbs,
+  deviceOrientation,
+  errorBreadcrumbs,
+  fetchBreadcrumbs,
+  interactionBreadcrumbs,
+  limitEvents,
+  navigationBreadcrumbs,
+  ReactPlugin,
+  stringifyValues,
+} from '@birchill/bugsnag-zero';
+
+export function initializeBugsnag(): void {
+  const plugins = [
+    appDuration,
+    browserContext,
+    browserNotifyUnhandledExceptions,
+    browserNotifyUnhandledRejections,
+    deviceOrientation,
+    errorBreadcrumbs,
+    fetchBreadcrumbs,
+    interactionBreadcrumbs,
+    limitEvents(10),
+    navigationBreadcrumbs,
+    ReactPlugin,
+    stringifyValues,
+  ];
+
+  if (__RELEASE_STAGE__ !== 'test') {
+    plugins.push(consoleBreadcrumbs);
+  }
+
+  Bugsnag.start({
+    apiKey: '231f5773e761167d6e49aeca8e7d72f7',
+    appType: 'browser',
+    collectUserIp: false,
+    enabledReleaseStages: ['prod', 'beta', 'dev'],
+    plugins,
+    releaseStage: __RELEASE_STAGE__,
+  });
+}
+
 import {
   allDataSeries,
   allMajorDataSeries,
@@ -16,7 +64,6 @@ import {
   DataVersion,
 } from '@birchill/jpdict-idb';
 import { get, set, createStore } from 'idb-keyval';
-import Rollbar from 'rollbar';
 
 import {
   crossReferenceFromQueryString,
@@ -48,14 +95,6 @@ import { hasJapanese } from './japanese';
 
   const dbWorker = new Worker(new URL('./db-worker', import.meta.url), {
     type: 'module' /* webpackChunkName: 'worker' */,
-  });
-  const rollbar = new Rollbar({
-    accessToken: 'c5e59969fd504e6c8b9064f67beb9e93',
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-    payload: {
-      environment: process.env.NODE_ENV,
-    },
   });
 
   if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
@@ -238,7 +277,9 @@ import { hasJapanese } from './japanese';
             state[series].updateError.name !== 'AbortError'
           ) {
             const { name, message } = state[series].updateError;
-            rollbar.error(`${name}: ${message}`, state.updateError);
+            Bugsnag.notify(new Error(`${name}: ${message}`), {
+              metadata: { 'Update error': state.updateError },
+            });
           }
         }
 
@@ -279,8 +320,10 @@ import { hasJapanese } from './japanese';
   }
 
   dbWorker.onmessageerror = (evt: MessageEvent) => {
-    console.log(`Worker error: ${JSON.stringify(evt)}`);
-    rollbar.error(`Worker error: ${JSON.stringify(evt)}`);
+    console.log('Worker error', evt);
+    Bugsnag.notify(new Error('Worker error'), {
+      metadata: { 'Worker error': evt },
+    });
   };
 
   const updateDb = ({ series }: { series?: MajorDataSeries } = {}) => {
