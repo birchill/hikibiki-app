@@ -1,17 +1,13 @@
-const path = require('path');
-
-const purgecss = require('@fullhuman/postcss-purgecss')({
-  content: [
-    path.join(__dirname, 'src', 'index.html'),
-    path.join(__dirname, 'src', 'components', '*.tsx'),
-  ],
-  defaultExtractor: (content) => content.match(/[\w-/:[\]]+(?<!:)/g) || [],
-});
+/* eslint-env node */
+/* eslint @typescript-eslint/no-var-requires: 0 */
 
 module.exports = {
   plugins: [
     require('postcss-import'),
     require('tailwindcss'),
-    ...(process.env.NODE_ENV === 'production' ? [purgecss] : []),
+    ...(process.env.NODE_ENV === 'production'
+      ? [require('cssnano')({ preset: 'default' })]
+      : []),
+    require('autoprefixer'),
   ],
 };
