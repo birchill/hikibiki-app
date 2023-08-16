@@ -28,14 +28,17 @@ const plugins = [
     template: './src/index.html',
     excludeChunks: ['db-worker'],
   }),
-  new InjectManifest({
-    swSrc: './src/sw.ts',
-    // Don't cache CSS files in development because the Tailwind CSS files
-    // won't be minimized then (and we'll get warnings about it).
-    exclude: process.env.NODE_ENV === 'production' ? [] : [/.css$/],
-  }),
   new MiniCssExtractPlugin({ filename: 'hikibiki.[contenthash].css' }),
 ];
+
+if (mode !== 'development') {
+  plugins.push(
+    new InjectManifest({
+      swSrc: './src/sw.ts',
+      exclude: ['_headers'],
+    })
+  );
+}
 
 // Don't run the Relative CI task unless we mean to -- it corrupts the stats
 // file so other tools can't use it.

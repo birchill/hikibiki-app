@@ -22,9 +22,9 @@ self.addEventListener('install', (evt: ExtendableEvent) => {
   evt.waitUntil(
     caches.open(APP_CACHE).then((cache) => {
       cache.addAll(
-        bundledAssets
-          .filter((asset) => asset.url !== '_headers')
-          .map((asset) => (asset.url === 'index.html' ? '/' : `/${asset.url}`))
+        bundledAssets.map((asset) =>
+          asset.url === 'index.html' ? '/' : `/${asset.url}`
+        )
       );
     })
   );
