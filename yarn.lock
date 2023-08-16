@@ -962,9 +962,9 @@
     ua-parser-js "^1.0.32"
 
 "@birchill/jpdict-idb@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.0.1.tgz#ab54397b652742c355d00c0b0c0c2f3feb6b45d5"
-  integrity sha512-d/P80Ys0wKRLXAetc5Rga6jqIKReNwaGhwnJDlohdSXhbZFxYb0M63rjW5uUfrswG/Y0wtUkmD+4usuGXFC62Q==
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.0.2.tgz#6ac09e16a524c2ce9f3b2007e18f787b02c50a0f"
+  integrity sha512-JJLGvp7fYHzEpAR4AD3g6rH512w+xwlYrkjR6rmsD55OIQJFAmYuEo1y5avfnH0+Aikqtc5G2+YI68fEhgt0OA==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"
