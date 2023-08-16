@@ -15,6 +15,7 @@ const prod = mode === 'production';
 const plugins = [
   new webpack.DefinePlugin({
     __BUILD_ID__: `'${getUniqueBuildId()}'`,
+    __RELEASE_STAGE__: `'${mode === 'production' ? 'prod' : 'test'}'`,
   }),
   new CleanWebpackPlugin(),
   new CopyWebpackPlugin({

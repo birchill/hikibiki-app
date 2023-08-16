@@ -52,11 +52,11 @@
   },
   "homepage": "https://hikibiki.app/",
   "dependencies": {
+    "@birchill/bugsnag-zero": "0.6.3",
     "@birchill/jpdict-idb": "^2.0.1",
     "@birchill/normal-jp": "^1.4.0",
     "idb-keyval": "^6.2.1",
     "preact": "^10.17.0",
-    "rollbar": "^2.26.2",
     "tailwindcss": "^3.3.3"
   },
   "lint-staged": {
