@@ -961,10 +961,10 @@
     aws-lambda "^1.0.7"
     ua-parser-js "^1.0.32"
 
-"@birchill/jpdict-idb@^2.0.1":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.0.2.tgz#6ac09e16a524c2ce9f3b2007e18f787b02c50a0f"
-  integrity sha512-JJLGvp7fYHzEpAR4AD3g6rH512w+xwlYrkjR6rmsD55OIQJFAmYuEo1y5avfnH0+Aikqtc5G2+YI68fEhgt0OA==
+"@birchill/jpdict-idb@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.1.0.tgz#b596637ba423786ccab86d4818c167baa23460e0"
+  integrity sha512-VVDFBVSRkxARGFLVGcwSUXGWpTa+HvHrwwPNe5h27apR159fb9Vw0PCf16XYsESJ8q0u/LKRrpi6qM+CehMlyQ==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.4.0"

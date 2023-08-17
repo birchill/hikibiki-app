@@ -8,6 +8,7 @@ type Props = {
   entries: Array<WordResult>;
   lang?: string;
   accentDisplay: AccentDisplayType;
+  showWaniKaniLevel: boolean;
 };
 
 export const WordList: FunctionalComponent<Props> = (props: Props) => {
@@ -22,6 +23,7 @@ export const WordList: FunctionalComponent<Props> = (props: Props) => {
           ...entry,
           lang: props.lang,
           accentDisplay: props.accentDisplay,
+          showWaniKaniLevel: props.showWaniKaniLevel,
         })
       )}
     </div>

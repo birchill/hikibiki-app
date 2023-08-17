@@ -21,6 +21,7 @@ import { AccentDisplayType } from './WordDisplayConfig';
 interface Props extends WordResult {
   lang?: string;
   accentDisplay: AccentDisplayType;
+  showWaniKaniLevel: boolean;
 }
 
 export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
@@ -29,13 +30,25 @@ export const WordEntry: FunctionalComponent<Props> = (props: Props) => {
       class="word-entry text-xl leading-normal mt-8 mb-8"
       id={`word-${props.id}`}
     >
-      {renderHeading(props, props.accentDisplay)}
+      {renderHeading({
+        result: props,
+        accentDisplay: props.accentDisplay,
+        showWaniKaniLevel: props.showWaniKaniLevel,
+      })}
       {renderSenses(props.s, props.lang)}
     </div>
   );
 };
 
-function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
+function renderHeading({
+  result,
+  accentDisplay,
+  showWaniKaniLevel,
+}: {
+  result: WordResult;
+  accentDisplay: AccentDisplayType;
+  showWaniKaniLevel: boolean;
+}) {
   const filteredKanji = result.k
     ? result.k.filter((k) => !k.i || !k.i.includes('sK'))
     : [];
@@ -46,7 +59,11 @@ function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
   if (!filteredKanji.length) {
     return (
       <div class="font-bold" lang="ja">
-        {renderListWithMatches(filteredKana, 'kana', accentDisplay)}
+        {renderListWithMatches({
+          array: filteredKana,
+          type: 'kana',
+          accentDisplay,
+        })}
       </div>
     );
   }
@@ -54,10 +71,21 @@ function renderHeading(result: WordResult, accentDisplay: AccentDisplayType) {
   return (
     <div lang="ja">
       <span class="font-bold mr-4">
-        {renderListWithMatches(filteredKanji, 'kanji', accentDisplay)}
+        {renderListWithMatches({
+          array: filteredKanji,
+          type: 'kanji',
+          accentDisplay,
+          showWaniKaniLevel,
+        })}
       </span>
       <span class="text-gray-700 text-lg">
-        【{renderListWithMatches(filteredKana, 'reading', accentDisplay)}】
+        【
+        {renderListWithMatches({
+          array: filteredKana,
+          type: 'reading',
+          accentDisplay,
+        })}
+        】
       </span>
     </div>
   );
@@ -67,17 +95,34 @@ type HeadwordType = 'kanji' | 'kana' | 'reading';
 
 function renderListWithMatches<
   T extends WordResult['k'][0] | WordResult['r'][0],
->(array: Array<T>, type: HeadwordType, accentDisplay: AccentDisplayType) {
+>({
+  array,
+  type,
+  accentDisplay,
+  showWaniKaniLevel,
+}: {
+  array: Array<T>;
+  type: HeadwordType;
+  accentDisplay: AccentDisplayType;
+  showWaniKaniLevel?: boolean;
+}) {
   // We don't use join() be cause we want to make sure the comma (、) takes on
   // the same shading as the preceding item.
-  return array.map((item, i) => (
-    <span class={item.match ? '' : 'text-gray-500 font-normal'}>
-      {renderHeadword(item, accentDisplay)}
-      {renderHeadwordAnnotations(item)}
-      {renderHeadwordPriority(item, type)}
-      {i < array.length - 1 ? '、' : ''}
-    </span>
-  ));
+  return array.map((item, i) => {
+    const wk =
+      type === 'kanji' && showWaniKaniLevel
+        ? (item as WordResult['k'][0]).wk
+        : undefined;
+    return (
+      <span class={item.match ? '' : 'text-gray-500 font-normal'}>
+        {renderHeadword(item, accentDisplay)}
+        {renderHeadwordAnnotations(item)}
+        {renderHeadwordPriority(item, type)}
+        {typeof wk === 'number' && renderWaniKaniLevel(wk)}
+        {i < array.length - 1 ? '、' : ''}
+      </span>
+    );
+  });
 }
 
 function renderHeadword(
@@ -510,6 +555,14 @@ function renderHeadwordPriority(
         href={`#${highPriority ? 'full-star' : 'hollow-star'}`}
       />
     </svg>
+  );
+}
+
+function renderWaniKaniLevel(level: number) {
+  return (
+    <div class="inline-block px-2 py-1 mx-2 text-xs font-normal rounded-sm text-[#8f2fa6] bg-[#8f2fa911]">
+      WaniKani {level}
+    </div>
   );
 }
 

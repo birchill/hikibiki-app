@@ -1,10 +1,14 @@
-import { FunctionalComponent, JSX } from 'preact';
+import type { FunctionalComponent, JSX } from 'preact';
+
+import { FancyCheckbox } from './FancyCheckbox';
 
 export type AccentDisplayType = 'downstep' | 'binary' | 'none';
 
 interface Props {
   accentDisplay: AccentDisplayType;
+  showWaniKaniLevel: boolean;
   onChangeAccentDisplay?: (value: AccentDisplayType) => void;
+  onChangeShowWaniKaniLevel?: (value: boolean) => void;
 }
 
 export const WordDisplayConfig: FunctionalComponent<Props> = (props: Props) => {
@@ -16,14 +20,20 @@ export const WordDisplayConfig: FunctionalComponent<Props> = (props: Props) => {
     }
   };
 
+  const onChangeShowWaniKaniLevel = (
+    evt: JSX.TargetedEvent<HTMLInputElement>
+  ) => {
+    props.onChangeShowWaniKaniLevel?.(evt.currentTarget?.checked);
+  };
+
   return (
-    <div class="mt-10 -mb-4">
-      <div class="browser-style">
+    <div class="mt-10">
+      <div class="flex gap-8 my-8 items-center">
         <label for="accentDisplay">Pitch accent display</label>
         <select
           id="accentDisplay"
           name="accentDisplay"
-          class="ml-4 mt-1 form-select pl-3 pr-10 py-2
+          class="mt-1 form-select pl-3 pr-10 py-2
            rounded
            leading-6
            border-2 border-transparent border-dotted
@@ -46,6 +56,15 @@ export const WordDisplayConfig: FunctionalComponent<Props> = (props: Props) => {
             None
           </option>
         </select>
+      </div>
+      <div class="flex gap-8 my-8">
+        <FancyCheckbox
+          id="showWaniKaniVocabLevel"
+          checked={props.showWaniKaniLevel}
+          onChange={onChangeShowWaniKaniLevel}
+          theme="orange"
+        />
+        <label for="showWaniKaniVocabLevel">Show WaniKani levels</label>
       </div>
     </div>
   );

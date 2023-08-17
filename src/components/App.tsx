@@ -126,6 +126,12 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
       defaultValue: 'binary',
     });
 
+  const { value: showWaniKaniVocabLevel, setValue: setShowWaniKaniVocabLevel } =
+    useStoredValue<boolean>({
+      key: 'show-wanikani-vocab-level',
+      defaultValue: false,
+    });
+
   // References and links
   const { enabledItems: enabledReferences, toggleItem: onToggleReference } =
     useStoredToggleList({
@@ -167,7 +173,9 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
         >
           <WordDisplayConfig
             accentDisplay={accentDisplay}
+            showWaniKaniLevel={showWaniKaniVocabLevel}
             onChangeAccentDisplay={setAccentDisplay}
+            onChangeShowWaniKaniLevel={setShowWaniKaniVocabLevel}
           />
         </DatabaseStatus>
         {wordsEnabled ? (
@@ -175,6 +183,7 @@ export const App: FunctionalComponent<Props> = (props: Props) => {
             entries={props.entries.words}
             lang={props.databaseState.words.version?.lang}
             accentDisplay={accentDisplay}
+            showWaniKaniLevel={showWaniKaniVocabLevel}
           />
         ) : null}
       </div>

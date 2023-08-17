@@ -1,9 +1,9 @@
-import type { FunctionalComponent } from 'preact';
+import type { FunctionalComponent, JSX } from 'preact';
 
 type Props = {
   id: string;
   checked?: boolean;
-  onChange?: () => void;
+  onChange?: (evt: JSX.TargetedEvent<HTMLInputElement>) => void;
   theme: 'orange' | 'gray';
 };
 

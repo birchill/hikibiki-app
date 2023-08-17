@@ -19,6 +19,7 @@ const ReferenceIds = [
   'skip',
   'sh_kk2',
   'unicode',
+  'wk',
 ] as const;
 
 export type ReferenceId = (typeof ReferenceIds)[number];
@@ -44,6 +45,7 @@ export const ReferenceLabels: Array<[ReferenceId, string]> = [
   ['skip', 'SKIP'],
   ['sh_kk2', 'Tuttle Kanji & Kana (2011)'],
   ['unicode', 'Unicode'],
+  ['wk', 'WaniKani'],
 ];
 
 export function filterReferencesByLanguage(

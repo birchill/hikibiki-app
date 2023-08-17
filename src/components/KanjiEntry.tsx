@@ -375,6 +375,9 @@ function getReferenceValue(
     case 'unicode':
       return `U+${entry.c.codePointAt(0)!.toString(16).toUpperCase()}`;
 
+    case 'wk':
+      return (entry.misc as any).wk;
+
     default:
       return entry.refs[id] ? String(entry.refs[id]) : undefined;
   }
