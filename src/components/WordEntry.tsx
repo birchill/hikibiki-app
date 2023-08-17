@@ -560,7 +560,7 @@ function renderHeadwordPriority(
 
 function renderWaniKaniLevel(level: number) {
   return (
-    <div class="inline-block px-2 py-1 mx-2 text-xs font-normal rounded-sm text-[#8f2fa6] bg-[#8f2fa911]">
+    <div class="inline-block px-2 py-1 mx-2 text-xs font-normal rounded-sm text-purple-700 bg-purple-50">
       WaniKani {level}
     </div>
   );
