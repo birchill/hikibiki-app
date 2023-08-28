@@ -53,8 +53,8 @@
   "homepage": "https://hikibiki.app/",
   "dependencies": {
     "@birchill/bugsnag-zero": "0.6.3",
-    "@birchill/jpdict-idb": "^2.1.0",
-    "@birchill/normal-jp": "^1.4.0",
+    "@birchill/jpdict-idb": "^2.1.2",
+    "@birchill/normal-jp": "^1.5.0",
     "idb-keyval": "^6.2.1",
     "preact": "^10.17.0",
     "tailwindcss": "^3.3.3"

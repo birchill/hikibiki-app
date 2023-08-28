@@ -1021,13 +1021,13 @@
     aws-lambda "^1.0.7"
     ua-parser-js "^1.0.32"
 
-"@birchill/jpdict-idb@^2.1.0":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.1.1.tgz#e43e9543eaf5a0f5f9743910f0408fe7012d0607"
-  integrity sha512-rR7PXZS86GNwtv41tuDqDk96IQfKs1qHFR0vicC3+DDuiHW1cFnjOhsE9ThEp0zv7Vk6HySu3ql/qLttwRWN1A==
+"@birchill/jpdict-idb@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.1.2.tgz#bfe0d81d12b00cc7e1deeec0f1e5f69df34f5c7f"
+  integrity sha512-bdUy20rB/++1EtwO2IhTSpHtKvZUvUNnSOcfr10Qk5wG3jOK7/9/gx3Q1HQrt9++iucUDF47uVW5MYqroVdO8A==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
-    "@birchill/normal-jp" "^1.4.0"
+    "@birchill/normal-jp" "^1.5.0"
     idb "^7.1.1"
     superstruct "^1.0.3"
 
@@ -1036,10 +1036,10 @@
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.4.0.tgz#b58f6146f9b754431f7d93c2d48aca9ee45ee1a3"
-  integrity sha512-iMeOw4BJS1Z0wqMyC3eYoZN+ANDlg1VQ+dZy56UEwNEaY+hzkR6nYT0DKpDRVRp5oJbpf7rEJQ6gfmD7AWJv2A==
+"@birchill/normal-jp@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.5.0.tgz#9ffc7227a636ffcf3dd7c39dfdb0af4cbd4d7d38"
+  integrity sha512-yL0XXk6Wl4jrJtfT2HJ/NDiZoepgJMWx3CLM0MzUyXFVFWvdgVPe+DWjH/z6Rps7tDqSS6CtVXL9hW0qncpAUA==
 
 "@bundle-stats/plugin-webpack-filter@4.6.3":
   version "4.6.3"
