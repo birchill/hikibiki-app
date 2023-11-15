@@ -1271,10 +1271,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@relative-ci/agent@4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.0.tgz#38d48765e11153734e9e7c946580e38f7c9544ba"
-  integrity sha512-mVRn5pTy7BSMtYjDtLhUzBM6v1q1ws+LKhK8FH/bzSQEK11quCkGE5wcgnATSdtWVJ6tGczMBazJjHis5L2Jww==
+"@relative-ci/agent@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.1.tgz#a11d7b3433bebb7832ec04f01ce211c342b6fb86"
+  integrity sha512-sYNni4CY5cnl1QacHfBSJMpHIbE0JJ3Kub6BDDgE7+81O0+FLZ1EXak7kmYuxZQAY3P783y38god6bAGNDilGA==
   dependencies:
     "@bundle-stats/plugin-webpack-filter" "4.8.0"
     "@bundle-stats/plugin-webpack-validate" "4.8.0"
