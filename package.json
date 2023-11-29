@@ -4,7 +4,7 @@
   "description": "Look up words and stuff",
   "main": "src/main.tsx",
   "devDependencies": {
-    "@babel/core": "7.23.3",
+    "@babel/core": "7.23.5",
     "@fullhuman/postcss-purgecss": "5.0.0",
     "@relative-ci/agent": "4.2.1",
     "autoprefixer": "10.4.16",
