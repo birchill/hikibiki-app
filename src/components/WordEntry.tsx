@@ -285,8 +285,8 @@ function renderBinaryPitch(
     const before = accentPos
       ? 'border-dotted border-t-2 border-r-2'
       : headwordLength > 1
-      ? 'border-dotted border-b-2 border-r-2'
-      : 'border-dotted border-t-2';
+        ? 'border-dotted border-b-2 border-r-2'
+        : 'border-dotted border-t-2';
     const after =
       accentPos === 0 ? 'border-dotted border-t-2' : 'border-dotted border-b-2';
     const afterCont =
@@ -1026,11 +1026,14 @@ const fieldLabels: { [field in FieldType]: string } = {
   biochem: 'biochemistry',
   biol: 'biology',
   bot: 'botany',
+  boxing: 'boxing',
   Buddh: 'Buddhism',
   bus: 'business',
   cards: 'cards',
   chem: 'chemistry',
+  chmyth: 'Chinese mythology',
   Christn: 'Christianity',
+  civeng: 'civil eng.',
   cloth: 'clothing',
   comp: 'computing',
   cryst: 'crystallography',
@@ -1042,6 +1045,7 @@ const fieldLabels: { [field in FieldType]: string } = {
   embryo: 'embryology',
   engr: 'engineering',
   ent: 'entomology',
+  figskt: 'figure skating',
   film: 'film',
   finc: 'finance',
   fish: 'fishing',
@@ -1057,6 +1061,8 @@ const fieldLabels: { [field in FieldType]: string } = {
   grmyth: 'Greek mythology',
   hanaf: 'hanafuda',
   horse: 'horse-racing',
+  internet: 'Internet',
+  jpmyth: 'Japanese mythology',
   kabuki: 'kabuki',
   law: 'law',
   ling: 'linguistics',
@@ -1070,6 +1076,8 @@ const fieldLabels: { [field in FieldType]: string } = {
   met: 'climate, weather',
   mil: 'military',
   mining: 'mining',
+  min: 'mineralogy',
+  motor: 'motor sports',
   music: 'music',
   noh: 'noh',
   ornith: 'ornithology',
@@ -1082,6 +1090,7 @@ const fieldLabels: { [field in FieldType]: string } = {
   physiol: 'physiology',
   politics: 'politics',
   print: 'printing',
+  prowres: 'pro wrestling',
   psy: 'psychiatry',
   psyanal: 'psychoanalysis',
   psych: 'psychology',
@@ -1094,9 +1103,11 @@ const fieldLabels: { [field in FieldType]: string } = {
   stat: 'statistics',
   stockm: 'stock market',
   sumo: 'sumo',
+  surg: 'surgery',
   telec: 'telecommunications',
   tradem: 'trademark',
   tv: 'TV',
+  vet: 'veterinary',
   vidg: 'video games',
   zool: 'zoology',
 };
