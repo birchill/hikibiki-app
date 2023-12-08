@@ -481,6 +481,11 @@ const headwordInfo: {
     styles: 'text-purple-800 bg-orange-200',
     descr: 'Rarely used kanji form',
   },
+  rk: {
+    icon: 'rare',
+    styles: 'text-purple-800 bg-orange-200',
+    descr: 'Rarely used kana form',
+  },
   // The following should never actually be used (we should filter out search
   // only headwords, I think) but just in case (and to keep TypeScript happy)
   // we add these
