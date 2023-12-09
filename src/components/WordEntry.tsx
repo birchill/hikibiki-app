@@ -471,11 +471,6 @@ const headwordInfo: {
     styles: 'text-orange-500 bg-orange-100',
     descr: 'gikun (meaning as reading) or jukujikun (special kanji reading)',
   },
-  uK: {
-    icon: 'usu. kanji',
-    styles: 'text-orange-500 bg-orange-100',
-    descr: 'Usually written using kanji alone',
-  },
   rK: {
     icon: 'rare',
     styles: 'text-purple-800 bg-orange-200',
