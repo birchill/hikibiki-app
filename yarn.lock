@@ -1194,15 +1194,15 @@
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.5.0.tgz#9ffc7227a636ffcf3dd7c39dfdb0af4cbd4d7d38"
   integrity sha512-yL0XXk6Wl4jrJtfT2HJ/NDiZoepgJMWx3CLM0MzUyXFVFWvdgVPe+DWjH/z6Rps7tDqSS6CtVXL9hW0qncpAUA==
 
-"@bundle-stats/plugin-webpack-filter@4.8.0":
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.8.0.tgz#c45078a43e24d4ba01ad30dc7458d9159b37e7c9"
-  integrity sha512-Hr7q0QOXovmCUYy5tOqM6mb/tmH816SF47/X+qKFMj31y2mUMteq+AllUKkDVp9xC1DjYiqBtHVTQYa65k32eg==
+"@bundle-stats/plugin-webpack-filter@4.8.3":
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-filter/-/plugin-webpack-filter-4.8.3.tgz#2bf014f7d2b65262fe7544fed70f9d7104bbf497"
+  integrity sha512-+RZUkQzz6aGdWmHyZ5URN8Zd5gqJs3w4KM/wKrAJ6Atko6ZI2MNPWbsBlWLoDL1Y631sXH7hpBbJbcJsNNUYmw==
 
-"@bundle-stats/plugin-webpack-validate@4.8.0":
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.8.0.tgz#731bcab1896ccc216f65c8c702c89ef84faf57bf"
-  integrity sha512-/OJprFzQMvRdQy0vzIoFR2z+stEuSze2CjzH0B+UPBErIAAdsh4ILk9zlSvMx/vwEazj9HvzfwNKReGxzjXJsg==
+"@bundle-stats/plugin-webpack-validate@4.8.3":
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/@bundle-stats/plugin-webpack-validate/-/plugin-webpack-validate-4.8.3.tgz#dd98409a7f8abc7bef351a68912e80baca19d28e"
+  integrity sha512-omy88zsctC59CXWaYxo2H0Tss0ph+6jeebeZMwIiy12i9/RxrB18hJkCRfunBR7WoU+GxEcFok4XRP8UeP+86g==
   dependencies:
     lodash "4.17.21"
     superstruct "1.0.3"
@@ -1293,19 +1293,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@relative-ci/agent@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.1.tgz#a11d7b3433bebb7832ec04f01ce211c342b6fb86"
-  integrity sha512-sYNni4CY5cnl1QacHfBSJMpHIbE0JJ3Kub6BDDgE7+81O0+FLZ1EXak7kmYuxZQAY3P783y38god6bAGNDilGA==
+"@relative-ci/agent@4.2.2":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.2.tgz#8b5ab5f9daa08d37596bb59661d9b47ffb88faf2"
+  integrity sha512-eCdv2cvZ7Cv+qm/zHog/HZjWCUXvlo3K5qzm+XjKGX4LKYNbEP5ca06r39IBUYPVRaWd0bEl6yYI+m0gCbaQ2A==
   dependencies:
-    "@bundle-stats/plugin-webpack-filter" "4.8.0"
-    "@bundle-stats/plugin-webpack-validate" "4.8.0"
-    core-js "3.33.2"
-    cosmiconfig "8.3.6"
+    "@bundle-stats/plugin-webpack-filter" "4.8.3"
+    "@bundle-stats/plugin-webpack-validate" "4.8.3"
+    core-js "3.34.0"
+    cosmiconfig "9.0.0"
     debug "4.3.4"
     dotenv "16.3.1"
     env-ci "7.3.0"
-    fs-extra "11.1.1"
+    fs-extra "11.2.0"
     isomorphic-fetch "3.0.0"
     lodash "4.17.21"
     yargs "17.7.2"
@@ -2488,10 +2488,10 @@ core-js-compat@^3.31.0:
   dependencies:
     browserslist "^4.21.9"
 
-core-js@3.33.2:
-  version "3.33.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.33.2.tgz#312bbf6996a3a517c04c99b9909cdd27138d1ceb"
-  integrity sha512-XeBzWI6QL3nJQiHmdzbAOiMYqjrb7hwU7A39Qhvd/POSa/t9E1AeZyEZx3fNvp/vtM8zXwhoL0FsiS0hD0pruQ==
+core-js@3.34.0:
+  version "3.34.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.34.0.tgz#5705e6ad5982678612e96987d05b27c6c7c274a5"
+  integrity sha512-aDdvlDder8QmY91H88GzNi9EtQi2TjvQhpCX6B1v/dAZHU1AuLgHvRh54RiOerpEhEW46Tkf+vgAViB/CWC0ag==
 
 core-js@^3.20.3:
   version "3.32.0"
@@ -2503,15 +2503,15 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
-cosmiconfig@8.3.6:
-  version "8.3.6"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.3.6.tgz#060a2b871d66dba6c8538ea1118ba1ac16f5fae3"
-  integrity sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==
+cosmiconfig@9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-9.0.0.tgz#34c3fc58287b915f3ae905ab6dc3de258b55ad9d"
+  integrity sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==
   dependencies:
+    env-paths "^2.2.1"
     import-fresh "^3.3.0"
     js-yaml "^4.1.0"
     parse-json "^5.2.0"
-    path-type "^4.0.0"
 
 cosmiconfig@^8.2.0:
   version "8.2.0"
@@ -2958,6 +2958,11 @@ env-ci@7.3.0:
     fromentries "^1.3.2"
     java-properties "^1.0.0"
 
+env-paths@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/env-paths/-/env-paths-2.2.1.tgz#420399d416ce1fbe9bc0a07c62fa68d67fd0f8f2"
+  integrity sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
+
 envinfo@^7.7.3:
   version "7.10.0"
   resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-7.10.0.tgz#55146e3909cc5fe63c22da63fb15b05aeac35b13"
@@ -3345,10 +3350,10 @@ fs-extra@10.0.0:
     jsonfile "^6.0.1"
     universalify "^2.0.0"
 
-fs-extra@11.1.1:
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.1.1.tgz#da69f7c39f3b002378b0954bb6ae7efdc0876e2d"
-  integrity sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==
+fs-extra@11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.2.0.tgz#e70e17dfad64232287d01929399e0ea7c86b0e5b"
+  integrity sha512-PmDi3uwK5nFuXh7XDTlVnS17xJS7vW36is2+w3xcv8SVxiB4NyATf4ctkVY5bkSjX0Y4nbvZCq1/EjtEyr9ktw==
   dependencies:
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
