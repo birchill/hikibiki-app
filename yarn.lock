@@ -3885,7 +3885,7 @@ locate-path@^7.1.0:
   dependencies:
     p-locate "^6.0.0"
 
-lodash-es@4.17.21:
+lodash-es@4.17.21, lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
@@ -4877,26 +4877,33 @@ react-cosmos-core@6.0.0-beta.10:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
-react-cosmos-dom@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.0-beta.10.tgz#fb5364a6259beca4abefc91fb5760e8bd76653f1"
-  integrity sha512-RFAkb+pod1rlggfopA+O2nV9ffiuZ8G+pFJbswoFnmc8MbG7TMU+AO5fIxrBGQDxyhvdJHE+5As/i3LCZPhP7A==
+react-cosmos-core@6.0.0-canary.fe0c7d1.0+fe0c7d1:
+  version "6.0.0-canary.fe0c7d1.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.0.0-canary.fe0c7d1.0.tgz#9e02f2eb9500ad6c54f7ea5b1df9744cbe550456"
+  integrity sha512-K5C8MGIyxJW4r88XeR6AMmew1mk25iym8wL7vB8ElNX4XBmbPZXQ2rUQRAHY4o/5V5dOAF9pFQdvxY8kUvHDqg==
   dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
-    react-cosmos-renderer "6.0.0-beta.10"
+    lodash-es "^4.17.21"
+    react-is "^18.2.0"
 
-react-cosmos-plugin-webpack@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.0-beta.10.tgz#35a7c9cd16262a47564a0d1bb5998d52d3b3f322"
-  integrity sha512-FbOrATnItm98TddYSZwXiTXmuD7cxf/QimwQb0VhHxSIWEWRjM0gSYOnsHg8ncWLH704elySUpd4fVnQx7bA6w==
+react-cosmos-dom@6.0.0-canary.fe0c7d1.0+fe0c7d1:
+  version "6.0.0-canary.fe0c7d1.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.0-canary.fe0c7d1.0.tgz#a0bc11d7561dbe6d422d27e350138b7c10603d87"
+  integrity sha512-lpl/WrC7suKPheeOW8bASI6eSCJGPz0tKqBVk+ymXjcxEvi5tJE3EtBIAaXL02qYQhLYmySEFX/9aD/I0UZj1g==
   dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
-    react-cosmos-dom "6.0.0-beta.10"
+    lodash-es "^4.17.21"
+    react-cosmos-core "6.0.0-canary.fe0c7d1.0+fe0c7d1"
+
+react-cosmos-plugin-webpack@6.0.0-canary.fe0c7d1.0:
+  version "6.0.0-canary.fe0c7d1.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.0-canary.fe0c7d1.0.tgz#82f4c02e61d68ada6c46f5a9b6c4bf3d0a41e029"
+  integrity sha512-C4EEu2eTYaReYexD5tMXx8VX3rvv4tEwz5R5yPRF1kYTeCHapS9k0HYoQGXkDv9+3IPC1H1G1UYOU+hhULjUEQ==
+  dependencies:
+    lodash-es "^4.17.21"
+    react-cosmos-core "6.0.0-canary.fe0c7d1.0+fe0c7d1"
+    react-cosmos-dom "6.0.0-canary.fe0c7d1.0+fe0c7d1"
     react-error-overlay "6.0.9"
-    webpack-dev-middleware "6.1.1"
-    webpack-hot-middleware "2.25.4"
+    webpack-dev-middleware "^6.0.2"
+    webpack-hot-middleware "^2.25.3"
 
 react-cosmos-renderer@6.0.0-beta.10:
   version "6.0.0-beta.10"
@@ -4941,7 +4948,7 @@ react-error-overlay@6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-is@18.2.0:
+react-is@18.2.0, react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
@@ -6043,17 +6050,6 @@ webpack-cli@5.1.4:
     rechoir "^0.8.0"
     webpack-merge "^5.7.3"
 
-webpack-dev-middleware@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-6.1.1.tgz#6bbc257ec83ae15522de7a62f995630efde7cc3d"
-  integrity sha512-y51HrHaFeeWir0YO4f0g+9GwZawuigzcAdRNon6jErXy/SqV/+O6eaVAzDqE6t3e3NpGeR5CS+cCDaTC+V3yEQ==
-  dependencies:
-    colorette "^2.0.10"
-    memfs "^3.4.12"
-    mime-types "^2.1.31"
-    range-parser "^1.2.1"
-    schema-utils "^4.0.0"
-
 webpack-dev-middleware@^5.3.1:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-5.3.3.tgz#efae67c2793908e7311f1d9b06f2a08dcc97e51f"
@@ -6061,6 +6057,17 @@ webpack-dev-middleware@^5.3.1:
   dependencies:
     colorette "^2.0.10"
     memfs "^3.4.3"
+    mime-types "^2.1.31"
+    range-parser "^1.2.1"
+    schema-utils "^4.0.0"
+
+webpack-dev-middleware@^6.0.2:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-6.1.1.tgz#6bbc257ec83ae15522de7a62f995630efde7cc3d"
+  integrity sha512-y51HrHaFeeWir0YO4f0g+9GwZawuigzcAdRNon6jErXy/SqV/+O6eaVAzDqE6t3e3NpGeR5CS+cCDaTC+V3yEQ==
+  dependencies:
+    colorette "^2.0.10"
+    memfs "^3.4.12"
     mime-types "^2.1.31"
     range-parser "^1.2.1"
     schema-utils "^4.0.0"
@@ -6101,10 +6108,10 @@ webpack-dev-server@4.15.1:
     webpack-dev-middleware "^5.3.1"
     ws "^8.13.0"
 
-webpack-hot-middleware@2.25.4:
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.25.4.tgz#d8bc9e9cb664fc3105c8e83d2b9ed436bee4e193"
-  integrity sha512-IRmTspuHM06aZh98OhBJtqLpeWFM8FXJS5UYpKYxCJzyFoyWj1w6VGFfomZU7OPA55dMLrQK0pRT1eQ3PACr4w==
+webpack-hot-middleware@^2.25.3:
+  version "2.26.0"
+  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.26.0.tgz#0a103c9b2836c1f27d7f74bbe0e96c99c82d0265"
+  integrity sha512-okzjec5sAEy4t+7rzdT8eRyxsk0FDSmBPN2KwX4Qd+6+oQCfe5Ve07+u7cJvofgB+B4w5/4dO4Pz0jhhHyyPLQ==
   dependencies:
     ansi-html-community "0.0.8"
     html-entities "^2.1.0"
