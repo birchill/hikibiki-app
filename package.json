@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Look up words and stuff",
   "main": "src/main.tsx",
+  "type": "module",
   "devDependencies": {
     "@babel/core": "7.23.7",
     "@fullhuman/postcss-purgecss": "5.0.0",
@@ -21,7 +22,8 @@
     "postcss-import": "16.0.0",
     "postcss-loader": "7.3.4",
     "prettier": "3.1.1",
-    "react-cosmos": "^5.7.2",
+    "react-cosmos": "6.0.0-beta.10",
+    "react-cosmos-plugin-webpack": "6.0.0-beta.10",
     "style-loader": "3.3.3",
     "ts-loader": "9.5.1",
     "typescript": "5.3.3",
@@ -33,8 +35,8 @@
   "scripts": {
     "build": "webpack --define-process-env-node-env production",
     "build:stats": "webpack --json --define-process-env-node-env production > webpack-stats.json",
-    "cosmos": "cosmos --port 5001",
-    "build:cosmos": "cosmos-export",
+    "cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos.js --port 5001",
+    "build:cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos-export.js",
     "postinstall": "husky install",
     "start": "webpack serve"
   },
