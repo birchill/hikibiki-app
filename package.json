@@ -33,7 +33,7 @@
     "workbox-webpack-plugin": "7.0.0"
   },
   "resolutions": {
-    "jackspeak": "2.1.1"
+    "jackspeak": "2.3.6"
   },
   "scripts": {
     "build": "webpack --define-process-env-node-env production",
