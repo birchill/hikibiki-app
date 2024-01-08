@@ -32,6 +32,9 @@
     "webpack-dev-server": "4.15.1",
     "workbox-webpack-plugin": "7.0.0"
   },
+  "resolutions": {
+    "jackspeak": "2.1.1"
+  },
   "scripts": {
     "build": "webpack --define-process-env-node-env production",
     "build:stats": "webpack --json --define-process-env-node-env production > webpack-stats.json",
