@@ -1,13 +1,16 @@
-const path = require('path');
-const crypto = require('crypto');
+import * as crypto from 'crypto';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { RelativeCiAgentWebpackPlugin } = require('@relative-ci/agent');
-const { InjectManifest } = require('workbox-webpack-plugin');
-const webpack = require('webpack');
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { RelativeCiAgentWebpackPlugin } from '@relative-ci/agent';
+import { InjectManifest } from 'workbox-webpack-plugin';
+import webpack from 'webpack';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -47,7 +50,7 @@ if (process.env.RELATIVE_CI_KEY) {
   plugins.push(new RelativeCiAgentWebpackPlugin());
 }
 
-module.exports = {
+export default {
   entry: {
     hikibiki: ['./src/main.tsx'],
   },
