@@ -2824,7 +2824,7 @@ find-up@^4.0.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-find-up@^6.2.0, find-up@^6.3.0:
+find-up@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-6.3.0.tgz#2abab3d3280b2dc7ac10199ef324c4e002c8c790"
   integrity sha512-v2ZsoEuVHYy8ZIlYqwPe/39Cy+cFDzp4dXPaxNvkEuouymu+2Jbz0PxpKarJHYJTmv2HWT3O382qY8l4jMWthw==
@@ -3637,6 +3637,11 @@ js-base64@3.7.5:
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.5.tgz#21e24cf6b886f76d6f5f165bfcd69cc55b9e3fca"
   integrity sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==
 
+js-base64@3.7.6:
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.6.tgz#6ccb5d761b48381fd819f9ce04998866dbcbbc99"
+  integrity sha512-NPrWuHFxFUknr1KqJRDgUQPexQF0uIJWjeT+2KjEePhitQxQEx5EJBG1lVn5/hc8aLycTpXrDOgPQ6Zq+EDiTA==
+
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -4364,13 +4369,6 @@ pkg-dir@^7.0.0:
   dependencies:
     find-up "^6.3.0"
 
-pkg-up@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-4.0.0.tgz#b2ca5e845979e31497d81520b621f4cdac2dcd75"
-  integrity sha512-N4zdA4sfOe6yCv+ulPCmpnIBQ5I60xfhDr1otdBBhKte9QtEf3bhfrfkW7dTb+IQ0iEx4ZDzas0kc1o5rdWpYg==
-  dependencies:
-    find-up "^6.2.0"
-
 postcss-calc@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/postcss-calc/-/postcss-calc-9.0.1.tgz#a744fd592438a93d6de0f1434c572670361eb6c6"
@@ -4760,6 +4758,15 @@ react-cosmos-core@6.0.0-beta.10:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
+react-cosmos-core@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.0.0.tgz#c41e214470011cd51a3ba96b66509ec71724a6bb"
+  integrity sha512-EELKpFwd1F9gwJ+cw4xF9w9aUinQVp+SccLyCdn04SfIncz0qQ0soV8c/4rvjYjfhG8K1sP2p4nXAd8+wrTw0A==
+  dependencies:
+    js-base64 "3.7.6"
+    lodash-es "4.17.21"
+    react-is "18.2.0"
+
 react-cosmos-dom@6.0.0-beta.10:
   version "6.0.0-beta.10"
   resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.0-beta.10.tgz#fb5364a6259beca4abefc91fb5760e8bd76653f1"
@@ -4790,18 +4797,27 @@ react-cosmos-renderer@6.0.0-beta.10:
     react-cosmos-core "6.0.0-beta.10"
     react-is "18.2.0"
 
-react-cosmos-ui@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-6.0.0-beta.10.tgz#d6209fc20fb9539eaa2aeabc3389b1547f9780b5"
-  integrity sha512-CeEuFWRkXHZ1KCoCKhb+G8PjdbYTcRo2Vyy+j7s20I+QmZRxKXkny6xXaomizIqoEKpbxVM0HXBm/NJUaEjQfA==
+react-cosmos-renderer@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.0.0.tgz#66aede768817a24c70c7a76ae23fe678138b1839"
+  integrity sha512-oxAl8qBCARrkJ+Lpd8zbPh7uYVH2T1E2RoRcoC/cs7wKlkEKcuFlIezugCac+O3SKZSse/qU90PJ4d3NJ9MqfQ==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
+    react-cosmos-core "^6.0.0"
+    react-is "18.2.0"
 
-react-cosmos@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.0.0-beta.10.tgz#06c3c0a9f081738b473d6e2883bdd6d41283437a"
-  integrity sha512-ooWcNAOHBXoN9CAz2kN9DxPLi4z5Co6LBSwOLvHBBGWtvkNMgFl5Vr7NE3N3M29t6W+KwCNuhUT3WmoZZ4EbiQ==
+react-cosmos-ui@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-6.0.0.tgz#dcc9a564f6482188689681e609675af759af3d11"
+  integrity sha512-tgDzTLwNJV50/+aEiutJJI+8GHWc99lzDWmlPrnVMhmCy5Oll0EYjmnjSe/iZCcSlyo8VxMIujw/Fl31r3RcOQ==
+  dependencies:
+    lodash-es "4.17.21"
+    react-cosmos-core "^6.0.0"
+
+react-cosmos@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.0.0.tgz#9085860c04eebd6b5587da3ff7d9bd2f3790beef"
+  integrity sha512-wRAoA2rYjxHzRMsvGPwStYyPjvS0BojXePvW4zxXwL76kaM+NRmCzLgkYQ+PDFvMVc3BIVa23hzvjRDdad+kVA==
   dependencies:
     "@skidding/launch-editor" "2.2.3"
     chokidar "3.5.3"
@@ -4812,11 +4828,10 @@ react-cosmos@6.0.0-beta.10:
     micromatch "4.0.5"
     open "8.4.2"
     pem "1.14.8"
-    pkg-up "4.0.0"
-    react-cosmos-core "6.0.0-beta.10"
-    react-cosmos-renderer "6.0.0-beta.10"
-    react-cosmos-ui "6.0.0-beta.10"
-    ws "8.14.2"
+    react-cosmos-core "^6.0.0"
+    react-cosmos-renderer "^6.0.0"
+    react-cosmos-ui "^6.0.0"
+    ws "8.16.0"
     yargs "17.7.2"
 
 react-error-overlay@6.0.9:
@@ -6280,12 +6295,7 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
-ws@8.14.2:
-  version "8.14.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.2.tgz#6c249a806eb2db7a20d26d51e7709eab7b2e6c7f"
-  integrity sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==
-
-ws@^8.13.0:
+ws@8.16.0, ws@^8.13.0:
   version "8.16.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
   integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
