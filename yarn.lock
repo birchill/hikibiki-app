@@ -3632,11 +3632,6 @@ jiti@^1.19.1, jiti@^1.20.0:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.0.tgz#7c97f8fe045724e136a397f7340475244156105d"
   integrity sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==
 
-js-base64@3.7.5:
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.5.tgz#21e24cf6b886f76d6f5f165bfcd69cc55b9e3fca"
-  integrity sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==
-
 js-base64@3.7.6:
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.6.tgz#6ccb5d761b48381fd819f9ce04998866dbcbbc99"
@@ -4749,15 +4744,6 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-cosmos-core@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.0.0-beta.10.tgz#ed35ec120ea4c9eff4e9e97c42bc670161f58c38"
-  integrity sha512-afxx2vz91e1W3FvmeX+JB5DQlOquOUMvAICyT2l9nHCf4e2q/5tAfYP7Mt0EXLnWbSzJBWaJPlNiBK4mY1sy/w==
-  dependencies:
-    js-base64 "3.7.5"
-    lodash-es "4.17.21"
-    react-is "18.2.0"
-
 react-cosmos-core@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.0.0.tgz#c41e214470011cd51a3ba96b66509ec71724a6bb"
@@ -4767,35 +4753,26 @@ react-cosmos-core@^6.0.0:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
-react-cosmos-dom@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.0-beta.10.tgz#fb5364a6259beca4abefc91fb5760e8bd76653f1"
-  integrity sha512-RFAkb+pod1rlggfopA+O2nV9ffiuZ8G+pFJbswoFnmc8MbG7TMU+AO5fIxrBGQDxyhvdJHE+5As/i3LCZPhP7A==
+react-cosmos-dom@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.0.0.tgz#f0a83c80506f09fbe8ab97c4537f28a7eb32ae5f"
+  integrity sha512-2Xq0YGNSJYcS2cV7kAE5F8SrcAQ4iIa0Xb4JHsZoaVcCmK0s0X5MXMYinYOln+MlDA3Cc/83scVd/PmQnvSS3Q==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
-    react-cosmos-renderer "6.0.0-beta.10"
+    react-cosmos-core "^6.0.0"
+    react-cosmos-renderer "^6.0.0"
 
-react-cosmos-plugin-webpack@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.0-beta.10.tgz#35a7c9cd16262a47564a0d1bb5998d52d3b3f322"
-  integrity sha512-FbOrATnItm98TddYSZwXiTXmuD7cxf/QimwQb0VhHxSIWEWRjM0gSYOnsHg8ncWLH704elySUpd4fVnQx7bA6w==
+react-cosmos-plugin-webpack@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.0.tgz#6ef9dbe555caa2f7d36371684a3fdc0d5cd8d22d"
+  integrity sha512-OF32rggYqRDaWKbIFAiAp+8T2KO6BzHG30XWyOWGzB5SfilJznC5eK5ouNrXrAMUjPY5YNuNdejWzzJ6Wo8IeA==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
-    react-cosmos-dom "6.0.0-beta.10"
+    react-cosmos-core "^6.0.0"
+    react-cosmos-dom "^6.0.0"
     react-error-overlay "6.0.9"
     webpack-dev-middleware "6.1.1"
-    webpack-hot-middleware "2.25.4"
-
-react-cosmos-renderer@6.0.0-beta.10:
-  version "6.0.0-beta.10"
-  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.0.0-beta.10.tgz#d06f38beb981201f10b541531203cb963058a183"
-  integrity sha512-HUA7/K5b1V4AV4OeVL9H2dqgXgkfouwW7hY+xZkR/g88ZX2l3I8XpUY1rEZ/povwIm1W/3lWt+t2xDn1wgrX3w==
-  dependencies:
-    lodash-es "4.17.21"
-    react-cosmos-core "6.0.0-beta.10"
-    react-is "18.2.0"
+    webpack-hot-middleware "2.26.0"
 
 react-cosmos-renderer@^6.0.0:
   version "6.0.0"
@@ -5972,10 +5949,10 @@ webpack-dev-server@4.15.1:
     webpack-dev-middleware "^5.3.1"
     ws "^8.13.0"
 
-webpack-hot-middleware@2.25.4:
-  version "2.25.4"
-  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.25.4.tgz#d8bc9e9cb664fc3105c8e83d2b9ed436bee4e193"
-  integrity sha512-IRmTspuHM06aZh98OhBJtqLpeWFM8FXJS5UYpKYxCJzyFoyWj1w6VGFfomZU7OPA55dMLrQK0pRT1eQ3PACr4w==
+webpack-hot-middleware@2.26.0:
+  version "2.26.0"
+  resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.26.0.tgz#0a103c9b2836c1f27d7f74bbe0e96c99c82d0265"
+  integrity sha512-okzjec5sAEy4t+7rzdT8eRyxsk0FDSmBPN2KwX4Qd+6+oQCfe5Ve07+u7cJvofgB+B4w5/4dO4Pz0jhhHyyPLQ==
   dependencies:
     ansi-html-community "0.0.8"
     html-entities "^2.1.0"
