@@ -40,7 +40,7 @@
     "build:stats": "webpack --json --define-process-env-node-env production > webpack-stats.json",
     "cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos.js --port 5001",
     "build:cosmos": "node --experimental-policy=cosmos-policy.json node_modules/react-cosmos/bin/cosmos-export.js",
-    "postinstall": "husky install",
+    "postinstall": "husky",
     "start": "webpack serve"
   },
   "repository": {
