@@ -4831,10 +4831,10 @@ react-cosmos-dom@^6.0.1:
     react-cosmos-core "^6.0.1"
     react-cosmos-renderer "^6.0.1"
 
-react-cosmos-plugin-webpack@6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.1.tgz#1874c31d6b453bfbfa4b9814db09c0c14f3ca2aa"
-  integrity sha512-NH0ojzaIAoq28/VtPgyc1tIKYRopC92rQ3REPo4E6ITDST072sZC5/qygWVNslfxF8GH9lnzoUnC51Yg/7zjKw==
+react-cosmos-plugin-webpack@6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.0.2.tgz#59dd3c4a5e2a80010e4235e244fb36ec72575061"
+  integrity sha512-BjthvOKWYoF2XDOiz0deOj5uRBOyTndF19nTRIHWOrUxktLiK6VBvLURiG3lAQb5eO3rgZHLKB0GI/eIyyBEig==
   dependencies:
     lodash-es "4.17.21"
     react-cosmos-core "^6.0.1"
