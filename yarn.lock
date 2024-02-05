@@ -1149,10 +1149,10 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@relative-ci/agent@4.2.4":
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.4.tgz#9da4b7039a2921be615ea19fc55b33954eb9dad5"
-  integrity sha512-YNVQfTDG9UHmZE57uRoUhJxLKTbX0YJG8PCCpCNrt5hrZjBpN8c0Z9Zvzi9MvxeZ4t+/Z9L69mPcQzaipG1KEg==
+"@relative-ci/agent@4.2.5":
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.5.tgz#3c229342f2b1f5abc64a86b01b39d5d580610b68"
+  integrity sha512-4o+099O8DyDNc63aLDfEXuUGcI6LfRhGA0Qm9Xpg7Ua0YPom7L03UZyjh+Vsxus/zUUpSI2d7CU2Z6LTvb7ulg==
   dependencies:
     "@bundle-stats/plugin-webpack-filter" "4.9.2"
     "@bundle-stats/plugin-webpack-validate" "4.9.2"
