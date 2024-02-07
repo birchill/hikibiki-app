@@ -18,7 +18,7 @@
     "husky": "9.0.10",
     "lint-staged": "15.2.2",
     "mini-css-extract-plugin": "2.8.0",
-    "postcss": "8.4.34",
+    "postcss": "8.4.35",
     "postcss-import": "16.0.0",
     "postcss-loader": "8.1.0",
     "prettier": "3.2.5",
