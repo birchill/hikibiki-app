@@ -23,7 +23,7 @@
     "postcss-loader": "8.1.1",
     "prettier": "3.2.5",
     "react-cosmos": "6.1.1",
-    "react-cosmos-plugin-webpack": "6.1.0",
+    "react-cosmos-plugin-webpack": "6.1.1",
     "style-loader": "3.3.4",
     "ts-loader": "9.5.1",
     "typescript": "5.4.2",
