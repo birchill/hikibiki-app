@@ -1085,9 +1085,9 @@
     ua-parser-js "^1.0.32"
 
 "@birchill/jpdict-idb@^2.3.1":
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.3.2.tgz#856fd9ee3b658d011d26e614214dfd92b6aa82b5"
-  integrity sha512-2qryn/VIVw3Aj2XUTY7wjDwpMw5ZRmtPC5lb6XEew2eOOXT8VYX4jKkK1Ebe0S7qMVA4Fc/O+XdLF8YBMvqswA==
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.4.0.tgz#565356d98a2cd57c263d5fe2a0a7f62b6a4ad302"
+  integrity sha512-9pKQGLvB7rdtV8CZNClG6z50kU6NnJ/4gRSCQCDI/r3K7pxv2SVjtTbiXlGr3PJt2NZ6zVrneX1qp9xO/prwow==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.5.0"
@@ -5777,15 +5777,10 @@ sucrase@^3.32.0:
     pirates "^4.0.1"
     ts-interface-checker "^0.1.9"
 
-superstruct@1.0.4:
+superstruct@1.0.4, superstruct@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-1.0.4.tgz#0adb99a7578bd2f1c526220da6571b2d485d91ca"
   integrity sha512-7JpaAoX2NGyoFlI9NBh66BQXGONc+uE+MRS5i2iOBKuS4e+ccgMDjATgZldkah+33DakBxDHiss9kvUcGAO8UQ==
-
-superstruct@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-1.0.3.tgz#de626a5b49c6641ff4d37da3c7598e7a87697046"
-  integrity sha512-8iTn3oSS8nRGn+C2pgXSKPI3jmpm6FExNazNpjvqS6ZUJQCej3PUXEKM8NjHBOs54ExM+LPW/FBRhymrdcCiSg==
 
 supports-color@^5.3.0:
   version "5.5.0"
