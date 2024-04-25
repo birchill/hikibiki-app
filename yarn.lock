@@ -1044,9 +1044,9 @@
     ua-parser-js "^1.0.32"
 
 "@birchill/jpdict-idb@^2.3.1":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.4.0.tgz#565356d98a2cd57c263d5fe2a0a7f62b6a4ad302"
-  integrity sha512-9pKQGLvB7rdtV8CZNClG6z50kU6NnJ/4gRSCQCDI/r3K7pxv2SVjtTbiXlGr3PJt2NZ6zVrneX1qp9xO/prwow==
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.5.0.tgz#874f2bc94fbf3c33d32731f8e6c80d6de3ade1ab"
+  integrity sha512-1P/4ZcaSmJFtUjnhL85+uFXjwnGjQHZ2jqghU/W2NAuQVLMfcQvuBTUFNYmbKS70RHOpGu7V3CWHaaF8gflJVw==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
     "@birchill/normal-jp" "^1.5.0"
