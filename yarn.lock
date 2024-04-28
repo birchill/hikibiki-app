@@ -1176,14 +1176,14 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@relative-ci/agent@4.2.6":
-  version "4.2.6"
-  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.6.tgz#07428fe74d8e8c91c5e73bc24109241164fd8be9"
-  integrity sha512-eN0PvIsoOup4GklpFz6mJVIlYxW4Gs4JHVm1fgwLEMWlY9pdGkCzJ9AqEYYH92812yewtEorFmAA3KJoGOm4ZA==
+"@relative-ci/agent@4.2.7":
+  version "4.2.7"
+  resolved "https://registry.yarnpkg.com/@relative-ci/agent/-/agent-4.2.7.tgz#e5f043efd5a300f68d385f7590f1f7f1ddee2a45"
+  integrity sha512-alt3cmjxNK/8Ih37pQK85C8mfBQLgORTmXyq2vPVabXtc5ogDP+aeVlBN6GVoalFkKcXTvM3JUDKBX0+ijNEaQ==
   dependencies:
     "@bundle-stats/plugin-webpack-filter" "4.12.2"
     "@bundle-stats/plugin-webpack-validate" "4.12.2"
-    core-js "3.36.1"
+    core-js "3.37.0"
     cosmiconfig "9.0.0"
     debug "4.3.4"
     dotenv "16.4.5"
@@ -2269,10 +2269,10 @@ core-js-compat@^3.31.0, core-js-compat@^3.33.1:
   dependencies:
     browserslist "^4.22.2"
 
-core-js@3.36.1:
-  version "3.36.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.36.1.tgz#c97a7160ebd00b2de19e62f4bbd3406ab720e578"
-  integrity sha512-BTvUrwxVBezj5SZ3f10ImnX2oRByMxql3EimVqMysepbC9EeMUOpLwdy6Eoili2x6E4kf+ZUB5k/+Jv55alPfA==
+core-js@3.37.0:
+  version "3.37.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.37.0.tgz#d8dde58e91d156b2547c19d8a4efd5c7f6c426bb"
+  integrity sha512-fu5vHevQ8ZG4og+LXug8ulUtVxjOcEYvifJr7L5Bfq9GOztVqsKd9/59hUk2ZSbCrS3BqUr3EpaYGIYzq7g3Ug==
 
 core-util-is@~1.0.0:
   version "1.0.3"
