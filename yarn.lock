@@ -4044,10 +4044,10 @@ isomorphic-fetch@3.0.0:
     node-fetch "^2.6.1"
     whatwg-fetch "^3.4.1"
 
-jackspeak@3.4.1, jackspeak@^2.3.5, jackspeak@^3.1.2:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jackspeak/-/jackspeak-3.4.1.tgz#145422416740568e9fc357bf60c844b3c1585f09"
-  integrity sha512-U23pQPDnmYybVkYjObcuYMk43VRlMLLqLI+RdZy8s8WV8WsxO9SnqSroKaluuvcNOdCAlauKszDwd+umbot5Mg==
+jackspeak@3.4.2, jackspeak@^2.3.5, jackspeak@^3.1.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/jackspeak/-/jackspeak-3.4.2.tgz#c3d1e00071d52dba8b0dac17cd2a12d0187d2989"
+  integrity sha512-qH3nOSj8q/8+Eg8LUPOq3C+6HWkpUioIjDsq1+D4zY91oZvpPttw8GwtF1nReRYKXl+1AORyFqtm2f5Q1SB6/Q==
   dependencies:
     "@isaacs/cliui" "^8.0.2"
   optionalDependencies:
