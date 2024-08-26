@@ -5328,25 +5328,34 @@ react-cosmos-core@^6.1.1:
     lodash-es "4.17.21"
     react-is "18.2.0"
 
-react-cosmos-dom@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.1.1.tgz#dcb1138bc720d4cba31884ea67780bf548b9ae63"
-  integrity sha512-x4lb7eJUDreh6x8b4A2nVC8HjSIxlNWHX3Pl4fPwOuu6BnLgtY6Ycqw1TEE2/T1YX9LFsjM38kB2tSjyRxhEwA==
+react-cosmos-core@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-6.2.0.tgz#3731595b3c04cab8996660a95c37bd0cd00929fa"
+  integrity sha512-BAkTG5cGStSd1K99FjYlVEE07P13UD+4bVFhqf4LGqpYVPiMkem/ICVoZK+EFEnftnk9OLk2PertaEE1fkOFsg==
   dependencies:
+    js-base64 "3.7.7"
     lodash-es "4.17.21"
-    react-cosmos-core "^6.1.1"
-    react-cosmos-renderer "^6.1.1"
+    react-is "18.3.1"
 
-react-cosmos-plugin-webpack@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.1.1.tgz#08e7a57904acff526e645fbc2f548cce9819c12d"
-  integrity sha512-jRGtlnscwfQquNRtGtJZg4dndsfsKbvFPHnnfVrF05sjzRk11SZUOquJR0jP+3Zy8Tzjwt4QHYjGfwAxisqIWw==
+react-cosmos-dom@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.2.0.tgz#f29075d01c8a4b9869401c70085425746b8061f2"
+  integrity sha512-la+//KrpDc8fzwP/R8ZA0+XbQhYeXUk0XXPt/30AEdqPMPV85WGkHosP2mX1FQ9DjOc2prttNu75bu7Gi9hklA==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "^6.1.1"
-    react-cosmos-dom "^6.1.1"
+    react-cosmos-core "^6.2.0"
+    react-cosmos-renderer "^6.2.0"
+
+react-cosmos-plugin-webpack@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-plugin-webpack/-/react-cosmos-plugin-webpack-6.2.0.tgz#e7cd2d402ef291b96fb93e91652a6176f0cb4812"
+  integrity sha512-LyRH78AOl9SefTXSqj3lHG8IWF3mRFhrMZrfRslhxCoDLQmautV7gTMQvQqJKzq6phRrEB6rLprKpxWClccz3Q==
+  dependencies:
+    lodash-es "4.17.21"
+    react-cosmos-core "^6.2.0"
+    react-cosmos-dom "^6.2.0"
     react-error-overlay "6.0.9"
-    webpack-dev-middleware "6.1.1"
+    webpack-dev-middleware "6.1.3"
     webpack-hot-middleware "2.26.1"
 
 react-cosmos-renderer@^6.1.1:
@@ -5357,6 +5366,15 @@ react-cosmos-renderer@^6.1.1:
     lodash-es "4.17.21"
     react-cosmos-core "^6.1.1"
     react-is "18.2.0"
+
+react-cosmos-renderer@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-6.2.0.tgz#2138656239acb8317724f1f54423888f9a5ff6fc"
+  integrity sha512-XWuZcyslVB32QwJ3ODuu/rV14fcbXOoFNhUUos+Ox4PNvZtu43HxfUK62S9OZiwdI++Hx+dxH4akdaDDkZ82AQ==
+  dependencies:
+    lodash-es "4.17.21"
+    react-cosmos-core "^6.2.0"
+    react-is "18.3.1"
 
 react-cosmos-ui@^6.1.1:
   version "6.1.1"
@@ -5395,6 +5413,11 @@ react-is@18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-is@18.3.1:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
+  integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
 read-cache@^1.0.0:
   version "1.0.0"
@@ -6520,10 +6543,10 @@ webpack-cli@5.1.4:
     rechoir "^0.8.0"
     webpack-merge "^5.7.3"
 
-webpack-dev-middleware@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-6.1.1.tgz#6bbc257ec83ae15522de7a62f995630efde7cc3d"
-  integrity sha512-y51HrHaFeeWir0YO4f0g+9GwZawuigzcAdRNon6jErXy/SqV/+O6eaVAzDqE6t3e3NpGeR5CS+cCDaTC+V3yEQ==
+webpack-dev-middleware@6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-6.1.3.tgz#79f4103f8c898564c9e96c3a9c2422de50f249bc"
+  integrity sha512-A4ChP0Qj8oGociTs6UdlRUGANIGrCDL3y+pmQMc+dSsraXHCatFpmMey4mYELA+juqwUqwQsUgJJISXl1KWmiw==
   dependencies:
     colorette "^2.0.10"
     memfs "^3.4.12"
