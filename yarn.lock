@@ -1211,9 +1211,9 @@
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
 "@birchill/normal-jp@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.5.0.tgz#9ffc7227a636ffcf3dd7c39dfdb0af4cbd4d7d38"
-  integrity sha512-yL0XXk6Wl4jrJtfT2HJ/NDiZoepgJMWx3CLM0MzUyXFVFWvdgVPe+DWjH/z6Rps7tDqSS6CtVXL9hW0qncpAUA==
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.5.1.tgz#9a4afc8a414c60447c9e27e48eb8233a0495fcba"
+  integrity sha512-oUPlpkf5ykT9E6mKER3jY2ayZhydcQAU2IuSAQ7XnHSoqen1BURLxSpBQr2naex0n5v2/HHqJUzByVFpUdHZGw==
 
 "@bundle-stats/plugin-webpack-filter@4.15.0":
   version "4.15.0"
