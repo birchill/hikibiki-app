@@ -3605,7 +3605,18 @@ http-parser-js@>=0.5.1:
   resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.5.8.tgz#af23090d9ac4e24573de6f6aecc9d84a48bf20e3"
   integrity sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==
 
-http-proxy-middleware@2.0.6, http-proxy-middleware@^2.0.3:
+http-proxy-middleware@2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.7.tgz#915f236d92ae98ef48278a95dedf17e991936ec6"
+  integrity sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==
+  dependencies:
+    "@types/http-proxy" "^1.17.8"
+    http-proxy "^1.18.1"
+    is-glob "^4.0.1"
+    is-plain-obj "^3.0.0"
+    micromatch "^4.0.2"
+
+http-proxy-middleware@^2.0.3:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.6.tgz#e1a4dd6979572c7ab5a4e4b55095d1f32a74963f"
   integrity sha512-ya/UeJ6HVBYxrgYotAZo1KvPWlgB48kUJLDePFeneHsVujFaW5WNj2NgWCAE//B1Dl02BIfYlpNgBy8Kf8Rjmw==
@@ -5298,16 +5309,16 @@ react-cosmos-ui@^6.2.0:
     lodash-es "4.17.21"
     react-cosmos-core "^6.2.0"
 
-react-cosmos@6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.2.0.tgz#c7414ac73553fdcf21c42c07ea5984611646a4bd"
-  integrity sha512-MHxyU8InppDP+lQOK8eJNRqL4K4JR8SdND8J2YZ7Xk1qGR3z/CLh13418gDfzEVnjK8rBEmxbx/lR5sQhBCxnw==
+react-cosmos@6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.2.1.tgz#f0b6a6239c6e93e36497fe36c21f3ed63d92172b"
+  integrity sha512-7yAuGFZc5Q4n7QeY7a4OY3svuIR1SoaENVC6Enu34Jmg2zg0wBPowVUHrGOiL/He787dup+leLVGuUYwHzHnmg==
   dependencies:
     "@skidding/launch-editor" "2.2.3"
     chokidar "3.6.0"
     express "4.19.2"
     glob "10.4.5"
-    http-proxy-middleware "2.0.6"
+    http-proxy-middleware "2.0.7"
     lodash-es "4.17.21"
     micromatch "4.0.7"
     open "10.1.0"
