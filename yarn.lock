@@ -1213,12 +1213,10 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
-"@birchill/bugsnag-zero@0.6.9":
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.6.9.tgz#74deb0eeaee945d65a6e41ee806c1c740fb84b5b"
-  integrity sha512-jCBweDlK6+nH6QVyrtS3YDdVlz0uSODDaN4xR6CvCAT6Fa7RTzeT8cKS7CamzHlSsUmRRrPptymcc7rw1yIoPQ==
-  dependencies:
-    ua-parser-js "^1.0.32"
+"@birchill/bugsnag-zero@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.7.0.tgz#60da3cb816de8e92f2509f7d530419edc4469345"
+  integrity sha512-2f7tlX/5ison9BIDrPB+cRnOr5f1ik7llcVCVeIM7y/bxBLkSnubc4iIGZnOKXaXuEIC3ZMf40iXsCecPYXTLA==
 
 "@birchill/jpdict-idb@^2.3.1":
   version "2.6.1"
@@ -6276,11 +6274,6 @@ typescript@5.6.3:
   version "5.6.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.6.3.tgz#5f3449e31c9d94febb17de03cc081dd56d81db5b"
   integrity sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==
-
-ua-parser-js@^1.0.32:
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.37.tgz#b5dc7b163a5c1f0c510b08446aed4da92c46373f"
-  integrity sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
