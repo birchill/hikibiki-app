@@ -6,7 +6,7 @@
   "type": "module",
   "devDependencies": {
     "@babel/core": "7.26.0",
-    "@fullhuman/postcss-purgecss": "6.0.0",
+    "@fullhuman/postcss-purgecss": "7.0.2",
     "@relative-ci/agent": "4.2.13",
     "autoprefixer": "10.4.20",
     "babel-loader": "9.2.1",
