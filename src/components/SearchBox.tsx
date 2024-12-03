@@ -71,12 +71,6 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
     [props.onUpdateSearch]
   );
 
-  // I failed to make Preact recognize enterKeyHint.
-  // Succeeded with React. Who knows.
-  const specialProps = {
-    enterKeyHint: 'search',
-  };
-
   return (
     <nav class="container mx-auto max-w-3xl -mt-half-input-text-2xl-py-6 mb-12 sm:mb-20 px-12">
       <form action="/" method="get" onSubmit={onSubmit}>
@@ -97,7 +91,7 @@ export const SearchBox: FunctionalComponent<Props> = (props: Props) => {
             backgroundSize: '1em 1em',
           }}
           aria-label="Search"
-          {...specialProps}
+          enterKeyHint="search"
         />
       </form>
     </nav>
