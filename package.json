@@ -5,7 +5,7 @@
   "main": "src/main.tsx",
   "type": "module",
   "devDependencies": {
-    "@babel/core": "7.26.10",
+    "@babel/core": "7.27.1",
     "@fullhuman/postcss-purgecss": "7.0.2",
     "@relative-ci/agent": "4.3.1",
     "autoprefixer": "10.4.21",
