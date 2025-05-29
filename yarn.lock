@@ -5303,10 +5303,10 @@ postcss@^8.4.47:
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
-preact@10.26.7:
-  version "10.26.7"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.26.7.tgz#7b4b2620dfbbd9d4654d88f1b3cee0fb9dea6e80"
-  integrity sha512-43xS+QYc1X1IPbw03faSgY6I6OYWcLrJRv3hU0+qMOfh/XCHcP0MX2CVjNARYR2cC/guu975sta4OcjlczxD7g==
+preact@10.26.8:
+  version "10.26.8"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.26.8.tgz#aa0cf2eae578e42eb58ae025e0bf85c4cfc91cc6"
+  integrity sha512-1nMfdFjucm5hKvq0IClqZwK4FJkGXhRrQstOQ3P4vp8HxKrJEMFcY6RdBRVTdfQS/UlnX6gfbPuTvaqx/bDoeQ==
 
 prettier@3.5.3:
   version "3.5.3"
