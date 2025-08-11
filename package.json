@@ -61,7 +61,7 @@
     "@birchill/jpdict-idb": "^2.3.1",
     "@birchill/normal-jp": "^1.5.0",
     "idb-keyval": "^6.2.1",
-    "preact": "10.26.9",
+    "preact": "10.27.0",
     "tailwindcss": "^3.3.3"
   },
   "lint-staged": {
