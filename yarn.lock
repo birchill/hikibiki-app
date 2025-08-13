@@ -3819,18 +3819,7 @@ http-parser-js@>=0.5.1:
   resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.5.8.tgz#af23090d9ac4e24573de6f6aecc9d84a48bf20e3"
   integrity sha512-SGeBX54F94Wgu5RH3X5jsDtf4eHyRogWX1XGT3b4HuW3tQPM4AaBzoUji/4AAJNXCEOWZ5O0DgZmJw1947gD5Q==
 
-http-proxy-middleware@2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.7.tgz#915f236d92ae98ef48278a95dedf17e991936ec6"
-  integrity sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==
-  dependencies:
-    "@types/http-proxy" "^1.17.8"
-    http-proxy "^1.18.1"
-    is-glob "^4.0.1"
-    is-plain-obj "^3.0.0"
-    micromatch "^4.0.2"
-
-http-proxy-middleware@^2.0.9:
+http-proxy-middleware@2.0.9, http-proxy-middleware@^2.0.9:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.9.tgz#e9e63d68afaa4eee3d147f39149ab84c0c2815ef"
   integrity sha512-c1IyJYLYppU574+YI7R4QyX2ystMtVXZwIdzazUIPIJsHuWNd+mho2j+bKoHftndicGj9yh+xjd+l0yj7VeT1Q==
@@ -4833,10 +4822,10 @@ onetime@^7.0.0:
   dependencies:
     mimic-function "^5.0.0"
 
-open@10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/open/-/open-10.1.0.tgz#a7795e6e5d519abe4286d9937bb24b51122598e1"
-  integrity sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==
+open@10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/open/-/open-10.1.1.tgz#5fd814699e47ae3e1a09962d39f4f4441cae6c22"
+  integrity sha512-zy1wx4+P3PfhXSEPJNtZmJXfhkkIaxU1VauWIrDZw1O7uJRDRJtKr9n3Ic4NgbA16KyOxOXO2ng9gYwCdXuSXA==
   dependencies:
     default-browser "^5.2.1"
     define-lazy-prop "^3.0.0"
@@ -5009,10 +4998,10 @@ path-type@^5.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-5.0.0.tgz#14b01ed7aea7ddf9c7c3f46181d4d04f9c785bb8"
   integrity sha512-5HviZNaZcfqP95rwpv+1HDgUamezbqdSYTyzjTvwtJSnIH+3vnbmWsItli8OFEndS984VT55M3jduxZbX351gg==
 
-pem@1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/pem/-/pem-1.15.1.tgz#17128b408c6bbc22c03992b0b5a784d6304561ab"
-  integrity sha512-kNNaflLX8Cpb3mrDNxSy8qIwpsNFKgBZx9pgFhbj4h+Rid4j2SMYQxcjtIjyhJg8/lwJTL+A3NHdD0M+UwyrCw==
+pem@1.14.8:
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/pem/-/pem-1.14.8.tgz#9c414bee991b138a24617f423059e809d01aa720"
+  integrity sha512-ZpbOf4dj9/fQg5tQzTqv4jSKJQsK7tPl0pm4/pvPcZVjZcJg7TMfr3PBk6gJH97lnpJDu4e4v8UUqEz5daipCg==
   dependencies:
     es6-promisify "^7.0.0"
     md5 "^2.3.0"
@@ -5506,6 +5495,14 @@ react-cosmos-core@^6.2.0:
     lodash-es "4.17.21"
     react-is "18.3.1"
 
+react-cosmos-core@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-core/-/react-cosmos-core-7.0.0.tgz#c1732ca39053909cb23cff0bf1d2f8a4778bc844"
+  integrity sha512-BBGiNezUkxxGExWCJyKfzpwVJBExFcChuWi+xTUDSYQVpDaarOIuQ6zNGt0rAr1CBlCKvL4PqvB9r9Fgf7K4fg==
+  dependencies:
+    js-base64 "3.7.7"
+    lodash-es "4.17.21"
+
 react-cosmos-dom@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/react-cosmos-dom/-/react-cosmos-dom-6.2.0.tgz#f29075d01c8a4b9869401c70085425746b8061f2"
@@ -5536,32 +5533,40 @@ react-cosmos-renderer@^6.2.0:
     react-cosmos-core "^6.2.0"
     react-is "18.3.1"
 
-react-cosmos-ui@^6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-6.2.3.tgz#f46b2f8596f5df281bfb34855ba76e973111dbe3"
-  integrity sha512-V9BDVfP1W+5MTS/SDyRKl1OJPuOkDiMAAuFjasKKZEj5mYR0DdEryjg4bboSo+g/3VMxdWOCTJ7a6pVGzAx0uQ==
+react-cosmos-renderer@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-renderer/-/react-cosmos-renderer-7.0.0.tgz#ac6d8860d932e480ffe1dd665819928ec6ba52e0"
+  integrity sha512-ELCZwUkX3gfcr8cjdaA45Ki2tZMIgkv69fUQkIpNIx2/sp2ewUT/cO6KVcenDMmZr89CYjiZDWT6wOIcL21aIw==
   dependencies:
     lodash-es "4.17.21"
-    react-cosmos-core "^6.2.0"
+    react-cosmos-core "^7.0.0"
 
-react-cosmos@6.2.3:
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-6.2.3.tgz#3580bcfb9b77ee29cc31e86e3d1306b51867688e"
-  integrity sha512-4dy0niyZW+6spwmlSzXqAQoH0kvWgc+RZsAFPlPxJlW5FCdEwnITrrJZ7XCQjBpmQLdes5Gpd4lkKFyxKeughQ==
+react-cosmos-ui@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos-ui/-/react-cosmos-ui-7.0.0.tgz#b00db75d10087f65369fe63b82fe1fbc6a9227ae"
+  integrity sha512-aBqBoJNc2MPJuFRqrHNPLZ6CwFHtx9Jh9UJM1CzyxzHqp6OWwRWNZaP69dLgt0VsRFBvacR6Eot+ULfoym+v2A==
+  dependencies:
+    lodash-es "4.17.21"
+    react-cosmos-core "^7.0.0"
+
+react-cosmos@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-cosmos/-/react-cosmos-7.0.0.tgz#7a9f3f0d357f9a32689e766120303076738d5d02"
+  integrity sha512-qAd+tY5yCV6lRfhtJCKJn+PvP4fVIg2L5ANwXdj+pxSLZwNz2c/H3jH1Mmci1nE3o+nWxMOOBUaINiPF+9zV5Q==
   dependencies:
     "@skidding/launch-editor" "2.2.3"
     chokidar "3.6.0"
     express "4.21.2"
     glob "10.4.5"
-    http-proxy-middleware "2.0.7"
+    http-proxy-middleware "2.0.9"
     lodash-es "4.17.21"
     micromatch "4.0.8"
-    open "10.1.0"
-    pem "1.15.1"
-    react-cosmos-core "^6.2.0"
-    react-cosmos-renderer "^6.2.0"
-    react-cosmos-ui "^6.2.3"
-    ws "8.18.0"
+    open "10.1.1"
+    pem "1.14.8"
+    react-cosmos-core "^7.0.0"
+    react-cosmos-renderer "^7.0.0"
+    react-cosmos-ui "^7.0.0"
+    ws "8.18.1"
     yargs "17.7.2"
 
 react-error-overlay@6.0.9:
@@ -7142,7 +7147,12 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
 
-ws@8.18.0, ws@^8.18.0:
+ws@8.18.1:
+  version "8.18.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.1.tgz#ea131d3784e1dfdff91adb0a4a116b127515e3cb"
+  integrity sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==
+
+ws@^8.18.0:
   version "8.18.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
   integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
