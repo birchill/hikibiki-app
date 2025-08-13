@@ -1275,22 +1275,28 @@
   resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.7.0.tgz#60da3cb816de8e92f2509f7d530419edc4469345"
   integrity sha512-2f7tlX/5ison9BIDrPB+cRnOr5f1ik7llcVCVeIM7y/bxBLkSnubc4iIGZnOKXaXuEIC3ZMf40iXsCecPYXTLA==
 
-"@birchill/jpdict-idb@^2.3.1":
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-2.6.1.tgz#f2008b7846ad1c3c6f3cb0add20c6aadebe5fd45"
-  integrity sha512-WGXJSvFnfQ8/Y+fWo7rxgAjrPwRZHP0kvdQxAMz6GwFC6eTxtG++oTg3BOkxHBywhvlRjqELYNFZMzZ7vzN4sQ==
+"@birchill/jpdict-idb@^3.0.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@birchill/jpdict-idb/-/jpdict-idb-3.1.0.tgz#180b48dc108760de585c6c2d24b34b4623c9eed9"
+  integrity sha512-koRibes/6sgKpSe86UDDgXi54WeW7ptafpFbUCu3x+mZGzL1RwSJggvf1uH0LNsmhhacinzw5Y+S2B8wE/wmUg==
   dependencies:
     "@birchill/json-equalish" "^1.1.2"
-    "@birchill/normal-jp" "^1.5.0"
+    "@birchill/kanji-component-string-utils" "^2.0.0"
+    "@birchill/normal-jp" "^1.5.2"
     idb "^8.0.0"
-    superstruct "^2.0.0"
+    superstruct "^2.0.2"
 
 "@birchill/json-equalish@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@birchill/json-equalish/-/json-equalish-1.1.2.tgz#6547834e6ce2331a969a1aa13c485f19b7428c9f"
   integrity sha512-oXsOtXbuxai0iq8bXZKa0S2AkGEEhigu2WcZUbYwRbv4EtHJvT6jqSg5kNtWeI+6frv7ixIbJbuWP6AbNtj7Sw==
 
-"@birchill/normal-jp@^1.5.0":
+"@birchill/kanji-component-string-utils@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@birchill/kanji-component-string-utils/-/kanji-component-string-utils-2.0.0.tgz#321fd527848a2e9541ba1870472be143788b4b9c"
+  integrity sha512-Rc8+GspPfTmN/TEZaibp0UrkqDDa15fY5ssV/FAT1wnD5PFq6VWxOQUKhKbV4dej+smTtZxw29kMbkzghmLCHw==
+
+"@birchill/normal-jp@^1.5.0", "@birchill/normal-jp@^1.5.2":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@birchill/normal-jp/-/normal-jp-1.6.0.tgz#906bba58e15bd57925db8a6da7ebb7bd2cf1ab59"
   integrity sha512-mYZr4JZElWUwzs8QaOzp9ufi4VzVmi+1ERU+nGb4kSW66s80Te1c88zUx+jnl3RmUzP7Q/WENEvuYNH9+eOPdg==
@@ -6314,7 +6320,7 @@ sucrase@^3.35.0:
     pirates "^4.0.1"
     ts-interface-checker "^0.1.9"
 
-superstruct@2.0.2, superstruct@^2.0.0:
+superstruct@2.0.2, superstruct@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/superstruct/-/superstruct-2.0.2.tgz#3f6d32fbdc11c357deff127d591a39b996300c54"
   integrity sha512-uV+TFRZdXsqXTL2pRvujROjdZQ4RAlBUS5BTh9IGm+jTqQntYThciG/qu57Gs69yjnVUSqdxF9YLmSnpupBW9A==
