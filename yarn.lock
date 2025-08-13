@@ -1270,10 +1270,10 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
-"@birchill/bugsnag-zero@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.7.0.tgz#60da3cb816de8e92f2509f7d530419edc4469345"
-  integrity sha512-2f7tlX/5ison9BIDrPB+cRnOr5f1ik7llcVCVeIM7y/bxBLkSnubc4iIGZnOKXaXuEIC3ZMf40iXsCecPYXTLA==
+"@birchill/bugsnag-zero@0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@birchill/bugsnag-zero/-/bugsnag-zero-0.7.2.tgz#cd32386ad559131f16ca61c9b1c07bf8c745bc1e"
+  integrity sha512-Z4nAL4g3MvOMC4UZYS1le5WMs+hC0WVQ85kfvaAMMYiWjmINzdPRnkm8VkRQmNpFbwEgcOG0nwAFowHgzGqdJA==
 
 "@birchill/jpdict-idb@^2.3.1":
   version "2.6.1"
